@@ -1,112 +1,140 @@
-
-
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
-
     <h1 class="title">Projects</h1>
     <br>
     <h3 class="subtitle">Current Projects</h3>
-    <div>
-      <div class="project-cards">
-        <project-card v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image" :id="project.id" />
 
-        <div class="add-project">
-          <Button label="+" class="addBut" @click="visible = true">
-          </Button>
-        </div>
+    <div class="project-cards">
+      <!-- Mostrar proyectos con el componente CardsComponent -->
+      <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image" :id="project.id" />
 
-        <Dialog class="p-dialog" v-model:visible="visible">
+      <!-- Botón para agregar un nuevo proyecto -->
+      <div class="add-project">
+        <Button label="+" class="addBut" @click="showAddProjectDialog" />
+      </div>
 
-          <div style="padding:2rem">
-            <h2 class="p-dialog-title block font-semibold mb-5">Add your project</h2>
-            <span class="p-text-secondary block mb-5">Add your project info.</span>
+      <!-- Diálogo para agregar un nuevo proyecto -->
+      <Dialog class="p-dialog" v-model:visible="visible" :closeOnOutsideClick="true">
+        <div style="padding: 2rem">
+          <h2 class="p-dialog-title block font-semibold mb-5">Add your project</h2>
+          <span class="p-text-secondary block mb-5">Add your project info.</span>
 
-            <div class="flex align-items-center gap-3 mb-2">
-              <label for="name" class="font-semibold w-6rem">Name</label>
-              <InputText id="name" class="flex-auto" autocomplete="off" v-model="newProject.title" />
-
-            </div>
-
-            <div class="flex align-items-center gap-3 mb-2">
-              <label for="image" class="font-semibold w-6rem">Image</label>
-              <InputText id="image" class="flex-auto" autocomplete="off" v-model="newProject.image" />
-            </div>
-
-
-            <div class="flex justify-content-end gap-2">
-              <Button label="Add" @click="addProject" style="background-color: #02513D " />
-            </div>
+          <!-- Campos para ingresar información del nuevo proyecto -->
+          <div class="flex align-items-center gap-3 mb-2">
+            <label for="name" class="font-semibold w-6rem">Name</label>
+            <InputText id="name" class="flex-auto" autocomplete="off" v-model="newProject.name" />
           </div>
 
-        </Dialog>
-      </div>
+          <div class="flex align-items-center gap-3 mb-2">
+            <label for="image" class="font-semibold w-6rem">Image</label>
+            <InputText id="image" class="flex-auto" autocomplete="off" v-model="newProject.image" />
+          </div>
+
+          <div class="flex align-items-center gap-3 mb-2">
+            <label for="description" class="font-semibold w-6rem">Description</label>
+            <textarea id="description" class="flex-auto" autocomplete="off" v-model="newProject.description" rows="4" cols="50" name="description-area">descripcion...</textarea>
+          </div>
+
+          <!-- Botón para agregar el nuevo proyecto -->
+          <div class="flex justify-content-end gap-2">
+            <Button label="Add" @click="addProject" style="background-color: #02513D;" />
+          </div>
+        </div>
+      </Dialog>
     </div>
   </section>
 </template>
 
+
+
 <script setup>
-import {ref} from "vue";
+import { ref, onMounted } from 'vue';
+import  Button  from 'primevue/button';
+import  Dialog  from 'primevue/dialog';
+import  InputText  from 'primevue/inputtext';
+import CardsComponent from '@/components/projects/components/card.component.vue';
+import {ProjectsEntity} from "@/components/projects/models/projects.entity.js";
+
+// Variables reactivas
 const visible = ref(false);
-
-</script>
-
-<script>
-import {ref} from "vue";
-import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
-import InputText from 'primevue/inputtext';
-import ProjectCard from './card.component.vue'; // Importa el componente de tarjeta individual
+const projects = ref([]);
+const newProject = ref({ProjectsEntity});
 
 
-export default {
-
-  name: 'ProjectCards.component',
-
-  components: {
-    ProjectCard,
-    Button,
-    Dialog,
-    InputText,
-  },
-  data() {
-    return {
-      projects: [], // Arreglo para almacenar los datos de los proyectos
-      newProject: { title: '', image: '' , id: ''}, // Objeto para almacenar los datos del nuevo proyecto
-    };
-  },
-  methods: {
-
-    getProjects(){
-      fetch("http://localhost:3000/projects")
-          .then(response => response.json())
-          .then(data => this.projects = data)
-          .catch(error => {
-            console.error('Error al obtener datos de la API:', error);
-          });
-    },
-
-    addProject() {
-      // Validar que el título y la imagen del nuevo proyecto no estén vacíos
-      if (!this.newProject.title || !this.newProject.image) {
-        alert('Por favor, ingrese el título y la URL de la imagen para el nuevo proyecto.');
-        return;
-      }
-      // Agregar el nuevo proyecto al arreglo de proyectos
-      this.projects.push({ name: this.newProject.title, image: this.newProject.image });
-      // Limpiar los campos del formulario
-      this.newProject.title = '';
-      this.newProject.image = '';
-      this.newProject.id = this.projects.length + 1;
-      console.log(this.newProject);
-
-      visible.value = false;
-      // Cerrar el diálogo
-    }
-  },
-  mounted() {
-    this.getProjects();
-  },
+// Método para obtener proyectos
+const getProjects = () => {
+  fetch('http://localhost:3000/projects')
+      .then(response => response.json())
+      .then(data => {
+        projects.value = data;
+      })
+      .catch(error => {
+        console.error('Error al obtener datos de la API:', error);
+      });
 };
+
+// Método para mostrar el diálogo de agregar proyecto
+const showAddProjectDialog = () => {
+  visible.value = true;
+};
+
+// Método para agregar un nuevo proyecto
+const addProject = () => {
+  if (!newProject.value.name || !newProject.value.image || !newProject.value.description) {
+    alert('Por favor, ingrese el título, la descripción y la URL de la imagen para el nuevo proyecto.');
+    return;
+  }
+
+  // Crear un objeto con los datos del nuevo proyecto
+  const projectData = {
+    id: String(projects.value.length + 1), // Suponiendo que la API no devuelve un ID para el nuevo proyecto
+    name: newProject.value.name,
+    image: newProject.value.image,
+    description: newProject.value.description,
+    tasks: [], // Puedes inicializar con un array vacío si es necesario
+    members: [] // Puedes inicializar con un array vacío si es necesario
+  };
+
+  // Enviar una solicitud POST para agregar el nuevo proyecto a la API
+  fetch('http://localhost:3000/projects', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(projectData)
+  })
+      .then(response => response.json())
+      .then(data => {
+        // Una vez que el proyecto se haya guardado en la API, actualizamos la lista de proyectos
+        // Agregamos el nuevo proyecto a la lista local 'projects' con el ID generado por la API
+        projects.value.push({
+          id: data.id, // Suponiendo que la API devuelve un ID para el nuevo proyecto
+          name: data.name,
+          image: data.image,
+          description: data.description,
+          tasks: data.tasks, // Puedes inicializar con un array vacío si es necesario
+          members: data.members // Puedes inicializar con un array vacío si es necesario
+        });
+        console.log('Nuevo proyecto agregado:', data);
+        console.log(data);
+        // Limpiamos los campos del nuevo proyecto después de guardarlo
+        newProject.value.name = '';
+        newProject.value.image = '';
+        newProject.value.description = '';
+
+        // Cerramos el diálogo de agregar proyecto
+        visible.value = false;
+      })
+      .catch(error => {
+        console.error('Error al agregar el proyecto:', error);
+        alert('Hubo un error al agregar el proyecto. Por favor, revisa la consola para más detalles.');
+      });
+};
+
+// Obtener proyectos al montar el componente
+onMounted(() => {
+  getProjects();
+});
 </script>
 
 <style scoped>
@@ -120,6 +148,7 @@ export default {
   width: 20%;
   margin: 1rem;
 }
+
 .addBut {
   border-radius: 14px;
   width: 100%;
@@ -127,7 +156,7 @@ export default {
   object-fit: cover;
   background-color: rgba(2, 81, 61, 0.4);
   color: #02513D;
-  font-size: 600%;
+  font-size: 6vh;
   font-weight: lighter;
 }
 
@@ -135,27 +164,27 @@ export default {
   .project-cards {
     flex-direction: column-reverse;
   }
-  .add-project
-  {
-    width:90%
+
+  .add-project {
+    width: 90%;
   }
-  .p-dialog{
+
+  .p-dialog {
     width: 90%;
   }
 }
 
-.title{
-  font-family: 'Lora',serif;
+.title {
+  font-family: 'Lora', serif;
   font-size: 6vh;
   color: #02513D;
   font-weight: unset;
 }
 
-.subtitle{
-  font-family: 'Lora',serif;
+.subtitle {
+  font-family: 'Lora', serif;
   font-size: 2vh;
   color: #02513D;
   font-weight: bold;
 }
-
 </style>
