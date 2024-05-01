@@ -44,7 +44,7 @@ export default {
 
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
-    <h1 class="title">{{project.title}}</h1>
+    <h1 class="title">{{project.name}}</h1>
     <br>
     <h3 class="subtitle">Tasks</h3>
 
