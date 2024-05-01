@@ -1,85 +1,61 @@
-
 <template>
-
-
   <div class="project-card">
     <Button class="img-but" @click="openTodo()">
-      <img :src="this.image" alt="Project Image" class="project-image" /> <!-- Aqui pones para redireccion -->
+      <img :src="image" alt="Project Image" class="project-image" />
     </Button>
-    <div class="project-name">{{ this.name }}</div>
+    <div class="project-name">{{ name }}</div>
   </div>
-
-
-
-
-
 </template>
 
 <script>
+import { defineComponent } from 'vue';
 import Button from 'primevue/button';
 
-
-export default {
+export default defineComponent({
+  name: 'CardsComponent',
   props: {
     name: {
       type: String,
       required: true,
-    },image: {
+    },
+    image: {
       type: String,
       required: false,
-    },id:{
+    },
+    id: {
       type: String,
       required: true,
-    }
+    },
   },
   components: {
-
     Button,
   },
   methods: {
-
     openTodo() {
-
       const encodedId = this.id;
       console.log(encodedId);
       this.$router.push({
-        name: 'projectTodo',  // Usamos el nombre de la ruta
+        name: 'projectTodo',
         params: {
-          id: encodedId  // Pasamos el valor de `this.name` como parámetro `id`
-        }
+          id: encodedId,
+        },
       });
     },
-
   },
-
-
-};
-
-
-
+});
 </script>
 
 <style scoped>
-/* Estilos específicos para el componente ProjectCards */
-
-.img-but{
-  width:100%;
-  height:100%;
-  border-radius: 14px;
-
-}
-
 .project-card {
-
   width: 20%;
   height: 100%;
   margin: 1rem;
 }
 
 .project-card img {
-  width: 100%; /* O el ancho que desees */
-  height: 12rem; /* O la altura que desees */
-  object-fit: cover; /* Ajusta la imagen dentro de la caja sin distorsionarla */
+  width: 100%;
+  height: 12rem;
+  object-fit: cover;
 }
 
 .project-name {
