@@ -1,7 +1,7 @@
 {
   "projects": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Clean Carpayo Beach",
       "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRlwAa3FhsapzrIDW2IyMtMjR0VTgOmKkEXw6_N60MahSJE_N9Y",
       "description": "Cleaning Clean Carpayo Beach is a project that aims to clean the beach of Carpayo, located in the district of San Juan de Lurigancho. The project is carried out by a group of volunteers who are committed to the environment and the cleanliness of the beaches.",
@@ -102,7 +102,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Clean Carpayo Beach2",
       "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRlwAa3FhsapzrIDW2IyMtMjR0VTgOmKkEXw6_N60MahSJE_N9Y",
       "description": "Cleaning Clean Carpayo Beach is a project that aims to clean the beach of Carpayo, located in the district of San Juan de Lurigancho. The project is carried out by a group of volunteers who are committed to the environment and the cleanliness of the beaches.",
@@ -168,7 +168,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Clean Carpayo Beach3",
       "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRlwAa3FhsapzrIDW2IyMtMjR0VTgOmKkEXw6_N60MahSJE_N9Y",
       "description": "Cleaning Clean Carpayo Beach is a project that aims to clean the beach of Carpayo, located in the district of San Juan de Lurigancho. The project is carried out by a group of volunteers who are committed to the environment and the cleanliness of the beaches.",
@@ -232,6 +232,14 @@
           "image": "https://example.com/avatar3.jpg"
         }
       ]
+    },
+    {
+      "id": "7",
+      "name": "12",
+      "image": "12",
+      "description": "12",
+      "tasks": [],
+      "members": []
     }
   ]
 }
