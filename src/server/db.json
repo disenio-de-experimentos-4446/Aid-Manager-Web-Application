@@ -1,3 +1,28 @@
 {
-
+  "projects": [
+    {
+      "id": 1,
+      "name": "Clean Carpayo Beach",
+      "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRlwAa3FhsapzrIDW2IyMtMjR0VTgOmKkEXw6_N60MahSJE_N9Y",
+      "description": "Cleaning Clean Carpayo Beach is a project that aims to clean the beach of Carpayo, located in the district of San Juan de Lurigancho. The project is carried out by a group of volunteers who are committed to the environment and the cleanliness of the beaches.",
+      "tasks": [
+        {
+          "id": 1,
+          "title": "Tarea 1",
+          "assigned": "personaX",
+          "due": "7/10/2018 00:00",
+          "status": "done"
+        }
+      ],
+      "members": [
+        {
+          "id": 1,
+          "name": "personaX",
+          "email": "isiyisi@yisi.com",
+          "role": "Project Leader",
+          "image": "https://static.wikia.nocookie.net/breakingbad/images/5/52/BB_S5A_Jesse_Pinkman.png/revision/latest?cb=20221026171345&path-prefix=es"
+        }
+      ]
+    }
+  ]
 }
