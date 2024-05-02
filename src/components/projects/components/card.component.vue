@@ -50,16 +50,24 @@ export default defineComponent({
   width: 20%;
   height: 100%;
   margin: 1rem;
+  object-fit: cover;
+
 }
 
 .project-card img {
   width: 100%;
   height: 12rem;
-  object-fit: cover;
+  resize: both;
 }
 
 .project-name {
   text-align: left;
   margin-top: 0.5rem;
 }
+
+.img-but{
+  width:100%;
+  object-fit:cover
+}
+
 </style>
