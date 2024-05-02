@@ -82,48 +82,6 @@
           "assigned": "EseYesi",
           "due": "872jks",
           "status": "To-Do"
-        },
-        {
-          "id": 12,
-          "title": "Iiiisineko",
-          "assigned": "lakagada 69",
-          "due": "Aun no hago validacion",
-          "status": "To-Do"
-        },
-        {
-          "id": 13,
-          "title": "Nose",
-          "assigned": "Jesi",
-          "due": "2024-05-14T05:00:00.000Z",
-          "status": "To-Do"
-        },
-        {
-          "id": 14,
-          "title": "isineko",
-          "assigned": "sex",
-          "due": "2024-05-20T05:00:00.000Z",
-          "status": "To-Do"
-        },
-        {
-          "id": 15,
-          "title": "Sex",
-          "assigned": "nau",
-          "due": "2024-05-16T05:00:00.000Z",
-          "status": "To-Do"
-        },
-        {
-          "id": 16,
-          "title": "ada",
-          "assigned": "asda",
-          "due": "2024-05-08T05:00:00.000Z",
-          "status": "To-Do"
-        },
-        {
-          "id": 17,
-          "title": "Hola",
-          "assigned": "Qe",
-          "due": "2024-05-15T05:00:00.000Z",
-          "status": "Doing"
         }
       ],
       "members": [
@@ -270,20 +228,6 @@
           "assigned": "sdf",
           "due": "2024-05-21T05:00:00.000Z",
           "status": "Doing"
-        },
-        {
-          "id": 8,
-          "title": "asa",
-          "assigned": "asa",
-          "due": "2024-05-22",
-          "status": "To-Do"
-        },
-        {
-          "id": 9,
-          "title": "Isineko",
-          "assigned": "ayuden a hacer crud p tmr",
-          "due": "2024-05-14",
-          "status": "To-Do"
         }
       ],
       "members": [
