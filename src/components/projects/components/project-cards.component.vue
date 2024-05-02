@@ -3,7 +3,7 @@
     <h1 class="title">Projects</h1>
     <br>
     <h3 class="subtitle">Current Projects</h3>
-
+<div class="all">
     <div class="project-cards">
       <!-- Mostrar proyectos con el componente CardsComponent -->
       <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image" :id="project.id" />
@@ -14,7 +14,7 @@
       </div>
 
       <!-- Diálogo para agregar un nuevo proyecto -->
-      <Dialog class="p-dialog" v-model:visible="visible" :closeOnOutsideClick="true">
+      <Dialog modal="true" class="p-dialog" v-model:visible="visible">
         <div style="padding: 2rem">
           <h2 class="p-dialog-title block font-semibold mb-5">Add your project</h2>
           <span class="p-text-secondary block mb-5">Add your project info.</span>
@@ -37,11 +37,12 @@
 
           <!-- Botón para agregar el nuevo proyecto -->
           <div class="flex justify-content-end gap-2">
-            <Button label="Add" @click="addProject" style="background-color: #02513D;" />
+            <Button label="Add" @click="createProject" style="background-color: #02513D;" />
           </div>
         </div>
       </Dialog>
     </div>
+</div>
   </section>
 </template>
 
@@ -54,7 +55,8 @@ import  Dialog  from 'primevue/dialog';
 import  InputText  from 'primevue/inputtext';
 import CardsComponent from '@/components/projects/components/card.component.vue';
 import {ProjectsEntity} from "@/components/projects/models/projects.entity.js";
-
+import {fetchProjects} from "@/components/projects/components/services/projects-api.services.js";
+import {addProject} from "@/components/projects/components/services/projects-api.services.js";
 // Variables reactivas
 const visible = ref(false);
 const projects = ref([]);
@@ -63,8 +65,7 @@ const newProject = ref({ProjectsEntity});
 
 // Método para obtener proyectos
 const getProjects = () => {
-  fetch('http://localhost:3000/projects')
-      .then(response => response.json())
+      fetchProjects()
       .then(data => {
         projects.value = data;
       })
@@ -79,56 +80,48 @@ const showAddProjectDialog = () => {
 };
 
 // Método para agregar un nuevo proyecto
-const addProject = () => {
+const createProject = async () => {
   if (!newProject.value.name || !newProject.value.image || !newProject.value.description) {
     alert('Por favor, ingrese el título, la descripción y la URL de la imagen para el nuevo proyecto.');
     return;
   }
 
-  // Crear un objeto con los datos del nuevo proyecto
-  const projectData = {
-    id: String(projects.value.length + 1), // Suponiendo que la API no devuelve un ID para el nuevo proyecto
-    name: newProject.value.name,
-    image: newProject.value.image,
-    description: newProject.value.description,
-    tasks: [], // Puedes inicializar con un array vacío si es necesario
-    members: [] // Puedes inicializar con un array vacío si es necesario
-  };
+  try {
+    const projectData = {
+      id: String(projects.value.length + 1), // Puedes generar un ID único aquí
+      name: newProject.value.name,
+      image: newProject.value.image,
+      description: newProject.value.description,
+      tasks: [], // Puedes inicializar con un array vacío si es necesario
+      members: [] // Puedes inicializar con un array vacío si es necesario
+    };
 
-  // Enviar una solicitud POST para agregar el nuevo proyecto a la API
-  fetch('http://localhost:3000/projects', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(projectData)
-  })
-      .then(response => response.json())
-      .then(data => {
-        // Una vez que el proyecto se haya guardado en la API, actualizamos la lista de proyectos
-        // Agregamos el nuevo proyecto a la lista local 'projects' con el ID generado por la API
-        projects.value.push({
-          id: data.id, // Suponiendo que la API devuelve un ID para el nuevo proyecto
-          name: data.name,
-          image: data.image,
-          description: data.description,
-          tasks: data.tasks, // Puedes inicializar con un array vacío si es necesario
-          members: data.members // Puedes inicializar con un array vacío si es necesario
-        });
-        console.log('Nuevo proyecto agregado:', data);
-        console.log(data);
-        // Limpiamos los campos del nuevo proyecto después de guardarlo
-        newProject.value.name = '';
-        newProject.value.image = '';
-        newProject.value.description = '';
 
-        // Cerramos el diálogo de agregar proyecto
-        visible.value = false;
-      })
-      .catch(error => {
-        console.error('Error al agregar el proyecto:', error);
-        alert('Hubo un error al agregar el proyecto. Por favor, revisa la consola para más detalles.');
-      });
+    const addedProject = await addProject(projectData); // Llama a la función del servicio
+
+    // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
+    projects.value.push({
+      id: addedProject.id,
+      name: addedProject.name,
+      image: addedProject.image,
+      description: addedProject.description,
+      tasks: addedProject.tasks || [], // Puedes inicializar con un array vacío si es necesario
+      members: addedProject.members || [] // Puedes inicializar con un array vacío si es necesario
+    });
+
+    console.log('Nuevo proyecto agregado:', addedProject);
+
+    // Limpiar los campos del nuevo proyecto después de guardarlo
+    newProject.value.name = '';
+    newProject.value.image = '';
+    newProject.value.description = '';
+
+    // Cerrar el diálogo de agregar proyecto
+    visible.value = false;
+  } catch (error) {
+    console.error('Error al agregar el proyecto:', error);
+    alert('Hubo un error al agregar el proyecto. Por favor, revisa la consola para más detalles.');
+  }
 };
 
 // Obtener proyectos al montar el componente
@@ -142,6 +135,8 @@ onMounted(() => {
 .project-cards {
   display: flex;
   flex-wrap: wrap;
+  height:30%;
+  gap: 2rem;
 }
 
 .add-project {
@@ -159,6 +154,14 @@ onMounted(() => {
   font-size: 6vh;
   font-weight: lighter;
 }
+
+.all{
+  overflow-y: scroll;
+  height: 100%;
+
+}
+
+
 
 @media (max-width: 768px) {
   .project-cards {
