@@ -66,21 +66,25 @@ export default {
 <template>
   <div class="team__content relative">
     <div class="team__content-banner flex justify-content-center align-items-center" role="heading">
-      <h1 aria-label="title" class="font-italic team__content-title">Yesi's Hotman Team</h1>
+      <h1 aria-label="title" class="font-italic team__content-title text-6xl md:text-7xl xl:text-8xl">Yesi's Hotman Team</h1>
     </div>
 
     <div class="container-cards">
 
-      <div class="card__wrapper flex justify-content-between" v-for="m in members">
-        <div class="card__content-user flex justify-content-center align-items-center gap-5">
+      <div class="card__wrapper flex flex-wrap justify-content-between" v-for="m in members">
+        <div class="card__content-user flex justify-content-center align-items-center gap-2 lg:gap-5">
           <img :src="m.image" alt="User Avatar" role="img" width="50px" class="border-circle">
-          <span class="text-2xl">{{m.name}}</span>
+          <span class="text-lg lg:text-xl">{{m.name}}</span>
         </div>
 
-        <div class="card__content-info flex justify-content-center align-items-center gap-3">
-          <p class="card__info-email">{{m.email}}</p>
-          <UserIcon class="card__info-icon cursor-pointer transition-ease-in-out" @click="togglePopUp(m.id, 'contact')"/>
-          <MessageIcon class="card__info-icon cursor-pointer transition-ease-in-out" @click="togglePopUp(m.id, 'message')"/>
+        <div class="card__content-info flex flex-wrap justify-content-start lg:justify-content-center align-items-center gap-4 lg:gap-4">
+          <p class="card__info-email text-lg lg:text-xl">{{m.email}}</p>
+          <UserIcon
+              class="card__info-icon cursor-pointer transition-ease-in-out"
+              @click="togglePopUp(m.id, 'contact')"/>
+          <MessageIcon
+              class="card__info-icon cursor-pointer transition-ease-in-out"
+              @click="togglePopUp(m.id, 'message')"/>
         </div>
       </div>
 
@@ -126,33 +130,28 @@ export default {
 .team__content {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px);
+  height: 100%;
   font-family: 'Poppins', sans-serif;
 }
 
 .container-cards {
-  margin: 2rem 6rem;
-  overflow-y: scroll;
-  height: 250px;
   flex: 1;
 }
 
 .card__wrapper {
-  margin: 2rem 0;
+  margin: 2rem 0 0 0;
 }
 
 .team__content-banner {
   background-color: #98CFD7;
   padding: 6.5rem 0;
   border-radius: 1rem;
-  margin: 2rem;
 }
 
 .team__content-title {
   font-family: "Qwitcher Grypen", cursive;
-  font-size: 6vw;
   color: #fff;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 .card__content-user, .card__content-info {
@@ -162,7 +161,6 @@ export default {
 
 .card__info-email {
   color: #74A38F;
-  font-size: 1.2rem;
 }
 
 .card__info-icon:hover {
