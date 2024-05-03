@@ -7,10 +7,22 @@
       "progress": "33,33% complete",
       "cost": "35% under budget"}]
     },
-    { "id":"2", "title": "Progress", "values": [{
+    { "id":"2", "title": "Tasks", "values": [{
       "to-do": 200,
-      "in-progress": 300,
+      "in-progress": 100,
       "done": 400}]
+    },
+    { "id":"3", "title": "Progress-line", "values": [{
+      "current": [28,48,20,119,86,27,90,28,48,20,119,86],
+      "expected": [65,59,80,81,56,57,40,65,59,80,81,59]}]
+    },
+    { "id":"4", "title": "Payments", "values": [{
+      "current": [28, 48, 40],
+      "expected": [65, 59, 80]}]
+    },
+    { "id":"5", "title": "Progress-bar", "values": [{
+      "current": [28, 48, 40],
+      "expected": [65, 59, 80]}]
     }
   ]
 }
