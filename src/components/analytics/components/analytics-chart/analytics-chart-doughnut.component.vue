@@ -1,13 +1,21 @@
 <script>
+import {AnalyticsService} from "@/services/analytics.service.js";
+import {analytic} from "@/models/analytic.entity.js";
 export default {
   name: 'analytics-chart-doughnut',
   data() {
     return {
       chartData: null,
+      analytics: analytic,
+      AnalyticsApiService: new AnalyticsService(),
       chartOptions: {
         cutout: '60%'
       }
     };
+  },
+  async created() {
+    const response = await this.AnalyticsApiService.getAnalytic();
+    this.analytics = response.data;
   },
   mounted() {
     this.chartData = this.setChartData();
@@ -50,9 +58,8 @@ export default {
 </script>
 
 <template>
-  <div class=" justify-content-center " style="margin-left:60px">
-    <pv-chart type="doughnut" :data="chartData" :options="chartOptions" class="w-full md:w-13rem" />
-  </div>
+    <pv-chart type="doughnut" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" />
+
 </template>
 
 <style scoped>

@@ -3,9 +3,21 @@ import AnalyticsChartVerticalBar from "@/components/analytics/components/analyti
 import AnalyticsChartLine from "@/components/analytics/components/analytics-chart/analytics-chart-line.component.vue";
 import AnalyticsChartHorizontalBar from "@/components/analytics/components/analytics-chart/analytics-chart-horizontal-bar.component.vue";
 import AnalyticsChartDoughnut from "@/components/analytics/components/analytics-chart/analytics-chart-doughnut.component.vue";
+import {analytic} from "@/models/analytic.entity.js";
+import {AnalyticsService} from "@/services/analytics.service.js";
 export default {
   name: "analytics-card-projects",
-  components: {AnalyticsChartVerticalBar, AnalyticsChartLine, AnalyticsChartHorizontalBar, AnalyticsChartDoughnut}
+  components: {AnalyticsChartVerticalBar, AnalyticsChartLine, AnalyticsChartHorizontalBar, AnalyticsChartDoughnut},
+  data() {
+    return {
+      analytics: analytic,
+      AnalyticsApiService: new AnalyticsService()
+    }
+  },
+  async created() {
+    const response = await this.AnalyticsApiService.getAnalytic();
+    this.analytics = response.data;
+  }
 }
 </script>
 <template>
@@ -19,18 +31,18 @@ export default {
       <template #content>
         <div class="flex">
           <div class="paragraph">
-            <p>Time</p>
-            <p>Tasks</p>
-            <p>Workload</p>
-            <p>Progress</p>
-            <p>Cost</p>
+            <p class="line">Time</p>
+            <p class="line">Tasks</p>
+            <p class="line">Workload</p>
+            <p class="line">Progress</p>
+            <p class="line">Cost</p>
           </div>
-          <div >
-            <p>prueba</p>
-            <p>prueba</p>
-            <p>prueba</p>
-            <p>prueba</p>
-            <p>prueba</p>
+          <div v-for="(an, index) in analytics" :key="index">
+            <p class="line">{{an.values[0].time}}</p>
+            <p class="line">{{an.values[0].tasks}}</p>
+            <p class="line">{{an.values[0].workload}}</p>
+            <p class="line">{{an.values[0].progress}}</p>
+            <p class="line">{{an.values[0].cost}}</p>
           </div>
         </div>
       </template>
@@ -105,11 +117,15 @@ export default {
   padding-bottom:10px;
 }
 .paragraph{
-  margin-right: 10rem;
-  padding-left:30px;
+  margin-right: 6rem;
+  padding-left:40px;
 }
 .icon{
   padding-top: 5.5rem;
   padding-left: 11rem;
+}
+.line{
+ margin-bottom: 1rem;
+
 }
 </style>
