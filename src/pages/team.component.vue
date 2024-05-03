@@ -11,6 +11,8 @@ export default {
   },
   data() {
     return {
+      popUp: false,
+      userSelected: null,
       members: [],
       teamMemberService: new TeamMembersService()
     }
@@ -32,13 +34,20 @@ export default {
           this.members.push(new TeamMemberEntity(m));
         })
       }
+    },
+    togglePopUp: function(id) {
+      console.log(id);
+      this.popUp = !this.popUp;
+      this.userSelected = this.members.find(m => m.id === id);
+      console.log(this.popUp)
+      console.log(this.userSelected)
     }
   }
 }
 </script>
 
 <template>
-  <div class="team__content">
+  <div class="team__content relative">
     <div class="team__content-banner flex justify-content-center align-items-center" role="heading">
       <h1 aria-label="title" class="font-italic team__content-title">Yesi's Hotman Team</h1>
     </div>
@@ -53,14 +62,32 @@ export default {
 
         <div class="card__content-info flex justify-content-center align-items-center gap-3">
           <p class="card__info-email">{{m.email}}</p>
-          <UserIcon class="card__info-icon cursor-pointer transition-ease-in-out"/>
-          <MessageIcon class="card__info-icon cursor-pointer transition-ease-in-out"/>
+          <UserIcon class="card__info-icon cursor-pointer transition-ease-in-out" @click="togglePopUp(m.id)"/>
+          <MessageIcon class="card__info-icon cursor-pointer transition-ease-in-out" @click="togglePopUp(m.id)"/>
         </div>
       </div>
 
     </div>
 
+    <div class="popup absolute top-50 left-50" v-if="popUp">
+
+      <div class="popup__content bg-white shadow-1 border-round-2xl flex flex-column justify-content-center align-items-center p-6 relative" role="contentinfo">
+        <i class="fa-solid fa-xmark absolute" @click="togglePopUp(userSelected.id)"></i>
+
+        <div class="popup__content-img">
+          <img :src="userSelected.image" alt="Photo Profile User" role="img" width="210px"/>
+        </div>
+
+        <h2 class="popup__content-title" aria-label="title">{{userSelected.name}}</h2>
+        <div aria-roledescription="content" class="popup__content-description">
+          <span class="popup__member-email" aria-label="email">{{userSelected.email}}</span>
+          <p class="popup__member-description" aria-label="description">{{userSelected.description}}</p>
+        </div>
+
+      </div>
+    </div>
   </div>
+
 </template>
 
 <style scoped>
@@ -109,6 +136,43 @@ export default {
 
 .card__info-icon:hover {
   opacity: 0.8;
+}
+
+
+.popup {
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  text-align: center;
+}
+
+.popup__content {
+  max-width: 50%;
+}
+
+.popup__content i {
+  font-size: 2.5rem;
+  cursor: pointer;
+  top: 5%;
+  right: 5%;
+}
+
+.popup__member-description {
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 730px) {
+  .popup__content-img img {
+    width: 150px;
+  }
+
+  .popup__content i {
+    top: 0;
+  }
 }
 
 </style>
