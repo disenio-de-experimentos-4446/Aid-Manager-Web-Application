@@ -108,6 +108,12 @@ export default {
   background-color: #E6F4E2;
   margin-right: 1rem;
 }
+@media (max-width: 767px) {
+  .flex {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
 .flex{
   display: flex;
 }
