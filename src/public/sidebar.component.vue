@@ -126,7 +126,7 @@ li:not(.active):hover {
 
 aside {
   position: fixed;
-  margin-top: 113px;
+  margin-top: 0px;
   bottom: 0;
   top: 0;
   width: 300px;
