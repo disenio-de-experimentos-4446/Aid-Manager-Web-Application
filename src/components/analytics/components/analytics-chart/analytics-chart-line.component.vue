@@ -1,13 +1,20 @@
 <script>
+import {analytic} from "@/models/analytic.entity.js";
+import {AnalyticsService} from "@/services/analytics.service.js";
+
 export default {
   name: 'analytics-chart-line',
   data() {
     return {
       chartData: null,
-      chartOptions: null
+      chartOptions: null,
+      analytics: analytic,
+      AnalyticsApiService: new AnalyticsService()
     };
   },
-  mounted() {
+  async created() {
+    const response = await this.AnalyticsApiService.getAnalytic();
+    this.analytics = response.data;
     this.chartData = this.setChartData();
     this.chartOptions = this.setChartOptions();
   },
@@ -15,12 +22,17 @@ export default {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
 
+      const lineAnalytics = this.analytics.find(analytic => analytic.title === 'Progress-line');
+
+      const currentData =  lineAnalytics.values[0]['current'];
+      const expectedData =  lineAnalytics.values[0]['expected'];
+
       return {
-        labels: ['lorem', 'lorem'],
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'september','October', 'November','december'],
         datasets: [
           {
             label: 'Current',
-            data: [28, 48, 40, 19, 86, 27, 90],
+            data: currentData,
             fill: false,
             backgroundColor: documentStyle.getPropertyValue('--green-300'),
             borderColor: documentStyle.getPropertyValue('--green-300'),
@@ -28,7 +40,7 @@ export default {
           },
           {
             label: 'Expected',
-            data: [65, 59, 80, 81, 56, 55, 40],
+            data: expectedData,
             fill: false,
             backgroundColor: documentStyle.getPropertyValue('--green-500'),
             borderColor: documentStyle.getPropertyValue('--green-500'),
