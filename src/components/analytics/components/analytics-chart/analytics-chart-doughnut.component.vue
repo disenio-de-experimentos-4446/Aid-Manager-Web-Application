@@ -16,20 +16,24 @@ export default {
   async created() {
     const response = await this.AnalyticsApiService.getAnalytic();
     this.analytics = response.data;
-  },
-  mounted() {
     this.chartData = this.setChartData();
     this.chartOptions = this.setChartOptions();
   },
+
   methods: {
     setChartData() {
       const documentStyle = getComputedStyle(document.body);
+      // Find the correct analytics object
+      const progressAnalytics = this.analytics.find(analytic => analytic.title === 'Progress');
+
+      // If the analytics object is found, use its values, otherwise use default values
+      const data = [progressAnalytics.values[0]['to-do'], progressAnalytics.values[0]['in-progress'], progressAnalytics.values[0]['done']] ;
 
       return {
         labels: ['To-Do', 'In Progress', 'Done'],
         datasets: [
           {
-            data: [540, 325, 702],
+            data: data,
             backgroundColor: [documentStyle.getPropertyValue('--teal-200'), documentStyle.getPropertyValue('--green-200'), documentStyle.getPropertyValue('--green-500')],
             hoverBackgroundColor: [documentStyle.getPropertyValue('--teal-200'), documentStyle.getPropertyValue('--green-200'), documentStyle.getPropertyValue('--green-500')]
           }
