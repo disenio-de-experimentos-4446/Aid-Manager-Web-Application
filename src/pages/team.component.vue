@@ -72,7 +72,7 @@ export default {
     <div class="container-cards">
 
       <div class="card__wrapper flex flex-wrap justify-content-between" v-for="m in members">
-        <div class="card__content-user flex justify-content-center align-items-center gap-2 lg:gap-5">
+        <div class="card__content-user flex justify-content-center align-items-center gap-3 lg:gap-5">
           <img :src="m.image" alt="User Avatar" role="img" width="50px" class="border-circle">
           <span class="text-lg lg:text-xl">{{m.name}}</span>
         </div>
