@@ -1,3 +1,45 @@
 {
-
+  "team-members": [
+    {
+      "image": "https://avatars.githubusercontent.com/u/129230632?v=4",
+      "name": "Blanqui Tita",
+      "email": "blanquita@hotmans.com"
+    },
+    {
+      "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/Manuel.jpg",
+      "name": "Rosa Dita",
+      "email": "rosadita@hotmans.com"
+    },
+    {
+      "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/arigeimpleis.jpg",
+      "name": "Arigeimpleis",
+      "email": "arigeimpleis@hotmans.com"
+    },
+    {
+      "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/nekolas-profile.png",
+      "name": "Nicola Hotman",
+      "email": "nicola@hotmans.com"
+    },
+    {
+      "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/pelufoto.png",
+      "name": "Oala Yesi",
+      "email": "oalayesi@hotmans.com"
+    }
+  ],
+  "events": [
+    {
+      "name": "Event 1",
+      "date": "2024-04-01",
+      "location": "Location 1",
+      "description": "Description 1",
+      "color": "#74A38F"
+    },
+    {
+      "name": "Event 2",
+      "date": "2024-04-16",
+      "location": "Location 2",
+      "description": "Description 2",
+      "color": "#98CFD7"
+    }
+  ]
 }
