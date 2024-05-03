@@ -1,3 +1,16 @@
 {
-
+  "analytics": [
+    { "id":"1", "title": "Currents Stats", "values": [{
+      "time": "13% ahead of schedule",
+      "tasks": "6 tasks to be completed",
+      "workload": "0 tasks overdue",
+      "progress": "33,33% complete",
+      "cost": "35% under budget"}]
+    },
+    { "id":"2", "title": "Progress", "values": [{
+      "to-do": 200,
+      "in-progress": 300,
+      "done": 400}]
+    }
+  ]
 }
