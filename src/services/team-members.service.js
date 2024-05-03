@@ -16,6 +16,16 @@ class TeamMembersService {
         }
         return response;
     }
+
+    async newMessage(id_user, message) {
+        let response = null
+        try {
+            response = await axios.post(`${this.baseUrl}/messages/${id_user}`, message);
+        }catch(e) {
+            console.error('Error to send the message', e);
+        }
+        return response;
+    }
 }
 
 export default TeamMembersService;

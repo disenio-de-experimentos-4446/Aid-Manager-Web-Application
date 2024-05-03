@@ -52,5 +52,21 @@
       "description": "Description 2",
       "color": "#98CFD7"
     }
-  ]
+  ],
+  "messages": {
+    "1": [
+      {
+        "id": "1",
+        "date": "2024-04-01",
+        "message": "Message 1",
+        "sender": "Blanqui Tita"
+      },
+      {
+        "id": "2",
+        "date": "2024-04-01",
+        "message": "Message 2",
+        "sender": "Rosa Dita"
+      }
+    ]
+  }
 }

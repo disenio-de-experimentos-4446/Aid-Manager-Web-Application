@@ -15,6 +15,7 @@ export default {
       popUpDetail: "",
       userSelected: null,
       members: [],
+      message: "",
       teamMemberService: new TeamMembersService()
     }
   },
@@ -43,6 +44,20 @@ export default {
       this.userSelected = this.members.find(m => m.id === id);
       console.log(this.popUp)
       console.log(this.userSelected)
+    },
+    sendMessage: async function() {
+      const body = {
+        id: "2",
+        date: new Date().getUTCDate(),
+        message: this.message,
+        sender: this.userSelected.name
+      }
+      const result = await this.teamMemberService.newMessage(this.userSelected.id, body)
+      if(!result) {
+        console.error("Failed to send message")
+      }else {
+        console.log("Message sent")
+      }
     }
   }
 }
@@ -93,9 +108,9 @@ export default {
           <p class="popup__member-email" aria-label="email">{{userSelected.email}}</p>
 
           <div class="popup__member-description" aria-label="description">
-            <textarea class="border-round-2xl w-full h-40" placeholder="Can you leave your message here..."></textarea>
+            <textarea class="border-round-2xl w-full h-40" placeholder="Can you leave your message here..." v-model="message"></textarea>
           </div>
-          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer">Send</div>
+          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer" @click="sendMessage()">Send</div>
 
         </div>
 
