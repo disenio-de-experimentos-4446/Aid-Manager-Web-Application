@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar">
+  <div class="calendar relative">
     <h1 aria-label="title">Calendar</h1>
     <div class="calendar__days-week" role="heading">
       <span aria-label="title">SUN</span>
@@ -35,6 +35,19 @@
 
       </div>
     </div>
+
+    <div class="popup absolute flex justify-content-center align-items-center" v-if="showPopUp">
+      <div class="popup__content relative border-round-2xl">
+        <i class="fa-solid fa-xmark absolute top-0 right-0 p-3" @click="togglePopUp()"></i>
+        <h2>Events</h2>
+        <div v-for="event in eventsDay" :key="event.id" class="event__detail">
+          <h3>{{event.name}}</h3>
+          <p>{{event.location}}</p>
+          <p>{{event.date}}</p>
+          <p>{{event.description}}</p>
+        </div>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -55,7 +68,9 @@ export default {
       calendarService: new CalendarService(),
       current_date: new Date(),
       events: [],
-      showOptions: false
+      showOptions: false,
+      showPopUp: false,
+      eventsDay: []
     }
   },
   async mounted() {
@@ -86,6 +101,8 @@ export default {
   methods: {
     selectDay: function(date) {
       console.log('selected date', date);
+      this.eventsDay = this.events.filter(event => event.date === date);
+      this.togglePopUp();
     },
     getEvents: async function() {
       const response = await this.calendarService.getEventsCalendar();
@@ -97,8 +114,10 @@ export default {
     toggleOptions: function(date) {
       this.showOptions = this.showOptions === date ? null : date;
       console.log(this.showOptions)
+    },
+    togglePopUp: function() {
+      this.showPopUp = !this.showPopUp;
     }
-
   }
 }
 </script>
@@ -173,6 +192,11 @@ export default {
   z-index: 1;
   color: #fff;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 
 .day-event:hover {
@@ -190,5 +214,26 @@ export default {
   right: -50%;
 }
 
+.popup {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 3;
+}
+
+.popup__content {
+  max-width: 60%;
+  background-color: #fff;
+  padding: 3rem;
+}
+
+.popup__content i {
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.event__detail {
+  padding: 1rem;
+}
 
 </style>
