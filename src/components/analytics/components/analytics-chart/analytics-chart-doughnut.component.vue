@@ -23,10 +23,9 @@ export default {
   methods: {
     setChartData() {
       const documentStyle = getComputedStyle(document.body);
-      // Find the correct analytics object
-      const progressAnalytics = this.analytics.find(analytic => analytic.title === 'Progress');
 
-      // If the analytics object is found, use its values, otherwise use default values
+      const progressAnalytics = this.analytics.find(analytic => analytic.title === 'Tasks');
+
       const data = [progressAnalytics.values[0]['to-do'], progressAnalytics.values[0]['in-progress'], progressAnalytics.values[0]['done']] ;
 
       return {
