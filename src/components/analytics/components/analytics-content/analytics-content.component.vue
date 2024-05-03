@@ -1,9 +1,10 @@
 <script>
 import AnalyticsCardProjects from "@/components/analytics/components/analytics-card/analytics-card-projects.component.vue";
+import AnalyticsCardReport from "@/components/analytics/components/analytics-card/analytics-card-report.component.vue";
 
 export default {
   name: "analytics-content",
-  components: {AnalyticsCardProjects},
+  components: {AnalyticsCardReport, AnalyticsCardProjects},
 }
 </script>
 
