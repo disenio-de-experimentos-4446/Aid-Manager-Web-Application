@@ -1,11 +1,14 @@
 <script>
+import HomeContent from "@/components/home/home-content.component.vue";
+
 export default {
-  name: "home"
+  name: "home",
+  components: {HomeContent}
 }
 </script>
 
 <template>
-  <h1 class="text-xl border">Oli soy el home</h1>
+  <home-content></home-content>
 </template>
 
 <style scoped>
