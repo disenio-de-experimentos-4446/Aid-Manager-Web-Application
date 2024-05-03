@@ -1,26 +1,31 @@
-
-<template>
-  <div class="card">
-    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-10rem"  />
-  </div>
-</template>
-
 <script>
+import {analytic} from "@/models/analytic.entity.js";
+import {AnalyticsService} from "@/services/analytics.service.js";
+
 export default {
   name: 'analytics-chart-horizontal-bar',
   data() {
     return {
       chartData: null,
-      chartOptions: null
+      chartOptions: null,
+      analytics: analytic,
+      AnalyticsApiService: new AnalyticsService()
     };
   },
-  mounted() {
+  async created() {
+    const response = await this.AnalyticsApiService.getAnalytic();
+    this.analytics = response.data;
     this.chartData = this.setChartData();
     this.chartOptions = this.setChartOptions();
   },
   methods: {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
+
+      const horizontalBarAnalytics = this.analytics.find(analytic => analytic.title === 'Payments');
+
+      const currentData =  horizontalBarAnalytics.values[0]['current'];
+      const expectedData =  horizontalBarAnalytics.values[0]['expected'];
 
       return {
         labels: ['Transportation', 'Food', 'Water'],
@@ -29,13 +34,13 @@ export default {
             label: 'Current',
             backgroundColor: documentStyle.getPropertyValue('--green-300'),
             borderColor: documentStyle.getPropertyValue('--green-300'),
-            data: [28, 48, 40, 19, 86, 27, 90]
+            data: currentData
           },
           {
             label: 'Expected',
             backgroundColor: documentStyle.getPropertyValue('--green-500'),
             borderColor: documentStyle.getPropertyValue('--green-500'),
-            data: [65, 59, 80, 81, 56, 55, 40]
+            data: expectedData
           }
         ]
       };
@@ -85,3 +90,9 @@ export default {
   }
 };
 </script>
+
+<template>
+  <div class="card">
+    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-10rem"  />
+  </div>
+</template>
