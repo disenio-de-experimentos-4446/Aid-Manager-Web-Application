@@ -1,29 +1,40 @@
 {
   "team-members": [
     {
+      "id": "1",
       "image": "https://avatars.githubusercontent.com/u/129230632?v=4",
       "name": "Blanqui Tita",
-      "email": "blanquita@hotmans.com"
+      "email": "blanquita@hotmans.com",
+      "description": "I am a software engineer with experience in web development. I am passionate about technology and I am always looking for new challenges. I am a team player and I am always willing to help others."
     },
     {
+        "id": "2",
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/Manuel.jpg",
       "name": "Rosa Dita",
-      "email": "rosadita@hotmans.com"
+      "email": "rosadita@hotmans.com",
+      "description": "I am a software engineer with experience in web development. I am passionate about technology and I am always looking for new challenges. I am a team player and I am always willing to help others."
     },
     {
+        "id": "3",
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/arigeimpleis.jpg",
       "name": "Arigeimpleis",
-      "email": "arigeimpleis@hotmans.com"
+      "email": "arigeimpleis@hotmans.com",
+    "description": "I am a software engineer with experience in web development. I am passionate about technology and I am always looking for new challenges. I am a team player and I am always willing to help others."
+
     },
     {
+        "id": "4",
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/nekolas-profile.png",
       "name": "Nicola Hotman",
-      "email": "nicola@hotmans.com"
+      "email": "nicola@hotmans.com",
+    "description": "I am a software engineer with experience in web development. I am passionate about technology and I am always looking for new challenges. I am a team player and I am always willing to help others."
     },
     {
+        "id": "5",
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/pelufoto.png",
       "name": "Oala Yesi",
-      "email": "oalayesi@hotmans.com"
+      "email": "oalayesi@hotmans.com",
+    "description": "I am a software engineer with experience in web development. I am passionate about technology and I am always looking for new challenges. I am a team player and I am always willing to help others."
     }
   ],
   "events": [
