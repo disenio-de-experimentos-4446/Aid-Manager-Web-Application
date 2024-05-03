@@ -12,6 +12,7 @@ export default {
   data() {
     return {
       popUp: false,
+      popUpDetail: "",
       userSelected: null,
       members: [],
       teamMemberService: new TeamMembersService()
@@ -35,7 +36,8 @@ export default {
         })
       }
     },
-    togglePopUp: function(id) {
+    togglePopUp: function(id, popUpDetail) {
+      this.popUpDetail = popUpDetail;
       console.log(id);
       this.popUp = !this.popUp;
       this.userSelected = this.members.find(m => m.id === id);
@@ -62,8 +64,8 @@ export default {
 
         <div class="card__content-info flex justify-content-center align-items-center gap-3">
           <p class="card__info-email">{{m.email}}</p>
-          <UserIcon class="card__info-icon cursor-pointer transition-ease-in-out" @click="togglePopUp(m.id)"/>
-          <MessageIcon class="card__info-icon cursor-pointer transition-ease-in-out" @click="togglePopUp(m.id)"/>
+          <UserIcon class="card__info-icon cursor-pointer transition-ease-in-out" @click="togglePopUp(m.id, 'contact')"/>
+          <MessageIcon class="card__info-icon cursor-pointer transition-ease-in-out" @click="togglePopUp(m.id, 'message')"/>
         </div>
       </div>
 
@@ -74,14 +76,27 @@ export default {
       <div class="popup__content bg-white shadow-1 border-round-2xl flex flex-column justify-content-center align-items-center p-6 relative" role="contentinfo">
         <i class="fa-solid fa-xmark absolute" @click="togglePopUp(userSelected.id)"></i>
 
-        <div class="popup__content-img">
-          <img :src="userSelected.image" alt="Photo Profile User" role="img" width="210px"/>
+        <div class="popup__content-contentinfo" v-if="popUpDetail === 'contact'">
+          <div class="popup__content-img">
+            <img :src="userSelected.image" alt="Photo Profile User" role="img" width="210px"/>
+          </div>
+          <h2 class="popup__content-title" aria-label="title">{{userSelected.name}}</h2>
+
+          <div aria-roledescription="content" class="popup__content-description">
+            <span class="popup__member-email" aria-label="email">{{userSelected.email}}</span>
+            <p class="popup__member-description" aria-label="description">{{userSelected.description}}</p>
+          </div>
         </div>
 
-        <h2 class="popup__content-title" aria-label="title">{{userSelected.name}}</h2>
-        <div aria-roledescription="content" class="popup__content-description">
-          <span class="popup__member-email" aria-label="email">{{userSelected.email}}</span>
-          <p class="popup__member-description" aria-label="description">{{userSelected.description}}</p>
+        <div class="popup__content-contentinfo" v-if="popUpDetail === 'message'">
+          <h2 class="popup__content-title" aria-label="title">{{userSelected.name}}</h2>
+          <p class="popup__member-email" aria-label="email">{{userSelected.email}}</p>
+
+          <div class="popup__member-description" aria-label="description">
+            <textarea class="border-round-2xl w-full h-40" placeholder="Can you leave your message here..."></textarea>
+          </div>
+          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer">Send</div>
+
         </div>
 
       </div>
@@ -97,6 +112,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 120px);
+  font-family: 'Poppins', sans-serif;
 }
 
 .container-cards {
@@ -163,6 +179,21 @@ export default {
 
 .popup__member-description {
   margin-top: 2rem;
+}
+
+.popup__member-description textarea {
+  resize: none;
+  height: 100px;
+  padding: 1rem;
+}
+
+.button {
+  transition: all .3s ease-in;
+  text-transform: uppercase;
+}
+
+.button:hover {
+  transform: scale(1.02);
 }
 
 @media screen and (max-width: 730px) {
