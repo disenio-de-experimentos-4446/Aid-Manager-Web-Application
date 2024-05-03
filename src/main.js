@@ -15,7 +15,10 @@ import Menu         from 'primevue/menu';
 import MenuBar      from 'primevue/menubar';
 import Toolbar      from 'primevue/toolbar';
 import Rating from 'primevue/rating';
-
+import Calendar from 'primevue/calendar';
+import Chart from 'primevue/chart';
+import InputNumber from "primevue/inputnumber";
+import Textarea from "primevue/textarea";
 // App Theme
 import 'primevue/resources/themes/md-light-indigo/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -26,7 +29,8 @@ import 'primeicons/primeicons.css';
 // PrimeFlex
 import 'primeflex/primeflex.css';
 import router from "@/router/index.js";
-import Chart from 'primevue/chart';
+
+
 
 createApp(App)
     .use(PrimeVue, { ripple: true })
@@ -41,4 +45,7 @@ createApp(App)
     .component('pv-toolbar', Toolbar)
     .component('pv-rating', Rating)
     .component('pv-chart', Chart)
+    .component('pv-calendar', Calendar)
+    .component('pv-input-number', InputNumber)
+    .component('pv-text-area', Textarea)
     .mount('#app')
