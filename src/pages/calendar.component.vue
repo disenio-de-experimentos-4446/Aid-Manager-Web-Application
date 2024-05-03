@@ -1,13 +1,194 @@
+<template>
+  <div class="calendar">
+    <h1 aria-label="title">Calendar</h1>
+    <div class="calendar__days-week" role="heading">
+      <span aria-label="title">SUN</span>
+      <span aria-label="title">MON</span>
+      <span aria-label="title">TUES</span>
+      <span aria-label="title">WED</span>
+      <span aria-label="title">THURS</span>
+      <span aria-label="title">FRI</span>
+      <span aria-label="title">SAT</span>
+    </div>
+
+    <div class="days-week">
+      <div v-for="d in month" :key="d.date" class="day" @click="selectDay(d.date)">
+        {{d.number}}
+
+        <div class="day-event" v-if="eventsByDay[d.date]" :style="{backgroundColor: eventsByDay[d.date][0].color}" @click="toggleOptions(d.date)" @click.stop>
+          <div v-for="event in eventsByDay[d.date]" :key="event.id" class="event">
+            <strong>{{event.name}}</strong>
+
+            <div class="day-event__modify flex flex-column" v-if="showOptions === event.date" :key="event.id">
+              <div class="day-event__modify-column flex gap-1">
+                <TrashIcon/>
+                <span>Delete</span>
+              </div>
+
+              <div class="day-event__modify-column flex gap-1">
+                <EditIcon />
+                <span>Edit</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</template>
+
 <script>
+import CalendarService from "@/services/calendar.service.js";
+import TrashIcon from "../assets/trash-icon.svg";
+import EditIcon from "../assets/edit-event-icon.svg";
+
 export default {
-  name: "calendar"
+  name: "calendar-dates",
+  components: {
+    TrashIcon,
+    EditIcon
+  },
+  data() {
+    return {
+      calendarService: new CalendarService(),
+      current_date: new Date(),
+      events: [],
+      showOptions: false
+    }
+  },
+  async mounted() {
+    await this.getEvents();
+  },
+  computed: {
+    month() {
+      const lastDayMonth = new Date(this.current_date.getFullYear(), this.current_date.getMonth() + 1, 0);
+      const days = [];
+      for (let i = 1; i <= lastDayMonth.getDate(); i++) {
+        const date = new Date(this.current_date.getFullYear(), this.current_date.getMonth(), i).toISOString().split('T')[0];
+        days.push({ number: i, date });
+      }
+      return days;
+    },
+    eventsByDay() {
+      const eventsByDay = {};
+      this.events.forEach(event => {
+        if (!eventsByDay[event.date]) {
+          eventsByDay[event.date] = [];
+        }
+        eventsByDay[event.date].push(event);
+      });
+      console.log('events by day', eventsByDay);
+      return eventsByDay;
+    }
+  },
+  methods: {
+    selectDay: function(date) {
+      console.log('selected date', date);
+    },
+    getEvents: async function() {
+      const response = await this.calendarService.getEventsCalendar();
+
+      if (response) {
+        this.events = response.data;
+      }
+    },
+    toggleOptions: function(date) {
+      this.showOptions = this.showOptions === date ? null : date;
+      console.log(this.showOptions)
+    }
+
+  }
 }
 </script>
 
-<template>
-  <h1>Ola no soy calendar</h1>
-</template>
-
 <style scoped>
+.calendar {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 3rem;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+.calendar h1 {
+  text-align: left;
+  font-weight: 200;
+  padding-bottom: 3rem;
+  font-size: 2.2rem;
+}
+
+.calendar__days-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar__days-week span {
+  font-weight: bold;
+}
+
+.days-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: none;
+}
+
+.day {
+  padding: 4rem 3rem;
+  cursor: pointer;
+  position:relative;
+  border-bottom: 1px solid #787878;
+  transition: all .1s ease-in-out;
+  user-select: none;
+}
+
+.day:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.day::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 1px;
+  background-color: #787878;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/*the last cells % 7*/
+.days-week .day:nth-child(7n)::after{
+  display: none;
+}
+
+.day-event {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  padding: 5px;
+  z-index: 1;
+  color: #fff;
+  transform: translate(-50%, -50%);
+}
+
+.day-event:hover {
+  z-index: 2;
+}
+
+.day-event__modify {
+  padding: .5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  color: #000;
+  position: absolute;
+  top: -150%;
+  right: -50%;
+}
+
 
 </style>
