@@ -34,11 +34,15 @@ export default {
 
 <template>
   <div class="app-container">
-    <toolbar :toggleNav="toggleNav" class="toolbar"></toolbar>
-    <sidebar :sidebarVisible="sidebarVisible" class="sidebar-content"></sidebar>
-    <main class="main-content">
-      <router-view></router-view>
-    </main>
+    <toolbar :toggleNav="toggleNav" class="toolbar w-full"></toolbar>
+    <div class="content-wrapper">
+      <div class="sidebar-container">
+        <sidebar :sidebarVisible="sidebarVisible" class="sidebar"></sidebar>
+      </div>
+      <main class="main-container">
+        <router-view></router-view>
+      </main>
+    </div>
   </div>
 </template>
 
@@ -50,29 +54,33 @@ export default {
 }
 
 .app-container {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: 350px 1fr;
-  grid-template-areas:
-    "toolbar toolbar"
-    "sidebar main-content";
-  min-height: 100vh;
-  height: 100%;
-}
+  .content-wrapper {
+    display: flex;
 
-.toolbar {
-  grid-area: toolbar;
-}
+    .sidebar-container {
+      .sidebar {
+        position: fixed;
+        height: calc(100vh - 112px);
+        top: 112px;
+        z-index: 9;
+      }
+      @media (min-width: 1024px) {
+        width: 349px;
+        margin-top: 0;
+      }
+    }
 
-.sidebar-content {
-  grid-area: sidebar;
-  background-color: #FFFFFF;
-}
-
-.main-content {
-  grid-area: main-content;
-  min-height: 100%;
-  padding: 20px;
+    .main-container {
+      width: calc(100% - 349px);
+      padding: 30px;
+    }
+    @media(max-width: 1024px) {
+      .main-container {
+        width: 100%;
+        padding: 20px;
+      }
+    }
+  }
 }
 
 /*para el style del scroll owo*/
@@ -97,16 +105,5 @@ export default {
   background-color: #BABABA;
 }
 
-@media (max-width: 1024px) {
-  .app-container {
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 1fr;
-    grid-template-areas:
-    "toolbar"
-    "main-content";
-    min-height: 100vh;
-  }
-
-}
 
 </style>
