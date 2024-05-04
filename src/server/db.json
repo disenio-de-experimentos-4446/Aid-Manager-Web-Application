@@ -3,42 +3,57 @@
     {
       "image": "https://avatars.githubusercontent.com/u/129230632?v=4",
       "name": "Blanqui Tita",
-      "email": "blanquita@hotmans.com"
+      "email": "blanquita@hotmans.com",
+      "id": "39cb"
     },
     {
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/Manuel.jpg",
       "name": "Rosa Dita",
-      "email": "rosadita@hotmans.com"
+      "email": "rosadita@hotmans.com",
+      "id": "7f5e"
     },
     {
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/arigeimpleis.jpg",
       "name": "Arigeimpleis",
-      "email": "arigeimpleis@hotmans.com"
+      "email": "arigeimpleis@hotmans.com",
+      "id": "2992"
     },
     {
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/nekolas-profile.png",
       "name": "Nicola Hotman",
-      "email": "nicola@hotmans.com"
+      "email": "nicola@hotmans.com",
+      "id": "1778"
     },
     {
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/pelufoto.png",
       "name": "Oala Yesi",
-      "email": "oalayesi@hotmans.com"
+      "email": "oalayesi@hotmans.com",
+      "id": "27fb"
     }
   ],
   "events": [
     {
-      "name": "Event 1",
-      "date": "2024-05-01",
-      "location": "Location 1",
-      "description": "Description 1",
+      "id": "4b14",
+      "name": "Brebaje",
+      "date": "2024-05-04",
+      "location": "Yesi Casa",
+      "description": "obligatorio: traer brebaje",
       "color": "#74A38F"
     },
     {
-      "name": "Event 2",
-      "date": "2024-05-16",
-      "location": "Location 2",
-      "description": "Description 2",
+      "id": "0e57",
+      "name": "Brebaje 2",
+      "date": "2024-05-10",
+      "location": "UPSEX",
+      "description": "traer brebaje",
+      "color": "#74A38F"
+    },
+    {
+      "id": "512b",
+      "name": "BREBAJE FINAL",
+      "date": "2024-05-26",
+      "location": "asd",
+      "description": "asd",
       "color": "#98CFD7"
     }
   ]

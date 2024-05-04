@@ -40,11 +40,25 @@
       <div class="popup__content relative border-round-2xl">
         <i class="fa-solid fa-xmark absolute top-0 right-0 p-3" @click="togglePopUp()"></i>
         <h2>Events</h2>
-        <div v-for="event in eventsDay" :key="event.id" class="event__detail">
+        <div class="popup__new-event flex justify-content-center align-items-center" @click="()=>{newEvent = !newEvent}">
+          <i class="fa-solid fa-plus"></i>
+          <p>New Event</p>
+        </div>
+        <div v-if="!newEvent" v-for="event in eventsDay" :key="event.id" class="event__detail">
           <h3>{{event.name}}</h3>
           <p>{{event.location}}</p>
           <p>{{event.date}}</p>
           <p>{{event.description}}</p>
+        </div>
+
+        <div class="form__new-event" v-if="newEvent">
+          <form role="form" class="flex flex-column gap-2 justify-content-center align-items-center">
+            <input type="text" placeholder="Title" v-model="inputNewEvent['name']">
+            <input type="text" placeholder="Place" v-model="inputNewEvent['location']">
+            <textarea placeholder="Type your description here..." v-model="inputNewEvent['description']"></textarea>
+          </form>
+
+          <div class="form__new-event-button" @click="saveNewEvent()">Save</div>
         </div>
       </div>
     </div>
@@ -70,7 +84,15 @@ export default {
       events: [],
       showOptions: false,
       showPopUp: false,
-      eventsDay: []
+      eventsDay: [],
+      newEvent: false,
+      inputNewEvent: {
+        name: "",
+        date: "",
+        location: "",
+        description: "",
+        color: "#74A38F"
+      }
     }
   },
   async mounted() {
@@ -101,6 +123,7 @@ export default {
   methods: {
     selectDay: function(date) {
       console.log('selected date', date);
+      this.inputNewEvent['date'] = date;
       this.eventsDay = this.events.filter(event => event.date === date);
       this.togglePopUp();
     },
@@ -117,6 +140,22 @@ export default {
     },
     togglePopUp: function() {
       this.showPopUp = !this.showPopUp;
+      this.newEvent = false;
+    },
+    saveNewEvent: async function() {
+      console.log(this.inputNewEvent)
+      const response = await this.calendarService.saveNewEvent(this.inputNewEvent);
+      if(!response) console.error('Error saving new event');
+      else {
+        await this.getEvents();
+        this.inputNewEvent = {
+          name: "",
+          date: "",
+          location: "",
+          description: "",
+          color: (Math.round(Math.random()))? "#74A38F" : "#98CFD7"
+        }
+      }
     }
   }
 }
@@ -234,6 +273,56 @@ export default {
 
 .event__detail {
   padding: 1rem;
+}
+
+.popup__new-event {
+  padding: .5rem;
+  background-color: #74A38F;
+  color: #fff;
+  cursor: pointer;
+  gap: .5rem;
+  transition: all .2s ease-in;
+  border-radius: 15px;
+  margin-top: .8rem;
+}
+
+.popup__new-event:hover {
+  transform: scale(1.025);
+}
+
+.popup__new-event p, .popup__new-event i {
+  font-size: 1rem;
+}
+
+.form__new-event {
+  margin-top: 1.5rem;
+  padding: .7rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.form__new-event input, .form__new-event textarea {
+  padding: .5rem;
+  border-radius: 10px;
+  outline: none;
+  resize: none;
+  border: 1px solid #DDDDDD;
+}
+
+.form__new-event-button {
+  padding: .5rem;
+  background-color: #74A38F;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.2);
+  transition: all .2s ease-in-out;
+}
+
+.form__new-event-button:hover {
+  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
 }
 
 </style>

@@ -17,6 +17,17 @@ class CalendarService {
 
         return response;
     }
+
+    async saveNewEvent(event) {
+        let response = null;
+
+        try {
+            response = await axios.post(`${this.baseUrl}/events`, event);
+        }catch(e){
+            console.error('Error to save the event', e)
+        }
+        return response;
+    }
 }
 
 export default CalendarService
