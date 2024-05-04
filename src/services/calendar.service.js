@@ -28,6 +28,18 @@ class CalendarService {
         }
         return response;
     }
+
+    async deleteEvent(id) {
+        let response = null;
+
+        try {
+            response = await axios.delete(`${this.baseUrl}/events/${id}`);
+        }catch(e) {
+            console.error('Error to delete the event', id, e);
+        }
+
+        return response;
+    }
 }
 
 export default CalendarService

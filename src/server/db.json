@@ -33,14 +33,6 @@
   ],
   "events": [
     {
-      "id": "4b14",
-      "name": "Brebaje",
-      "date": "2024-05-04",
-      "location": "Yesi Casa",
-      "description": "obligatorio: traer brebaje",
-      "color": "#74A38F"
-    },
-    {
       "id": "0e57",
       "name": "Brebaje 2",
       "date": "2024-05-10",
@@ -55,6 +47,14 @@
       "location": "asd",
       "description": "asd",
       "color": "#98CFD7"
+    },
+    {
+      "id": "ebe1",
+      "name": "brebaje",
+      "date": "2024-05-04",
+      "location": "el brebaje",
+      "description": "el brebaje obligatorio",
+      "color": "#74A38F"
     }
   ]
 }

@@ -20,13 +20,13 @@
             <strong>{{event.name}}</strong>
 
             <div class="day-event__modify flex flex-column" v-if="showOptions === event.date" :key="event.id">
-              <div class="day-event__modify-column flex gap-1">
+              <div class="day-event__modify-column flex gap-1" @click="deleteEvent(event.id)">
                 <TrashIcon/>
                 <span>Delete</span>
               </div>
 
               <div class="day-event__modify-column flex gap-1">
-                <EditIcon />
+                <EditIcon @click="()=>{optionSelected = 'edit'}"/>
                 <span>Edit</span>
               </div>
             </div>
@@ -60,6 +60,10 @@
 
           <div class="form__new-event-button" @click="saveNewEvent()">Save</div>
         </div>
+
+        <div class="form__edit-event" v-if="optionSelected === 'edit'">
+          <p>ola</p>
+        </div>
       </div>
     </div>
   </div>
@@ -86,6 +90,7 @@ export default {
       showPopUp: false,
       eventsDay: [],
       newEvent: false,
+      optionSelected: "",
       inputNewEvent: {
         name: "",
         date: "",
@@ -154,8 +159,16 @@ export default {
           location: "",
           description: "",
           color: (Math.round(Math.random()))? "#74A38F" : "#98CFD7"
-        }
+        };
+
       }
+      this.togglePopUp();
+    },
+    deleteEvent: async function(id) {
+      console.log('delete event', id)
+      const response = await this.calendarService.deleteEvent(id);
+      if(!response) console.log('Error to delete the event with id: ', id);
+      else await this.getEvents();
     }
   }
 }
@@ -251,6 +264,12 @@ export default {
   position: absolute;
   top: -150%;
   right: -50%;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+
+.day-event__modify-column:hover {
+  opacity: .8;
 }
 
 .popup {
