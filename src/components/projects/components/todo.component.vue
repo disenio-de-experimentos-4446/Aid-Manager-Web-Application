@@ -1,85 +1,87 @@
-<script >
-import columnC from "./column.component.vue";
-
-export default {
-
-
-  name: "Todo",
-  components: {
-    columnC
+<script setup>
+import {ref, onMounted, watchEffect, nextTick} from 'vue';
+import columnC from './column.component.vue';
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
   },
-  props: {
-    id: {
-      type: String,
-      required: true,
-    }
-  },
+});
+const reload = ref(false); // Propiedad reactiva para controlar la recarga de datos
 
-  methods:{
+// Variable reactiva para almacenar los datos del proyecto
+const project = ref();
 
-    fetchTasks() {
-
-      console.log(this.id)
-      fetch("http://localhost:3000/projects/" + this.id)
-          .then(response => response.json())
-          .then(data => {this.project = data;})
-          .catch(error => {
-            console.error('Error al obtener datos de la API:', error);
-          });
-    },
-  },
-  mounted() {
-    this.fetchTasks();
-  },
-  data() {
-    return {
-      project: [], // Arreglo para almacenar los datos de los proyectos
-      newTask: { id:'', title: '', assigned: '', due: '',status: '' }, // Objeto para almacenar los datos del nuevo proyecto
-    };
-  },
-
+// Función para cargar los datos del proyecto
+const fetchTasks = body => {
+  fetch(`http://localhost:3000/projects/${props.id}`)
+      .then(response => response.json(body))
+      .then(data => {
+        project.value = data;
+        console.log('Project loaded:', project.value.tasks)
+      })
+      .catch(error => {
+        console.error('Error al obtener datos de la API:', error);
+      });
 };
+
+const emit = defineEmits(['updAll']);
+
+const handleUpdateAll = () => {
+  emit('updAll');
+  reload.value = !reload.value; // Cambiar el valor de 'reload'
+  nextTick(() => {
+    // Aquí, 'reload' ya debería haberse actualizado
+    console.log('Reload data:', reload.value);
+    fetchTasks(); // Recargar los datos después de que 'reload' se haya actualizado
+  });
+};
+
+
+
+// Llamar a fetchTasks al montar el componente
+onMounted(fetchTasks);
+
+// Evento personalizado para emitir hacia el componente hijo
 
 </script>
 
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
-    <h1 class="title">{{project.name}}</h1>
+    <h1 class="title">{{ project ? project.name : '' }}</h1>
     <br>
     <h3 class="subtitle">Tasks</h3>
 
     <div class="column-container">
-      <columnC task-column="To-Do" :id></columnC>
-
-      <columnC task-column="Doing" :id></columnC>
-      <columnC task-column="Done" :id></columnC>
+      <columnC task-column="To-Do" :id="props.id" @updAll="handleUpdateAll" :reload="reload" />
+      <columnC task-column="Doing" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
+      <columnC task-column="Done" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
     </div>
-
   </section>
 </template>
 
 <style scoped>
-
-.title{
-  font-family: 'Lora',serif;
+.title {
+  font-family: 'Lora', serif;
   font-size: 6vh;
   color: #000000;
   font-weight: unset;
 }
 
-.subtitle{
-  font-family: 'Lora',serif;
+.subtitle {
+  font-family: 'Lora', serif;
   font-size: 2vh;
   color: #02513D;
   font-weight: bold;
 }
 
-.column-container{
+.column-container {
   display: flex;
   justify-content: space-around;
   margin-top: 2rem;
   margin-bottom: 2rem;
-  flex-direction:row;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
 }
-
 </style>

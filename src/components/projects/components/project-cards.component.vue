@@ -1,5 +1,5 @@
 <template>
-  <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
+  <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0 widthsec">
     <h1 class="title">Projects</h1>
     <br>
     <h3 class="subtitle">Current Projects</h3>
@@ -135,7 +135,8 @@ onMounted(() => {
 .project-cards {
   display: flex;
   flex-wrap: wrap;
-  height:30%;
+  height:auto;
+  width: 100%;
   gap: 2rem;
 }
 
@@ -156,7 +157,6 @@ onMounted(() => {
 }
 
 .all{
-  overflow-y: scroll;
   height: 100%;
 
 }
@@ -164,9 +164,7 @@ onMounted(() => {
 
 
 @media (max-width: 768px) {
-  .project-cards {
-    flex-direction: column-reverse;
-  }
+
 
   .add-project {
     width: 90%;
@@ -175,6 +173,7 @@ onMounted(() => {
   .p-dialog {
     width: 90%;
   }
+
 }
 
 .title {

@@ -64,3 +64,36 @@ export async function addTask(projectId, newTask) {
         throw error;
     }
 }
+
+export async function deleteTask(projectID, taskID){
+    try{
+        const project = await fetchTaskData(projectID);
+        console.log("Task a eliminar" , taskID);
+        project.tasks = project.tasks.filter(task => task.id !== taskID);
+        console.log("Project con task borrada", project);
+        const response = await axios.put(`http://localhost:3000/projects/${projectID}`, project);
+        return response.data;
+    } catch (error) {
+        console.error('Error al Eliminar la tarea al proyecto:', error);
+        throw error;
+    }
+}
+
+export async function editTask(projectID, taskID, taskData){
+    try{
+        const project = await fetchTaskData(projectID);
+        console.log("Task a editar" , taskID);
+        project.tasks = project.tasks.map(task => {
+            if(task.id === taskID){
+                return taskData;
+            }
+            return task;
+        });
+        console.log("Project con task editada", project);
+        const response = await axios.put(`http://localhost:3000/projects/${projectID}`, project);
+        return response.data;
+    } catch (error) {
+        console.error('Error al Editar la tarea al proyecto:', error);
+        throw error;
+    }
+}

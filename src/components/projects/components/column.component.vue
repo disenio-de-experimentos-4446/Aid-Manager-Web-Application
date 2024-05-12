@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, watch, watchEffect} from 'vue';
 import Card from 'primevue/card';
 import Task from './task.component.vue';
 import Button from 'primevue/button';
@@ -15,10 +15,15 @@ import Calendar from "primevue/calendar";
 const state = ref({
   tasks: [],
   totalTasks: 0,
-  newTask: ref(new TaskEntity()), // Inicializar con una nueva instancia de TaskEntity
+  newTask: ref(new TaskEntity()),
+  reload: false,
+  // Inicializar con una nueva instancia de TaskEntity
 });
 
 const visible = ref(false); // Variable reactiva para controlar la visibilidad del diálogo
+
+const emits = defineEmits(['updAll']);
+
 
 const props = defineProps({
   id: {
@@ -29,13 +34,16 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  reload: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 
 
 // Función para cambiar el color dinámico
 function cambiarColor(taskColumn) {
-  console.log('Changing color for:', taskColumn)
   switch (taskColumn) {
     case 'To-Do':
       return '#FFDBDB';
@@ -54,7 +62,6 @@ const fetchTasks = () => {
       .then((data) => {
         state.value.totalTasks = data.tasks.length;
         state.value.tasks = data.tasks.filter((task) => task.status === props.taskColumn);
-        console.log('Tasks loaded:', state.value.tasks);
 
       })
       .catch((error) => {
@@ -78,17 +85,10 @@ const createTask = async () => {
     };
       console.log(TaskData);
 
-    const addedTask = await addTask(props.id,TaskData); // Llama a la función del servicio
+    const addedTask = await addTask(props.id,TaskData).then(fetchTasks); // Llama a la función del servicio
 
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
-      state.value.tasks.push({
-      id: addedTask.id,
-      title: addedTask.title,
-      assigned: addedTask.assigned,
-      due: addedTask.due,
-      status: addedTask.status || [], // Puedes inicializar con un array vacío si es necesario
-    });
-    console.log('Nuevo proyecto agregado:', addedTask);
+
 
     // Limpiar los campos del nuevo proyecto después de guardarlo
     state.value.newTask.title = '';
@@ -105,20 +105,38 @@ const createTask = async () => {
 
 // Cargar las tareas una vez que el componente se monte
 onMounted(() => {
-  fetchTasks(); // Llamar a fetchTasks al montar el componente
+
+  console.log(props.reload)
+  fetchTasks();
+
+// Llamar a fetchTasks al montar el componente
 });
 
 // Función para recargar las tareas manualmente
 const reloadTasks = () => {
-
   fetchTasks(); // Volver a cargar las tareas
 };
+
 
 // Función para agregar una nueva tarea
 const addsTask = () => {
   console.log('Adding a new task...');
   visible.value = true; // Mostrar el diálogo al hacer clic en "Add New Task"
 };
+
+watch(() => props.reload, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    fetchTasks();
+  }
+});
+// Manejar el evento emitido por columnC
+const taskDel = () => {
+  emits('updAll');
+  console.log('Sends the update ALL');
+  fetchTasks();
+
+};
+
 </script>
 
 <template>
@@ -130,7 +148,7 @@ const addsTask = () => {
       </template>
       <template #content>
         <div class="overflow">
-          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.assigned" :due="task.due" />
+          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.assigned" :due="task.due" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn" />
         </div>
       </template>
       <template #footer>
@@ -141,24 +159,24 @@ const addsTask = () => {
     </Card>
 
     <!-- Diálogo para agregar una nueva tarea -->
-    <Dialog  modal="true" class="p-dialog" v-model:visible="visible" :closeOnOutsideClick="true">
-      <div style="padding: 2rem">
-        <h2 class="p-dialog-title block font-semibold mb-5">Add your Task</h2>
-        <span class="p-text-secondary block mb-5">Add your Task info.</span>
+    <Dialog  modal:true class="p-dialog" v-model:visible="visible" :closeOnOutsideClick="true">
+      <div style="padding: 2rem; display:flex; flex-direction:column; align-items:flex-start; justify-content:center">
+        <h2 class="p-dialog-title block font-semibold ">Add your Task</h2>
+        <span class="p-text-secondary block ">Add your Task info.</span>
 
         <!-- Campos para ingresar información del nuevo proyecto -->
-        <div class="flex align-items-center gap-3 mb-2">
-          <label for="title" class="font-semibold w-6rem">Task Title</label>
-          <InputText id="title" class="flex-auto" autocomplete="off" v-model="state.newTask.title" />
+        <div class=" justify-content-around">
+          <label for="title" class="font-semibold w-6rem mb-2">Task Title</label>
+          <InputText id="title" class="flex flex-auto" autocomplete="off" v-model="state.newTask.title" />
         </div>
 
-        <div class="flex align-items-center gap-3 mb-2">
-          <label for="assigned" class="font-semibold w-6rem">Employee Assigned</label>
-          <InputText id="assigned" class="flex-auto" autocomplete="off" v-model="state.newTask.assigned" />
+        <div class="  justify-content-around ">
+          <label for="assigned" class="font-semibold w-6rem mb-2">Employee Assigned</label>
+          <InputText id="assigned" class="flex flex-auto" autocomplete="off" v-model="state.newTask.assigned" />
         </div>
 
-        <div class="flex align-items-center gap-3 mb-2">
-          <label for="calendar" class="font-semibold w-6rem">Due date</label>
+        <div class="  justify-content-around mb-2 ">
+          <label for="calendar" class="flex font-semibold w-6rem">Due date</label>
           <Calendar id="due" v-model="state.newTask.due" :minDate="new Date()" :manualInput="false" />
 
         </div>
@@ -166,7 +184,7 @@ const addsTask = () => {
 
 
         <!-- Botón para agregar el nuevo proyecto -->
-        <div class="flex justify-content-end gap-2">
+        <div class=" justify-content-end gap-2">
           <Button label="Add" @click="createTask" style="background-color: #02513D;" />
         </div>
       </div>
@@ -176,8 +194,7 @@ const addsTask = () => {
 
 <style scoped>
 .p-card {
-  width: 25rem;
-  margin: 1rem;
+  width: 100%;
   padding: 1rem;
   height: 100%;
 }
@@ -186,13 +203,30 @@ const addsTask = () => {
   background-color: rgba(0, 0, 0, 0);
   color: #02513D;
   justify-content: center;
-  padding: 0.5rem;
 }
 .overflow {
   overflow-y: auto;
   height: 46vh;
 }
 
+.p-dialog{
+  width: 80%;
+}
+
+.project-card {
+  width: 30%;
+}
+
+
+@media (max-width: 1028px) {
+
+
+ .project-card {
+    width: 100%;
+    height:auto;
+  }
+
+}
 
 ::-webkit-scrollbar-thumb {
 
