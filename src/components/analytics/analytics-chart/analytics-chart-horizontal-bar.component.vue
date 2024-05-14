@@ -3,7 +3,7 @@ import {analytic} from "@/models/analytic.entity.js";
 import {AnalyticsService} from "@/services/analytics.service.js";
 
 export default {
-  name: 'analytics-chart-line',
+  name: 'analytics-chart-horizontal-bar',
   data() {
     return {
       chartData: null,
@@ -22,29 +22,25 @@ export default {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
 
-      const lineAnalytics = this.analytics.find(analytic => analytic.title === 'Progress-line');
+      const horizontalBarAnalytics = this.analytics.find(analytic => analytic.title === 'Payments');
 
-      const currentData =  lineAnalytics.values[0]['current'];
-      const expectedData =  lineAnalytics.values[0]['expected'];
+      const currentData =  horizontalBarAnalytics.values[0]['current'];
+      const expectedData =  horizontalBarAnalytics.values[0]['expected'];
 
       return {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'september','October', 'November','december'],
+        labels: ['Transportation', 'Food', 'Water'],
         datasets: [
           {
             label: 'Current',
-            data: currentData,
-            fill: false,
             backgroundColor: documentStyle.getPropertyValue('--green-300'),
             borderColor: documentStyle.getPropertyValue('--green-300'),
-            tension: 0.4
+            data: currentData
           },
           {
             label: 'Expected',
-            data: expectedData,
-            fill: false,
             backgroundColor: documentStyle.getPropertyValue('--green-500'),
             borderColor: documentStyle.getPropertyValue('--green-500'),
-            tension: 0.4
+            data: expectedData
           }
         ]
       };
@@ -56,8 +52,9 @@ export default {
       const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
       return {
+        indexAxis: 'y',
         maintainAspectRatio: false,
-        aspectRatio: 0.6,
+        aspectRatio: 0.8,
         plugins: {
           legend: {
             labels: {
@@ -68,10 +65,14 @@ export default {
         scales: {
           x: {
             ticks: {
-              color: textColorSecondary
+              color: textColorSecondary,
+              font: {
+                weight: 500
+              }
             },
             grid: {
-              color: surfaceBorder
+              display: false,
+              drawBorder: false
             }
           },
           y: {
@@ -79,7 +80,8 @@ export default {
               color: textColorSecondary
             },
             grid: {
-              color: surfaceBorder
+              color: surfaceBorder,
+              drawBorder: false
             }
           }
         }
@@ -88,12 +90,9 @@ export default {
   }
 };
 </script>
+
 <template>
-  <div class="card">
-    <pv-chart type="line" :data="chartData" :options="chartOptions" class="h-10rem" />
+  <div class="card w-full flex p-3">
+    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-12rem w-full"  />
   </div>
 </template>
-
-<style scoped>
-
-</style>

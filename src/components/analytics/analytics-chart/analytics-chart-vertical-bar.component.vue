@@ -1,9 +1,8 @@
 <script>
 import {analytic} from "@/models/analytic.entity.js";
 import {AnalyticsService} from "@/services/analytics.service.js";
-
 export default {
-  name: 'analytics-chart-horizontal-bar',
+  name: 'analytics-chart-vertical-bar',
   data() {
     return {
       chartData: null,
@@ -21,14 +20,11 @@ export default {
   methods: {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
-
-      const horizontalBarAnalytics = this.analytics.find(analytic => analytic.title === 'Payments');
-
-      const currentData =  horizontalBarAnalytics.values[0]['current'];
-      const expectedData =  horizontalBarAnalytics.values[0]['expected'];
-
+      const verticalBarAnalytics = this.analytics.find(analytic => analytic.title === 'Progress-bar');
+      const currentData =  verticalBarAnalytics.values[0]['current'];
+      const expectedData =  verticalBarAnalytics.values[0]['expected'];
       return {
-        labels: ['Transportation', 'Food', 'Water'],
+        labels: ['Actual', 'Planned','Budget'],
         datasets: [
           {
             label: 'Current',
@@ -52,7 +48,6 @@ export default {
       const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
       return {
-        indexAxis: 'y',
         maintainAspectRatio: false,
         aspectRatio: 0.8,
         plugins: {
@@ -90,9 +85,10 @@ export default {
   }
 };
 </script>
-
 <template>
-  <div class="card">
-    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-10rem"  />
+  <div class="card w-full p-5 flex">
+    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-12rem w-full"  />
   </div>
 </template>
+<style scoped>
+</style>

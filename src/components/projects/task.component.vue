@@ -107,7 +107,6 @@ const items = ref([{
 
   <div class="task-card">
     <div class="title">
-
       <div>
         <h3 style=" font-weight:normal;">{{ title }}</h3>
         <p>Assigned to: {{assigned}}</p>

@@ -1,7 +1,216 @@
 {
+  "users": [
+    {
+      "id": "1",
+      "firstName": "Ramisex",
+      "lastName": "Hotman",
+      "email": "ramisex@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "https://avatars.githubusercontent.com/u/129230632?v=4",
+      "role": "Director"
+    },
+    {
+      "id": "2",
+      "firstName": "Sebastian",
+      "lastName": "Piñera",
+      "email": "rosadita@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/Manuel.jpg?raw=true",
+      "role": "Team"
+    },
+    {
+      "id": "3",
+      "firstName": "Nekolas",
+      "lastName": "Estebanquito",
+      "email": "neko@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/arigeimpleis.jpg?raw=true",
+      "role": "Director"
+    },
+    {
+      "id": "4",
+      "firstName": "Arian",
+      "lastName": "Vago",
+      "email": "monitas123@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "5",
+      "firstName": "Alejandra",
+      "lastName": "Williams",
+      "email": "pelitos@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Director"
+    },
+    {
+      "id": "6",
+      "firstName": "Mason",
+      "lastName": "Jones",
+      "email": "mason_jones@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "7",
+      "firstName": "Ava",
+      "lastName": "Brown",
+      "email": "ava_brown@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Director"
+    },
+    {
+      "id": "8",
+      "firstName": "Liam",
+      "lastName": "Davis",
+      "email": "liam_davis@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "9",
+      "firstName": "Mia",
+      "lastName": "Miller",
+      "email": "mia_miller@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Director"
+    },
+    {
+      "id": "10",
+      "firstName": "Noah",
+      "lastName": "Wilson",
+      "email": "noah_wilson@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "11",
+      "firstName": "Isabella",
+      "lastName": "Moore",
+      "email": "isabella_moore@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Director"
+    },
+    {
+      "id": "12",
+      "firstName": "Jacob",
+      "lastName": "Taylor",
+      "email": "jacob_taylor@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "13",
+      "firstName": "Ethan",
+      "lastName": "Thomas",
+      "email": "ethan.thomas@aidmanager.com",
+      "password": "hashed_password",
+      "profileImg": "",
+      "role": "Director"
+    },
+    {
+      "id": "14",
+      "firstName": "Olivia",
+      "lastName": "Jackson",
+      "email": "olivia.jackson@aidmanager.com",
+      "password": "hashed_password",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "15",
+      "firstName": "Aiden",
+      "lastName": "White",
+      "email": "aiden.white@aidmanager.com",
+      "password": "hashed_password",
+      "profileImg": "",
+      "role": "Director"
+    },
+    {
+      "id": "16",
+      "firstName": "Sophie",
+      "lastName": "Harris",
+      "email": "sophie.harris@aidmanager.com",
+      "password": "hashed_password",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "17",
+      "firstName": "Lucas",
+      "lastName": "Martin",
+      "email": "lucas.martin@aidmanager.com",
+      "password": "hashed_password",
+      "profileImg": "",
+      "role": "Director"
+    },
+    {
+      "id": "18",
+      "firstName": "Emily",
+      "lastName": "Thompson",
+      "email": "emily.thompson@aidmanager.com",
+      "password": "hashed_password",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "19",
+      "firstName": "Matthew",
+      "lastName": "Garcia",
+      "email": "matthew.garcia@aidmanager.com",
+      "password": "hashed_password",
+      "profileImg": "",
+      "role": "Director"
+    },
+    {
+      "id": "20",
+      "firstName": "Ava",
+      "lastName": "Martinez",
+      "email": "ava.martinez@aidmanager.com",
+      "password": "hashed_password",
+      "profileImg": "",
+      "role": "Team"
+    },
+    {
+      "id": "0c8b",
+      "firstName": "wqdq",
+      "lastName": "wqdqw",
+      "email": "blanquita@aidmanager.com",
+      "password": "sexo",
+      "profileImg": "",
+      "role": "director"
+    },
+    {
+      "id": "3419",
+      "firstName": "sexo",
+      "lastName": "sexo",
+      "email": "sexo@hotman",
+      "password": "sexo",
+      "profileImg": "",
+      "role": "team"
+    },
+    {
+      "id": "aa4d",
+      "firstName": "neko",
+      "lastName": "sexo",
+      "email": "swwq@xs",
+      "password": "sexo",
+      "profileImg": "",
+      "role": "team"
+    }
+  ],
   "posts": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Djalma Dioses",
       "email": "djalmadioses123@aidmanager.com",
       "title": "Celebrating Team Success: Hope Heaven International's Impact in Action",
@@ -15,7 +224,7 @@
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Ariana Rodriguez",
       "email": "arianrodriguez123@aidmanager.com",
       "title": "Celebrating Team Success: Hope Heaven International's Impact in Action",
@@ -29,7 +238,7 @@
       ]
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Sebastian Peña",
       "email": "sebastianpena123@aidmanager.com",
       "title": "Celebrating Team Success: Hope Heaven International's Impact in Action",
@@ -43,7 +252,7 @@
       ]
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Alex Avila",
       "email": "alexavila123@aidmanager.com",
       "title": "Celebrating Team Success: Hope Heaven International's Impact in Action",
@@ -57,7 +266,7 @@
       ]
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Maria Gonzalez",
       "email": "mariagonzalez123@aidmanager.com",
       "title": "Celebrating Team Success: Hope Heaven International's Impact in Action",
@@ -71,7 +280,7 @@
       ]
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "Carlos Ramirez",
       "email": "carlosramirez123@aidmanager.com",
       "title": "Celebrating Team Success: Hope Heaven International's Impact in Action",
@@ -84,9 +293,7 @@
         "https://static.vecteezy.com/system/resources/previews/007/991/597/non_2x/two-people-carrying-saplings-to-plant-in-a-tropical-forest-a-tree-planting-campaign-to-reduce-global-warming-the-concept-of-saving-the-world-and-reducing-global-warming-free-photo.jpg"
       ]
     }
-    
   ],
-
   "team-members": [
     {
       "image": "https://avatars.githubusercontent.com/u/129230632?v=4",
@@ -143,32 +350,112 @@
       "location": "el brebaje",
       "description": "el brebaje obligatorio",
       "color": "#74A38F"
+    },
+    {
+      "id": "70a5",
+      "name": "Wariqui",
+      "date": "2024-05-16",
+      "location": "Mello Arranco",
+      "description": "brebaje pre retiro",
+      "color": "#74A38F"
     }
   ],
   "analytics": [
-    { "id":"1", "title": "Currents Stats", "values": [{
-      "time": "13% ahead of schedule",
-      "tasks": "6 tasks to be completed",
-      "workload": "0 tasks overdue",
-      "progress": "33,33% complete",
-      "cost": "35% under budget"}]
+    {
+      "id": "1",
+      "title": "Currents Stats",
+      "values": [
+        {
+          "time": "13% ahead of schedule",
+          "tasks": "6 tasks to be completed",
+          "workload": "0 tasks overdue",
+          "progress": "33,33% complete",
+          "cost": "35% under budget"
+        }
+      ]
     },
-    { "id":"2", "title": "Tasks", "values": [{
-      "to-do": 200,
-      "in-progress": 100,
-      "done": 400}]
+    {
+      "id": "2",
+      "title": "Tasks",
+      "values": [
+        {
+          "to-do": 200,
+          "in-progress": 100,
+          "done": 400
+        }
+      ]
     },
-    { "id":"3", "title": "Progress-line", "values": [{
-      "current": [28,48,20,119,86,27,90,28,48,20,119,86],
-      "expected": [65,59,80,81,56,57,40,65,59,80,81,59]}]
+    {
+      "id": "3",
+      "title": "Progress-line",
+      "values": [
+        {
+          "current": [
+            28,
+            48,
+            20,
+            119,
+            86,
+            27,
+            90,
+            28,
+            48,
+            20,
+            119,
+            86
+          ],
+          "expected": [
+            65,
+            59,
+            80,
+            81,
+            56,
+            57,
+            40,
+            65,
+            59,
+            80,
+            81,
+            59
+          ]
+        }
+      ]
     },
-    { "id":"4", "title": "Payments", "values": [{
-      "current": [28, 48, 40],
-      "expected": [65, 59, 80]}]
+    {
+      "id": "4",
+      "title": "Payments",
+      "values": [
+        {
+          "current": [
+            28,
+            48,
+            40
+          ],
+          "expected": [
+            65,
+            59,
+            80
+          ]
+        }
+      ]
     },
-    { "id":"5", "title": "Progress-bar", "values": [{
-      "current": [28, 48, 40],
-      "expected": [65, 59, 80]}]
+    {
+      "id": "5",
+      "title": "Progress-bar",
+      "values": [
+        {
+          "current": [
+            28,
+            48,
+            40
+          ],
+          "expected": [
+            65,
+            59,
+            80
+          ]
+        }
+      ]
     }
   ],
   "projects": [

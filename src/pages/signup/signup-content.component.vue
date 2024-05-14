@@ -1,10 +1,96 @@
 <script>
-import {ref} from "vue";
+import {UserService} from "@/services/user.service.js";
 
 export default {
   name: "signup-content",
-  setup() {
-    const user = ref('');
+  data() {
+    return {
+      userService: new UserService(),
+      users: [],
+      confirmPassword: '',
+      isPasswordNotMatch: false,
+      isEmailExists: false,
+      isFieldsEmpty: false,
+      isUserCreated: false,
+      form: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        profileImg: '',
+        role: ''
+      }
+    }
+  },
+  async created() {
+    await this.getUsers();
+  },
+  methods: {
+
+    async getUsers() {
+      // obtenemos la respuesta del endpoint
+      const response = await this.userService.getAllUsers();
+
+      this.users = response.data;
+      console.log(response.data);
+    },
+
+    async registerNewUser() {
+      console.log(this.form);
+
+      // verify if the inputs are empty :O
+      if (!this.areFieldsComplete()) {
+        this.isFieldsEmpty = true;
+        return;
+      }
+
+      // verify is the passwords match
+      if (this.form.password !== this.confirmPassword) {
+        this.isPasswordNotMatch = true;
+        return;
+      }
+
+      // verify is the email has already been registered in the users array with some method
+      const emailExists = this.users.some(user => user.email === this.form.email);
+      if (emailExists) {
+        this.isEmailExists = true;
+        return;
+      }
+
+      // create new user when all validations have been passed
+      try {
+        const response = await this.userService.createNewUser(this.form);
+        console.log(response);
+        this.isUserCreated = true;
+      } catch(error) {
+        console.error('Error to register a new user:', error);
+      }
+    },
+
+    areFieldsComplete() {
+
+      const fieldsRequired = ['firstName', 'lastName', 'email', 'password', 'role']
+
+      // verify if all inputs are fill
+      for (let field of fieldsRequired) {
+        if (!this.form[field] || this.form[field].trim().length === 0) {
+          return false;
+        }
+      }
+
+      // verify if at least one of the radio buttons is selected
+      if (this.form.role == '' && this.form.role == '') {
+        return false;
+      }
+
+      return true;
+    },
+
+    goToLogin() {
+      this.isUserCreated = false;
+      this.$router.push('/login');
+    }
+
   }
 }
 
@@ -19,37 +105,67 @@ export default {
     <div class="card flex">
       <span class="title font-normal" style="font-size:1rem">Transform your fundraising efforts with precision analytics.</span>
 
-      <form class="flex flex-column gap-3">
+      <form class="flex flex-column gap-3" @submit.prevent="registerNewUser">
 
         <div class="user-name-container">
-          <input type="text" placeholder="First Name" class="input-field p-3" v-model="firstName"/>
-          <input type="text" placeholder="Last Name" class="input-field p-3" v-model="lastName"/>
+          <input type="text" placeholder="First Name" class="input-field p-3" v-model="form.firstName"/>
+          <input type="text" placeholder="Last Name" class="input-field p-3" v-model="form.lastName"/>
         </div>
 
-        <input type="text" placeholder="Institution Email" class="input-field  p-3" v-model="email"/>
+        <input type="email" placeholder="Institution Email" class="input-field  p-3" v-model="form.email"/>
 
-        <input type="password" placeholder="Password" class="input-field p-3" v-model="password"/>
+        <input type="password" placeholder="Password" class="input-field p-3" v-model="form.password"/>
 
         <input type="password" placeholder="Confirm password" class="input-field p-3" v-model="confirmPassword"/>
 
-
         <div class="radio-button-container">
-          <input class="radio-input" type="radio" id="director" name="type_user" value="director" v-model="director"/>
+          <input class="radio-input" type="radio" id="director" name="type_user" value="director" v-model="form.role"/>
           <label class="radio-label" for="director">Director</label>
 
-          <input class="radio-input" type="radio" id="team" name="type_user" value="team" v-model="team"/>
+          <input class="radio-input" type="radio" id="team" name="type_user" value="team" v-model="form.role"/>
           <label class="radio-label" for="team">Team</label>
         </div>
-
         <button class="button p-3" style="color: #fff; margin-top:30px">Sign up</button>
-
       </form>
     </div>
-
-    <h3 class="card-footer">Already have an account? <a href="" class="link" style="font-weight: 600">Log in</a></h3>
-
-
+    <h3 class="card-footer">Already have an account? <router-link to="/login" class="link" style="font-weight: 600">Log in</router-link></h3>
   </div>
+  <!-- display modal when the password and password confirm do not match -->
+  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isPasswordNotMatch" :modal="true" :closable="false">
+    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
+      <i class="text-7xl pi pi-exclamation-triangle text-yellow-500"></i>
+      <h1>Check the password</h1>
+      <p class="text-md">The confirmation password and password are not the same</p>
+      <pv-button class="py-3 px-5" label="OK" @click="isPasswordNotMatch = false"/>
+    </div>
+  </pv-dialog>
+  <!-- Display modal when the email entered has already been registered -->
+  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isEmailExists" :modal="true" :closable="false">
+    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
+      <i class="text-7xl pi pi-times-circle text-red-500"></i>
+      <h1>This email is not valid!</h1>
+      <p class="text-md">The email entered has already been registered</p>
+      <pv-button class="py-3 px-5" label="OK" @click="isEmailExists = false"/>
+    </div>
+  </pv-dialog>
+  <!-- Display modal when the inputs are empty -->
+  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isFieldsEmpty" :modal="true" :closable="false">
+    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
+      <i class="text-7xl pi pi-times-circle text-red-500"></i>
+      <h1>Fill the formulary!</h1>
+      <p class="text-md">There is no information to register a user</p>
+      <pv-button class="py-3 px-5" label="OK" @click="isFieldsEmpty = false"/>
+    </div>
+  </pv-dialog>
+  <!--  Display modal when the user has successfully registered-->
+  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isUserCreated" :modal="true" :closable="false">
+    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
+      <i class="text-7xl pi pi-check-circle text-green-500"></i>
+      <h1>User created successfully!</h1>
+      <p class="text-md">You are ready to start a adventure with us</p>
+      <pv-button class="py-3 px-5" label="Go to Login" @click="goToLogin"/>
+    </div>
+  </pv-dialog>
 </template>
 
 <style scoped>
@@ -97,7 +213,7 @@ export default {
   justify-content: space-between;
   gap: 10px;
 }
-.input-field:hover {
+.input-field:focus {
   background-color: #F7F7F7;
 }
 .button {
@@ -149,7 +265,7 @@ export default {
 }
 
 .radio-input:checked {
-  border: 6px solid #02513D;
+  border: 8px solid #02513D;
 }
 
 

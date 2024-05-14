@@ -7,6 +7,11 @@ export default {
       required: true
     }
   },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
+  },
   methods: {
     handleToggle() {
       this.toggleNav();
@@ -25,7 +30,7 @@ export default {
           <img class="block h-2rem w-3rem" src="../assets/logoAidManager.png" alt="logoAidManager"/>
           <div class="title-container flex flex-column justify-content-center line-height-2">
             <p class="title font-semibold " style="letter-spacing: 1px;">AidManager</p>
-            <span class="text-sm" style="letter-spacing: .8px;">Director</span>
+            <span class="text-sm" style="letter-spacing: .8px;">{{ user.role }}</span>
           </div>
         </div>
       </div>
@@ -33,11 +38,11 @@ export default {
     <template #end>
       <div class="flex flex-row gap-3">
         <pv-avatar aria-label="yesifoto"
-                   class="w-3rem h-3rem"
-                   image="https://avatars.githubusercontent.com/u/129230632?v=4"
+                   class="w-3rem h-3rem align-self-center"
+                   :image="user.profileImg"
                    shape="circle"/>
         <div class="flex flex-column justify-content-center gap-1">
-          <p class="font-medium">Sebastian Hotman</p>
+          <p class="font-medium">{{ user.firstName + " " + user.lastName }}</p>
           <div class="flex flex-row align-items-center gap-4">
             <p class="text-sm text-green-600 font-normal">Hope Heaven</p>
             <div class="members-quantity">

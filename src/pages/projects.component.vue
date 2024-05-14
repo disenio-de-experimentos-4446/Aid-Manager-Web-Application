@@ -1,5 +1,5 @@
 <script>
-import Projects from '../components/projects/components/project-cards.component.vue'
+import Projects from '../components/projects/project-cards.component.vue'
 export default {
   name: "projects",
   components: {Projects},
