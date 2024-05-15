@@ -64,15 +64,15 @@ export default defineComponent({
   margin-top: 0.5rem;
 }
 
-.img-but{
-  width:100%;
-  object-fit:cover
+.img-but {
+  width: 100%;
+  object-fit: cover
 }
 
 @media (max-width: 768px) {
   .project-card {
     width: 100%;
-    height:auto;
+    height: auto;
   }
 }
 

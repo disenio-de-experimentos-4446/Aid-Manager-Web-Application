@@ -1,62 +1,63 @@
 <template>
-  <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
+  <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0 widthsec">
     <h1 class="title">Projects</h1>
     <br>
     <h3 class="subtitle">Current Projects</h3>
-<div class="all">
-    <div class="project-cards">
-      <!-- Mostrar proyectos con el componente CardsComponent -->
-      <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image" :id="project.id" />
+    <div class="all">
+      <div class="project-cards">
+        <!-- Mostrar proyectos con el componente CardsComponent -->
+        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image"
+                         :id="project.id"/>
 
-      <!-- Botón para agregar un nuevo proyecto -->
-      <div class="add-project">
-        <Button label="+" class="addBut" @click="showAddProjectDialog" />
-      </div>
-
-      <!-- Diálogo para agregar un nuevo proyecto -->
-      <Dialog modal="true" class="p-dialog" v-model:visible="visible">
-        <div style="padding: 2rem">
-          <h2 class="p-dialog-title block font-semibold mb-5">Add your project</h2>
-          <span class="p-text-secondary block mb-5">Add your project info.</span>
-
-          <!-- Campos para ingresar información del nuevo proyecto -->
-          <div class="flex align-items-center gap-3 mb-2">
-            <label for="name" class="font-semibold w-6rem">Name</label>
-            <InputText id="name" class="flex-auto" autocomplete="off" v-model="newProject.name" />
-          </div>
-
-          <div class="flex align-items-center gap-3 mb-2">
-            <label for="image" class="font-semibold w-6rem">Image</label>
-            <InputText id="image" class="flex-auto" autocomplete="off" v-model="newProject.image" />
-          </div>
-
-          <div class="flex align-items-center gap-3 mb-2">
-            <label for="description" class="font-semibold w-6rem">Description</label>
-            <textarea id="description" class="flex-auto" autocomplete="off" v-model="newProject.description" rows="4" cols="50" name="description-area">descripcion...</textarea>
-          </div>
-
-          <!-- Botón para agregar el nuevo proyecto -->
-          <div class="flex justify-content-end gap-2">
-            <Button label="Add" @click="createProject" style="background-color: #02513D;" />
-          </div>
+        <!-- Botón para agregar un nuevo proyecto -->
+        <div class="add-project">
+          <Button label="+" class="addBut" @click="showAddProjectDialog"/>
         </div>
-      </Dialog>
+
+        <!-- Diálogo para agregar un nuevo proyecto -->
+        <Dialog modal="true" class="p-dialog" v-model:visible="visible">
+          <div style="padding: 2rem">
+            <h2 class="p-dialog-title block font-semibold mb-5">Add your project</h2>
+            <span class="p-text-secondary block mb-5">Add your project info.</span>
+
+            <!-- Campos para ingresar información del nuevo proyecto -->
+            <div class="flex align-items-center gap-3 mb-2">
+              <label for="name" class="font-semibold w-6rem">Name</label>
+              <InputText id="name" class="flex-auto" autocomplete="off" v-model="newProject.name"/>
+            </div>
+
+            <div class="flex align-items-center gap-3 mb-2">
+              <label for="image" class="font-semibold w-6rem">Image</label>
+              <InputText id="image" class="flex-auto" autocomplete="off" v-model="newProject.image"/>
+            </div>
+
+            <div class="flex align-items-center gap-3 mb-2">
+              <label for="description" class="font-semibold w-6rem">Description</label>
+              <textarea id="description" class="flex-auto" autocomplete="off" v-model="newProject.description" rows="4"
+                        cols="50" name="description-area">descripcion...</textarea>
+            </div>
+
+            <!-- Botón para agregar el nuevo proyecto -->
+            <div class="flex justify-content-end gap-2">
+              <Button label="Add" @click="createProject" style="background-color: #02513D;"/>
+            </div>
+          </div>
+        </Dialog>
+      </div>
     </div>
-</div>
   </section>
 </template>
 
 
-
 <script setup>
-import { ref, onMounted } from 'vue';
-import  Button  from 'primevue/button';
-import  Dialog  from 'primevue/dialog';
-import  InputText  from 'primevue/inputtext';
-import CardsComponent from '@/components/projects/components/card.component.vue';
-import {ProjectsEntity} from "@/components/projects/models/projects.entity.js";
-import {fetchProjects} from "@/components/projects/components/services/projects-api.services.js";
-import {addProject} from "@/components/projects/components/services/projects-api.services.js";
+import {ref, onMounted} from 'vue';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+import CardsComponent from '@/components/projects/card.component.vue';
+import {ProjectsEntity} from "@/models/projects.entity.js";
+import {fetchProjects} from "@/services/projects-api.services.js";
+import {addProject} from "@/services/projects-api.services.js";
 // Variables reactivas
 const visible = ref(false);
 const projects = ref([]);
@@ -65,7 +66,7 @@ const newProject = ref({ProjectsEntity});
 
 // Método para obtener proyectos
 const getProjects = () => {
-      fetchProjects()
+  fetchProjects()
       .then(data => {
         projects.value = data;
       })
@@ -135,7 +136,8 @@ onMounted(() => {
 .project-cards {
   display: flex;
   flex-wrap: wrap;
-  height:30%;
+  height: auto;
+  width: 100%;
   gap: 2rem;
 }
 
@@ -155,18 +157,14 @@ onMounted(() => {
   font-weight: lighter;
 }
 
-.all{
-  overflow-y: scroll;
+.all {
   height: 100%;
 
 }
 
 
-
 @media (max-width: 768px) {
-  .project-cards {
-    flex-direction: column-reverse;
-  }
+
 
   .add-project {
     width: 90%;
@@ -175,6 +173,7 @@ onMounted(() => {
   .p-dialog {
     width: 90%;
   }
+
 }
 
 .title {

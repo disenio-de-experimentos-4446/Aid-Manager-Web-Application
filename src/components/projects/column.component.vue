@@ -5,9 +5,9 @@ import Task from './task.component.vue';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
 import {addTask, fetchTaskData} from '@/services/projects-api.services.js';
-import { TaskEntity } from '@/models/task.entity.js';
+import {TaskEntity} from '@/models/task.entity.js';
 import Dialog from 'primevue/dialog';
-import  InputText  from 'primevue/inputtext';
+import InputText from 'primevue/inputtext';
 import Calendar from "primevue/calendar";
 
 
@@ -39,7 +39,6 @@ const props = defineProps({
     required: true,
   },
 });
-
 
 
 // Función para cambiar el color dinámico
@@ -83,9 +82,9 @@ const createTask = async () => {
       due: state.value.newTask.due.toISOString().split('T')[0],
       status: props.taskColumn, // Puedes inicializar con un array vacío si es necesario
     };
-      console.log(TaskData);
+    console.log(TaskData);
 
-    const addedTask = await addTask(props.id,TaskData).then(fetchTasks); // Llama a la función del servicio
+    const addedTask = await addTask(props.id, TaskData).then(fetchTasks); // Llama a la función del servicio
 
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
 
@@ -148,7 +147,8 @@ const taskDel = () => {
       </template>
       <template #content>
         <div class="overflow">
-          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.assigned" :due="task.due" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn" />
+          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.assigned"
+                :due="task.due" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
         </div>
       </template>
       <template #footer>
@@ -159,7 +159,7 @@ const taskDel = () => {
     </Card>
 
     <!-- Diálogo para agregar una nueva tarea -->
-    <Dialog  modal:true class="p-dialog" v-model:visible="visible" :closeOnOutsideClick="true">
+    <Dialog modal:true class="p-dialog" v-model:visible="visible" :closeOnOutsideClick="true">
       <div style="padding: 2rem; display:flex; flex-direction:column; align-items:flex-start; justify-content:center">
         <h2 class="p-dialog-title block font-semibold ">Add your Task</h2>
         <span class="p-text-secondary block ">Add your Task info.</span>
@@ -167,25 +167,24 @@ const taskDel = () => {
         <!-- Campos para ingresar información del nuevo proyecto -->
         <div class=" justify-content-around">
           <label for="title" class="font-semibold w-6rem mb-2">Task Title</label>
-          <InputText id="title" class="flex flex-auto" autocomplete="off" v-model="state.newTask.title" />
+          <InputText id="title" class="flex flex-auto" autocomplete="off" v-model="state.newTask.title"/>
         </div>
 
         <div class="  justify-content-around ">
           <label for="assigned" class="font-semibold w-6rem mb-2">Employee Assigned</label>
-          <InputText id="assigned" class="flex flex-auto" autocomplete="off" v-model="state.newTask.assigned" />
+          <InputText id="assigned" class="flex flex-auto" autocomplete="off" v-model="state.newTask.assigned"/>
         </div>
 
         <div class="  justify-content-around mb-2 ">
           <label for="calendar" class="flex font-semibold w-6rem">Due date</label>
-          <Calendar id="due" v-model="state.newTask.due" :minDate="new Date()" :manualInput="false" />
+          <Calendar id="due" v-model="state.newTask.due" :minDate="new Date()" :manualInput="false"/>
 
         </div>
 
 
-
         <!-- Botón para agregar el nuevo proyecto -->
         <div class=" justify-content-end gap-2">
-          <Button label="Add" @click="createTask" style="background-color: #02513D;" />
+          <Button label="Add" @click="createTask" style="background-color: #02513D;"/>
         </div>
       </div>
     </Dialog>
@@ -198,18 +197,20 @@ const taskDel = () => {
   padding: 1rem;
   height: 100%;
 }
+
 .add-task {
   width: 100%;
   background-color: rgba(0, 0, 0, 0);
   color: #02513D;
   justify-content: center;
 }
+
 .overflow {
   overflow-y: auto;
   height: 46vh;
 }
 
-.p-dialog{
+.p-dialog {
   width: 80%;
 }
 
@@ -221,9 +222,9 @@ const taskDel = () => {
 @media (max-width: 1028px) {
 
 
- .project-card {
+  .project-card {
     width: 100%;
-    height:auto;
+    height: auto;
   }
 
 }
@@ -237,34 +238,37 @@ const taskDel = () => {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  box-shadow:none;
+  box-shadow: none;
   border-radius: 10px;
-  opacity:1;
+  opacity: 1;
 }
+
 ::-webkit-scrollbar-track {
   background-color: rgba(0, 138, 102, 0);
-  box-shadow:none;
+  box-shadow: none;
   opacity: 1;
   border-radius: 10px;
 
 }
+
 ::-webkit-scrollbar-track-piece {
   background-color: rgba(0, 138, 102, 0);
   opacity: 1;
-  box-shadow:none;
+  box-shadow: none;
   border-radius: 10px;
 
 }
+
 ::-webkit-scrollbar {
   width: 0.2rem;
-  opacity:1;
-  box-shadow:none;
+  opacity: 1;
+  box-shadow: none;
   border-radius: 10px;
 
 }
 
-.p-dialog{
-  width: 20rem ;
+.p-dialog {
+  width: 20rem;
   padding: 1rem;
   border-radius: 1rem;
   background-color: #f0f0f0;

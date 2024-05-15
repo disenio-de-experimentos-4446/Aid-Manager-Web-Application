@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../pages/home.component.vue'
 import Calendar from '../pages/calendar.component.vue'
 import Analytics from "@/pages/analytics.component.vue";
-import Projects from "@/pages/projects.component.vue";
 import Team from "@/pages/team.component.vue";
 import todoComponent from "@/components/projects/todo.component.vue";
 import Login from "@/pages/login/login-content.component.vue";
@@ -12,6 +11,7 @@ import PaymentDetails from "@/pages/payment-details/payment-details.component.vu
 import Setup from "@/pages/preliminar-setup/setup-content.component.vue";
 import NewPost from "@/pages/new-post.component.vue";
 import Profile from "@/pages/profile.component.vue";
+import ProjectsComponent from "@/pages/projects.component.vue";
 
 const routes = [
     { path: '/login', component: Login },
@@ -25,7 +25,7 @@ const routes = [
         children: [
             { path: 'home', component: Home },
             { path: 'calendar', component: Calendar },
-            { path: 'projects', component: Projects },
+            { path: 'projects', component: ProjectsComponent },
             { path: 'projects/:id/toDo', name: 'projectTodo', component: todoComponent, props: true },
             { path: 'analytics', component: Analytics },
             { path: 'team', component: Team },
