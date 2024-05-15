@@ -28,9 +28,14 @@ export default {
 
       console.log(this.inputUpdateInfo);
 
-      if (!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName || !this.inputUpdateInfo.email) {
-        alert("Please fill all the fields");
-        return;
+      if (!this.inputUpdateInfo.firstName) {
+        this.inputUpdateInfo.firstName = this.user.firstName
+      }
+      if(!this.inputUpdateInfo.lastName) {
+        this.inputUpdateInfo.lastName = this.user.lastName
+      }
+      if(!this.inputUpdateInfo.email) {
+        this.inputUpdateInfo.email = this.user.email
       }
 
       // usamos el spread operator "..." para planchar la data del form en el estado user
@@ -65,15 +70,17 @@ export default {
           <p class="name">{{ user.firstName + " " + user.lastName }}</p>
           <p class="email">{{ user.email }}</p>
           <p class="role">{{ user.role }}</p>
-          <button class="edit-button" @click="togglePopUp">Editar perfil</button>
+          <button class="edit-button" @click="togglePopUp">Edit profile</button>
         </div>
       </div>
     </div>
     <div class="popup absolute flex justify-content-center align-items-center" v-if="showPopUp">
       <div class="popup__content relative border-round-2xl">
+        <i class="fa-solid fa-xmark absolute top-0 right-0 p-3" @click="togglePopUp()"></i>
+
         <div class="form__update-profile">
           <form role="form" class="flex flex-column gap-2 justify-content-center align-items-center">
-            <input type="text" placeholder="First Name" v-model="inputUpdateInfo['firstName']">
+            <input type="text" placeholder="First Name" v-model="inputUpdateInfo['firstName']" >
             <input type="text" placeholder="Last Name" v-model="inputUpdateInfo['lastName']">
             <input type="email" placeholder="Email" v-model="inputUpdateInfo['email']">
           </form>
@@ -93,6 +100,7 @@ export default {
   align-items: center;
   height: 100%;
   width: 100%;
+  position: relative;
 }
 
 .profile-card {
