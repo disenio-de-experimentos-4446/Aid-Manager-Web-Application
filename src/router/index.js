@@ -6,6 +6,7 @@ import Projects from "@/pages/projects.component.vue";
 import Team from "@/pages/team.component.vue";
 import todoComponent from "@/components/projects/components/todo.component.vue";
 
+
 const routes = [
     { path: '/', component: Home },
     { path: '/calendar', component: Calendar },
