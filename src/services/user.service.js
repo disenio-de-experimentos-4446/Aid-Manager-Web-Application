@@ -51,5 +51,7 @@ export class UserService {
             throw error;
         }
     }
-
+    async updateUser( user ) {
+        return await this.http.put(`users/${user.id}`, user);
+    }
 }

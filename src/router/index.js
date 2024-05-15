@@ -11,6 +11,7 @@ import SignUp from "@/pages/signup/signup-content.component.vue";
 import PaymentDetails from "@/pages/payment-details/payment-details.component.vue";
 import Setup from "@/pages/preliminar-setup/setup-content.component.vue";
 import NewPost from "@/pages/new-post.component.vue";
+import Profile from "@/pages/profile.component.vue";
 
 const routes = [
     { path: '/login', component: Login },
@@ -28,7 +29,8 @@ const routes = [
             { path: 'projects/:id/toDo', name: 'projectTodo', component: todoComponent, props: true },
             { path: 'analytics', component: Analytics },
             { path: 'team', component: Team },
-            { path: 'new-post', component: NewPost }
+            { path: 'new-post', component: NewPost },
+            { path: 'profile', name:'profile', component: Profile }
         ]
     }
 ]

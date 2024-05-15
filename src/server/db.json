@@ -20,8 +20,8 @@
     },
     {
       "id": "3",
-      "firstName": "Nekolas",
-      "lastName": "Estebanquito",
+      "firstName": "Neko",
+      "lastName": "Estebankito",
       "email": "neko@aidmanager.com",
       "password": "admin123",
       "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/arigeimpleis.jpg?raw=true",
@@ -327,14 +327,6 @@
     }
   ],
   "events": [
-    {
-      "id": "0e57",
-      "name": "Brebaje 2",
-      "date": "2024-05-10",
-      "location": "UPSEX",
-      "description": "traer brebaje",
-      "color": "#74A38F"
-    },
     {
       "id": "512b",
       "name": "BREBAJE FINAL",
@@ -712,6 +704,14 @@
           "image": "https://example.com/avatar3.jpg"
         }
       ]
+    },
+    {
+      "id": "4",
+      "name": "prueba",
+      "image": "img",
+      "description": "descripción prueba",
+      "tasks": [],
+      "members": []
     }
   ],
   "messages": {

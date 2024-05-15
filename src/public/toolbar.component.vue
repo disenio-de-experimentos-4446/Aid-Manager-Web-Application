@@ -15,6 +15,9 @@ export default {
   methods: {
     handleToggle() {
       this.toggleNav();
+    },
+    navigateToProfile() {
+      this.$router.push('/profile')
     }
   }
 }
@@ -38,11 +41,16 @@ export default {
     <template #end>
       <div class="flex flex-row gap-3">
         <pv-avatar aria-label="yesifoto"
-                   class="w-3rem h-3rem align-self-center"
+                   class="w-3rem h-3rem align-self-center user-img"
                    :image="user.profileImg"
-                   shape="circle"/>
+                   shape="circle"
+                   @click="navigateToProfile"
+                   :class="{ active: $route.path === '/profile' }"/>
         <div class="flex flex-column justify-content-center gap-1">
-          <p class="font-medium">{{ user.firstName + " " + user.lastName }}</p>
+          <p class="font-medium user-name"
+             @click="navigateToProfile"
+             :class="{ active: $route.path === '/profile' }">
+             {{ user.firstName + " " + user.lastName }}</p>
           <div class="flex flex-row align-items-center gap-4">
             <p class="text-sm text-green-600 font-normal">Hope Heaven</p>
             <div class="members-quantity">
@@ -80,7 +88,9 @@ export default {
 .members-quantity span {
   color: #008A66;
 }
-
+.user-img, .user-name {
+  cursor: pointer;
+}
 @media (max-width: 1024px) {
 
   .pi-bars {
