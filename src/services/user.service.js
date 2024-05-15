@@ -51,7 +51,14 @@ export class UserService {
             throw error;
         }
     }
-    async updateUser( user ) {
-        return await this.http.put(`users/${user.id}`, user);
+
+    async updateUser(user) {
+        try {
+            const response = await this.http.put(`users/${user.id}`, user);
+            return response.data;
+        } catch (error) {
+            console.error('Error al actualizar el usuario:', error);
+            throw error;
+        }
     }
 }

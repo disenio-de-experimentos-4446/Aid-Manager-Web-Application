@@ -30,7 +30,7 @@ const routes = [
             { path: 'analytics', component: Analytics },
             { path: 'team', component: Team },
             { path: 'new-post', component: NewPost },
-            { path: 'profile', name:'profile', component: Profile }
+            { path: 'profile/:id', name:'profile', component: Profile },
         ]
     }
 ]

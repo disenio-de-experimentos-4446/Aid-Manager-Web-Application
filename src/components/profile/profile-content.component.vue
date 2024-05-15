@@ -1,5 +1,6 @@
 <script>
 import {UserService} from "@/services/user.service.js";
+import {mapState} from "vuex";
 
 export default {
   name: "ProfileContent",
@@ -13,13 +14,9 @@ export default {
       userService: new UserService(),
       showPopUp: false,
       inputUpdateInfo: {
-        id: "",
         firstName: "",
         lastName: "",
         email: "",
-        password: "",
-        profileImg: "",
-        role: ""
       }
     }
   },
@@ -28,21 +25,30 @@ export default {
       this.showPopUp = !this.showPopUp;
     },
     async updateProfile() {
+
+      console.log(this.inputUpdateInfo);
+
       if (!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName || !this.inputUpdateInfo.email) {
         alert("Please fill all the fields");
         return;
       }
-      this.inputUpdateInfo.id = this.user.id;
-      this.inputUpdateInfo.role = this.user.role;
-      this.inputUpdateInfo.password = this.user.password;
-      this.inputUpdateInfo.profileImg = this.user.profileImg;
 
-      const response = await this.userService.updateUser(this.inputUpdateInfo);
-      if (response) {
-        console.log('trying to update user info');
-        this.$store.commit("setUser", response);
-        this.togglePopUp();
+      // usamos el spread operator "..." para planchar la data del form en el estado user
+      // , ademas incluyendo el id que recibimos por parametro de la ruta
+      const newUser = {
+        ...this.user,
+        ...this.inputUpdateInfo,
+        id: this.$route.params.id
+      };
+
+      try {
+        // disparamos el updateUser pasando como param el nuevo user con la data actualizada
+        await this.$store.dispatch('updateUser', newUser);
+        this.togglePopUp(); // cerramos el popap >.<
+      } catch (error) {
+        console.error('Error al actualizar el usuario:', error);
       }
+
     }
   }
 }

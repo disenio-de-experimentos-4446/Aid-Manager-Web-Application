@@ -17,7 +17,7 @@ export default {
       this.toggleNav();
     },
     navigateToProfile() {
-      this.$router.push('/profile')
+      this.$router.push(`/profile/${this.user.id}`);
     }
   }
 }
@@ -42,7 +42,7 @@ export default {
       <div class="flex flex-row gap-3">
         <pv-avatar aria-label="yesifoto"
                    class="w-3rem h-3rem align-self-center user-img"
-                   :image="user.profileImg"
+                   :image="user?.profileImg"
                    shape="circle"
                    @click="navigateToProfile"
                    :class="{ active: $route.path === '/profile' }"/>
@@ -50,7 +50,7 @@ export default {
           <p class="font-medium user-name"
              @click="navigateToProfile"
              :class="{ active: $route.path === '/profile' }">
-             {{ user.firstName + " " + user.lastName }}</p>
+             {{ user?.firstName + " " + user?.lastName }}</p>
           <div class="flex flex-row align-items-center gap-4">
             <p class="text-sm text-green-600 font-normal">Hope Heaven</p>
             <div class="members-quantity">

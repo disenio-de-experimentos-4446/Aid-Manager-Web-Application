@@ -12,7 +12,7 @@
     {
       "id": "2",
       "firstName": "Sebastian",
-      "lastName": "Piñera",
+      "lastName": "Peña",
       "email": "rosadita@aidmanager.com",
       "password": "admin123",
       "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/Manuel.jpg?raw=true",
@@ -20,12 +20,12 @@
     },
     {
       "id": "3",
-      "firstName": "Neko",
-      "lastName": "Estebankito",
+      "firstName": "Nekito",
+      "lastName": "Soaps",
       "email": "neko@aidmanager.com",
+      "role": "Director",
       "password": "admin123",
-      "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/arigeimpleis.jpg?raw=true",
-      "role": "Director"
+      "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/arigeimpleis.jpg?raw=true"
     },
     {
       "id": "4",
