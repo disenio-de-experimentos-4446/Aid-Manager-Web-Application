@@ -61,8 +61,9 @@ export default {
 </script>
 
 <template>
-    <pv-chart type="doughnut" :data="chartData" :options="chartOptions" class="w-full md:w-30rem" />
-
+    <div class="card w-full h-full p-3 flex">
+      <pv-chart type="doughnut" :data="chartData" :options="chartOptions" class="flex w-full h-12rem" />
+    </div>
 </template>
 
 <style scoped>

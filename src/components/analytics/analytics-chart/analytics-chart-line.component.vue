@@ -1,8 +1,9 @@
 <script>
 import {analytic} from "@/models/analytic.entity.js";
 import {AnalyticsService} from "@/services/analytics.service.js";
+
 export default {
-  name: 'analytics-chart-vertical-bar',
+  name: 'analytics-chart-line',
   data() {
     return {
       chartData: null,
@@ -20,23 +21,30 @@ export default {
   methods: {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
-      const verticalBarAnalytics = this.analytics.find(analytic => analytic.title === 'Progress-bar');
-      const currentData =  verticalBarAnalytics.values[0]['current'];
-      const expectedData =  verticalBarAnalytics.values[0]['expected'];
+
+      const lineAnalytics = this.analytics.find(analytic => analytic.title === 'Progress-line');
+
+      const currentData =  lineAnalytics.values[0]['current'];
+      const expectedData =  lineAnalytics.values[0]['expected'];
+
       return {
-        labels: ['Actual', 'Planned','Budget'],
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'september','October', 'November','december'],
         datasets: [
           {
             label: 'Current',
+            data: currentData,
+            fill: false,
             backgroundColor: documentStyle.getPropertyValue('--green-300'),
             borderColor: documentStyle.getPropertyValue('--green-300'),
-            data: currentData
+            tension: 0.4
           },
           {
             label: 'Expected',
+            data: expectedData,
+            fill: false,
             backgroundColor: documentStyle.getPropertyValue('--green-500'),
             borderColor: documentStyle.getPropertyValue('--green-500'),
-            data: expectedData
+            tension: 0.4
           }
         ]
       };
@@ -49,7 +57,7 @@ export default {
 
       return {
         maintainAspectRatio: false,
-        aspectRatio: 0.8,
+        aspectRatio: 0.6,
         plugins: {
           legend: {
             labels: {
@@ -60,14 +68,10 @@ export default {
         scales: {
           x: {
             ticks: {
-              color: textColorSecondary,
-              font: {
-                weight: 500
-              }
+              color: textColorSecondary
             },
             grid: {
-              display: false,
-              drawBorder: false
+              color: surfaceBorder
             }
           },
           y: {
@@ -75,8 +79,7 @@ export default {
               color: textColorSecondary
             },
             grid: {
-              color: surfaceBorder,
-              drawBorder: false
+              color: surfaceBorder
             }
           }
         }
@@ -86,9 +89,11 @@ export default {
 };
 </script>
 <template>
-  <div class="card">
-    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-10rem"  />
+  <div class="card w-full flex p-3">
+    <pv-chart type="line" :data="chartData" :options="chartOptions" class="w-full h-12rem" />
   </div>
 </template>
+
 <style scoped>
+
 </style>

@@ -1,6 +1,6 @@
 <script>
-import AnalyticsCardProjects from "@/components/analytics/components/analytics-card/analytics-card-projects.component.vue";
-import AnalyticsCardReport from "@/components/analytics/components/analytics-card/analytics-card-report.component.vue";
+import AnalyticsCardProjects from "@/components/analytics/analytics-card/analytics-card-projects.component.vue";
+import AnalyticsCardReport from "@/components/analytics/analytics-card/analytics-card-report.component.vue";
 
 export default {
   name: "analytics-content",
@@ -9,11 +9,7 @@ export default {
 </script>
 
 <template>
-  <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
-    <div class="flex analytics-container border-round-xl">
-    </div>
-    <analytics-card-projects></analytics-card-projects>
-  </section>
+  <analytics-card-projects></analytics-card-projects>
 </template>
 
 <style scoped>
