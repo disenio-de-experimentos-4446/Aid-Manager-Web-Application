@@ -28,7 +28,7 @@ export default {
 }
 </script>
 <template>
-  <section class="h-full p-5 w-full">
+  <section class="h-full p-4 lg:p-5 w-full">
     <h2>Clean Carpayo Beach</h2>
     <h3 class="my-3 font-medium">Current projects:</h3>
     <div class="analytics-container">

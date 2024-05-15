@@ -72,13 +72,11 @@ export default {
 
     .main-container {
       width: calc(100% - 349px);
-      padding: 30px;
       min-height: calc(100vh - 112px);
     }
     @media(max-width: 1024px) {
       .main-container {
         width: 100%;
-        padding: 20px;
       }
     }
   }

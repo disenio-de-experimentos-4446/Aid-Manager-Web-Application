@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-  <section class="new-post-container h-full flex flex-column gap-3">
+  <section class="new-post-container h-full flex flex-column gap-3 p-4 lg:p-5">
     <h1 class="text-3xl font-medium">Create a post</h1>
     <p class="text-sm text-gray-700">No recent publications</p>
     <div class="post-background h-full flex align-items-center mt-5 sm:mt-0">

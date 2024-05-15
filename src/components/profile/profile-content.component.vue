@@ -11,6 +11,7 @@ export default {
   },
   data() {
     return {
+      isFieldsEmpty: false,
       userService: new UserService(),
       showPopUp: false,
       inputUpdateInfo: {
@@ -21,21 +22,27 @@ export default {
     }
   },
   methods: {
+    clearInputUpdateInfo() {
+      this.inputUpdateInfo = {
+        firstName: "",
+        lastName: "",
+        email: "",
+      };
+    },
+
     togglePopUp() {
       this.showPopUp = !this.showPopUp;
     },
+
     async updateProfile() {
 
       console.log(this.inputUpdateInfo);
 
-      if (!this.inputUpdateInfo.firstName) {
-        this.inputUpdateInfo.firstName = this.user.firstName
-      }
-      if(!this.inputUpdateInfo.lastName) {
-        this.inputUpdateInfo.lastName = this.user.lastName
-      }
-      if(!this.inputUpdateInfo.email) {
-        this.inputUpdateInfo.email = this.user.email
+      // verificamos si los campos de entrada están vacíos
+      if (!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName || !this.inputUpdateInfo.email) {
+        this.isFieldsEmpty = true;
+        console.error('Error: Todos los campos deben estar llenos para actualizar el usuario.');
+        return;
       }
 
       // usamos el spread operator "..." para planchar la data del form en el estado user
@@ -49,6 +56,7 @@ export default {
       try {
         // disparamos el updateUser pasando como param el nuevo user con la data actualizada
         await this.$store.dispatch('updateUser', newUser);
+        this.clearInputUpdateInfo(); // limpamos el form luego de enviado
         this.togglePopUp(); // cerramos el popap >.<
       } catch (error) {
         console.error('Error al actualizar el usuario:', error);
@@ -75,20 +83,27 @@ export default {
       </div>
     </div>
     <div class="popup absolute flex justify-content-center align-items-center" v-if="showPopUp">
-      <div class="popup__content relative border-round-2xl">
-        <i class="fa-solid fa-xmark absolute top-0 right-0 p-3" @click="togglePopUp()"></i>
+      <div class="popup__content relative border-round-2xl overflow-hidden">
+        <i class="cursor-pointer bg-gray-300 hover:bg-gray-500 transition-duration-300 fa-solid fa-xmark absolute w-auto top-0 right-0 p-3" @click="togglePopUp()"></i>
 
         <div class="form__update-profile">
-          <form role="form" class="flex flex-column gap-2 justify-content-center align-items-center">
+          <form role="form" class="flex flex-column gap-3 justify-content-center align-items-center" @submit.prevent="updateProfile">
             <input type="text" placeholder="First Name" v-model="inputUpdateInfo['firstName']" >
             <input type="text" placeholder="Last Name" v-model="inputUpdateInfo['lastName']">
             <input type="email" placeholder="Email" v-model="inputUpdateInfo['email']">
+            <button class="form__update-profile-button px-5 border-none" type="submit">Save</button>
           </form>
-
-          <div class="form__update-profile-button" @click="updateProfile()">Save</div>
         </div>
       </div>
     </div>
+    <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isFieldsEmpty" :modal="true" :closable="false">
+      <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
+        <i class="text-7xl pi pi-times-circle text-red-500"></i>
+        <h1>Fill the formulary!</h1>
+        <p class="text-md">There is no information to update a user</p>
+        <pv-button class="py-3 px-5" label="OK" @click="isFieldsEmpty = false"/>
+      </div>
+    </pv-dialog>
   </div>
 </template>
 
@@ -101,6 +116,10 @@ export default {
   height: 100%;
   width: 100%;
   position: relative;
+}
+
+.profile-wrapper i {
+  border-bottom-left-radius: 8px;
 }
 
 .profile-card {
