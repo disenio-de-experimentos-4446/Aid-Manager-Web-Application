@@ -48,7 +48,7 @@ export default {
 </script>
 
 <template>
-  <section class="flex h-full flex-column lg:pb-0">
+  <section class="flex h-full flex-column lg:pb-5 p-4 lg:p-5">
     <div class="flex home-hero-container border-round-xl">
       <img class="home-hero-image border-round-xl" src="../../assets/home-hero.png"/>
     </div>

@@ -103,7 +103,7 @@ export default {
 </script>
 
 <template>
-  <div class="calendar relative">
+  <div class="calendar relative p-4 lg:p-5">
     <h1 aria-label="title">Calendar</h1>
     <div class="calendar__days-week" role="heading">
       <span aria-label="title">SUN</span>
@@ -141,7 +141,7 @@ export default {
       </div>
     </div>
 
-    <div class="popup absolute flex justify-content-center align-items-center" v-if="showPopUp">
+    <div class="popup absolute flex justify-content-center align-items-center " v-if="showPopUp">
       <div class="popup__content relative border-round-2xl">
         <i class="fa-solid fa-xmark absolute top-0 right-0 p-3" @click="togglePopUp()"></i>
         <h2>Events</h2>

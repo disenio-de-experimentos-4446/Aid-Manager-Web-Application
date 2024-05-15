@@ -97,7 +97,7 @@ export default {
 </script>
 
 <template>
-  <div class="signup-container h-screen flex">
+  <div class="signup-container min-h-screen flex">
     <div class="logo-container flex">
       <img src="../../assets/logoAidManager.png" alt="logo" />
       <span class="font-bold text-4xl">AidManager</span>
@@ -238,6 +238,7 @@ export default {
 .card-footer {
   font-weight: normal;
   font-size: 1rem;
+  margin: 0 0 3rem 0;
 }
 .radio-button-container {
    display: flex;

@@ -65,7 +65,7 @@ export default {
 </script>
 
 <template>
-  <div class="team__content relative">
+  <div class="team__content relative p-4 lg:p-5">
     <div class="team__content-banner flex justify-content-center align-items-center" role="heading">
       <h1 aria-label="title" class="font-italic team__content-title text-6xl md:text-7xl xl:text-8xl">Yesi's Hotman
         Team</h1>
