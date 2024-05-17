@@ -3,12 +3,14 @@ import CalendarService from "@/services/calendar.service.js";
 import TrashIcon from "../../assets/trash-icon.svg";
 import EditIcon from "../../assets/edit-event-icon.svg";
 import EventEntity from "@/models/event.entity.js";
+import DropdownProjects from "@/components/dropdown/dropdown.component.vue";
 
 export default {
   name: "calendar-content",
   components: {
+    DropdownProjects,
     TrashIcon,
-    EditIcon
+    EditIcon,
   },
   data() {
     return {
@@ -129,6 +131,7 @@ export default {
 <template>
   <div class="calendar relative p-4 lg:p-5">
     <h1 aria-label="title">Calendar</h1>
+    <dropdown-projects></dropdown-projects>
     <div class="calendar__days-week" role="heading">
       <span aria-label="title">SUN</span>
       <span aria-label="title">MON</span>
@@ -202,7 +205,6 @@ export default {
 </template>
 
 <style scoped>
-
 .calendar {
   display: flex;
   flex-direction: column;
@@ -214,7 +216,7 @@ export default {
 
 .calendar h1 {
   text-align: left;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   font-weight: 400;
   font-size: 2rem;
 }

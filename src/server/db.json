@@ -9,7 +9,7 @@
       "color": "#74A38F"
     },
     {
-      "id": "1f60", 
+      "id": "1f60",
       "name": "Wariqui",
       "date": "2024-05-16",
       "location": "Brebaje pre retiro",
@@ -23,6 +23,93 @@
       "location": "yesihuarique",
       "description": "",
       "color": "#98CFD7"
+    }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "name": "Clean Carpayo Beach",
+      "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRlwAa3FhsapzrIDW2IyMtMjR0VTgOmKkEXw6_N60MahSJE_N9Y",
+      "description": "Cleaning Clean Carpayo Beach is a project that aims to clean the beach of Carpayo, located in the district of San Juan de Lurigancho. The project is carried out by a group of volunteers who are committed to the environment and the cleanliness of the beaches.",
+      "tasks": [
+        {
+          "id": 1,
+          "title": "Tarea 1",
+          "assigned": "personaX",
+          "due": "7/10/2018 00:00",
+          "status": "Doing"
+        },
+        {
+          "id": 2,
+          "title": "Tarea 2",
+          "assigned": "personaY",
+          "due": "7/15/2018 00:00",
+          "status": "To-Do"
+        },
+        {
+          "id": 3,
+          "title": "Tarea 3",
+          "assigned": "personaZ",
+          "due": "7/20/2018 00:00",
+          "status": "To-Do"
+        },
+        {
+          "id": 4,
+          "title": "Tarea 4",
+          "assigned": "personaX",
+          "due": "7/25/2018 00:00",
+          "status": "Done"
+        },
+        {
+          "id": 5,
+          "title": "Tarea 5",
+          "assigned": "personaY",
+          "due": "7/30/2018 00:00",
+          "status": "To-Do"
+        },
+        {
+          "id": 6,
+          "title": "Tarea 6",
+          "assigned": "personaZ",
+          "due": "8/5/2018 00:00",
+          "status": "Doing"
+        },
+        {
+          "id": 7,
+          "title": "Tarea 7",
+          "assigned": "personaX",
+          "due": "8/10/2018 00:00",
+          "status": "To-Do"
+        },
+        {
+          "id": 8,
+          "title": "Tarea 8",
+          "assigned": "personaY",
+          "due": "8/15/2018 00:00",
+          "status": "To-Do"
+        },
+        {
+          "id": 9,
+          "title": "Tarea 9",
+          "assigned": "personaZ",
+          "due": "8/20/2018 00:00",
+          "status": "To-Do"
+        },
+        {
+          "id": 10,
+          "title": "Tarea 10",
+          "assigned": "personaX",
+          "due": "8/25/2018 00:00",
+          "status": "To-Do"
+        },
+        {
+          "id": 11,
+          "title": "Tarea 11",
+          "assigned": "EseYesi",
+          "due": "872jks",
+          "status": "To-Do"
+        }
+      ]
     }
   ]
 }
