@@ -12,5 +12,31 @@
       "email": "nicola@hotmans.com",
       "id": "1778"
     }
+  ],
+  "messages": [
+    {
+      "id": "9dd5",
+      "idMember": {
+        "date": "2024-05-17T04:35:46.243Z",
+        "message": "asasd",
+        "sender": "Rosa Dita"
+      }
+    },
+    {
+      "id": "3eac",
+      "idMember": {
+        "date": "2024-05-17T04:36:08.753Z",
+        "message": "sdsad",
+        "sender": "Rosa Dita"
+      }
+    },
+    {
+      "id": "c29a",
+      "idMember": {
+        "date": "2024-05-17T04:37:19.471Z",
+        "message": "asdasd",
+        "sender": "Rosa Dita"
+      }
+    }
   ]
 }

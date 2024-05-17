@@ -17,6 +17,7 @@ export default {
       userSelected: null,
       members: [],
       message: "",
+      messageSent: true,
       teamMemberService: new TeamMembersService()
     }
   },
@@ -40,25 +41,34 @@ export default {
     },
     togglePopUp: function (id, popUpDetail) {
       this.popUpDetail = popUpDetail;
-      console.log(id);
       this.popUp = !this.popUp;
       this.userSelected = this.members.find(m => m.id === id);
-      console.log(this.popUp)
-      console.log(this.userSelected)
+      this.messageSent = true;
     },
-    sendMessage: async function () {
-      const body = {
-        id: "2",
-        date: new Date().getUTCDate(),
-        message: this.message,
-        sender: this.userSelected.name
+    sendMessage: async function (idMember) {
+      if(!this.message) {
+        this.messageSent = false;
+        return;
       }
-      const result = await this.teamMemberService.newMessage(this.userSelected.id, body)
+
+      const body = {
+        idMember: {
+          date: new Date(),
+          message: this.message,
+          sender: this.userSelected.name // here should be the user name with the session active (global storage ><)
+        }
+      }
+
+      const result = await this.teamMemberService.newMessage(idMember, body)
       if (!result) {
         console.error("Failed to send message")
       } else {
         console.log("Message sent")
       }
+
+      this.popUp = false;
+      this.messageSent = true;
+      this.message = "";
     },
     kickMember: async function(idMember) {
       await this.teamMemberService.kickMember(idMember)
@@ -131,8 +141,10 @@ export default {
           <div class="popup__member-description" aria-label="description">
             <textarea class="border-round-2xl w-full h-40" placeholder="Can you leave your message here..."
                       v-model="message"></textarea>
+
+            <p v-if="!messageSent" class="message-empty">The message should not be empty</p>
           </div>
-          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer" @click="sendMessage()">
+          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer" @click="sendMessage(userSelected.id)">
             Send
           </div>
 
@@ -230,12 +242,18 @@ export default {
 }
 
 .button:hover {
-  transform: scale(1.02);
+  opacity: .9;
 }
 
 .popup__content-img img {
   border-radius: 10px;
   margin-bottom: 1rem;
+}
+
+.message-empty {
+  font-size: .8rem;
+  font-style: italic;
+  color: red;
 }
 
 @media screen and (max-width: 730px) {
