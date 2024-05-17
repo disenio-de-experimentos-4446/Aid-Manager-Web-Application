@@ -15,10 +15,17 @@
         </div>
 
         <!-- Diálogo para agregar un nuevo proyecto -->
-        <Dialog modal="true" class="p-dialog" v-model:visible="visible">
+        <Dialog modal class="p-dialog" v-model:visible="visible">
           <div style="padding: 2rem">
             <h2 class="p-dialog-title block font-semibold mb-5">Add your project</h2>
+            <p v-if="Errors.length">
+              <b>Please correct the following error(s):</b>
+              <ul>
+                <li v-for="error in Errors">{{ error }}</li>
+              </ul>
+            </p>
             <span class="p-text-secondary block mb-5">Add your project info.</span>
+
 
             <!-- Campos para ingresar información del nuevo proyecto -->
             <div class="flex align-items-center gap-3 mb-2">
@@ -39,7 +46,7 @@
 
             <!-- Botón para agregar el nuevo proyecto -->
             <div class="flex justify-content-end gap-2">
-              <Button label="Add" @click="createProject" style="background-color: #02513D;"/>
+              <Button type="submit" label="Add" @click="checkForm" style="background-color: #02513D;"/>
             </div>
           </div>
         </Dialog>
@@ -62,7 +69,28 @@ import {addProject} from "@/services/projects-api.services.js";
 const visible = ref(false);
 const projects = ref([]);
 const newProject = ref({ProjectsEntity});
+const Errors = ref([]);
 
+const checkForm = () =>{
+  Errors.value = [];
+
+  if (!newProject.value.name || !newProject.value.image || !newProject.value.description) {
+    Errors.value.push('Fill the Form [Title, Image, Description]');
+  }
+  projects.value.forEach((project) => {
+    if (project.name.toUpperCase() === newProject.value.name.toUpperCase()) {
+      Errors.value.push('This Project Already Exists');
+      console.log('The project already exists');
+    }
+  });
+  if (Errors.value.length === 0){
+    createProject();
+  }
+  else{
+    return Errors.value;
+  }
+
+}
 
 // Método para obtener proyectos
 const getProjects = () => {
@@ -82,11 +110,6 @@ const showAddProjectDialog = () => {
 
 // Método para agregar un nuevo proyecto
 const createProject = async () => {
-  if (!newProject.value.name || !newProject.value.image || !newProject.value.description) {
-    alert('Por favor, ingrese el título, la descripción y la URL de la imagen para el nuevo proyecto.');
-    return;
-  }
-
   try {
     const projectData = {
       id: String(projects.value.length + 1), // Puedes generar un ID único aquí
@@ -96,10 +119,7 @@ const createProject = async () => {
       tasks: [], // Puedes inicializar con un array vacío si es necesario
       members: [] // Puedes inicializar con un array vacío si es necesario
     };
-
-
     const addedProject = await addProject(projectData); // Llama a la función del servicio
-
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
     projects.value.push({
       id: addedProject.id,
@@ -109,7 +129,6 @@ const createProject = async () => {
       tasks: addedProject.tasks || [], // Puedes inicializar con un array vacío si es necesario
       members: addedProject.members || [] // Puedes inicializar con un array vacío si es necesario
     });
-
     console.log('Nuevo proyecto agregado:', addedProject);
 
     // Limpiar los campos del nuevo proyecto después de guardarlo
@@ -143,7 +162,6 @@ onMounted(() => {
 
 .add-project {
   width: 20%;
-  margin: 1rem;
 }
 
 .addBut {
@@ -167,7 +185,7 @@ onMounted(() => {
 
 
   .add-project {
-    width: 90%;
+    width: 100%;
   }
 
   .p-dialog {

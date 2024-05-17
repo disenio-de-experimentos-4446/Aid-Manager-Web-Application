@@ -1,48 +1,47 @@
 <template>
   <div class="project-card">
-    <Button class="img-but" @click="openTodo()">
-      <img :src="image" alt="Project Image" class="project-image" />
+    <Button class="img-but" @click="openTodo">
+      <img :src="props.image" alt="Project Image" class="project-image" />
     </Button>
-    <div class="project-name">{{ name }}</div>
+    <div class="project-name">{{ props.name }}</div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-import Button from 'primevue/button';
 
-export default defineComponent({
-  name: 'CardsComponent',
-  props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    image: {
-      type: String,
-      required: false,
-    },
-    id: {
-      type: String,
-      required: true,
-    },
+<script setup>
+import Button from "primevue/button";
+import {defineProps} from 'vue';
+import router from "@/router/index.js";
+const props = defineProps({
+
+  name: {
+    type: String,
+        required: true,
   },
-  components: {
-    Button,
+  image: {
+    type: String,
+        required: false,
   },
-  methods: {
-    openTodo() {
-      const encodedId = this.id;
-      console.log(encodedId);
-      this.$router.push({
-        name: 'projectTodo',
-        params: {
-          id: encodedId,
-        },
-      });
-    },
+  id: {
+    type: String,
+        required: true,
   },
+
 });
+
+
+const openTodo = () => {
+  const encodedId = props.id;
+  console.log(encodedId);
+  router.push({
+    name: 'projectTodo',
+    params: {
+      id: encodedId,
+    },
+  });
+};
+
+
 </script>
 
 <style scoped>
