@@ -59,6 +59,16 @@ export default {
       } else {
         console.log("Message sent")
       }
+    },
+    kickMember: async function(idMember) {
+      await this.teamMemberService.kickMember(idMember)
+          .then(r =>{
+            if (r) {
+              this.members = this.members.filter(m => m.id !== idMember);
+              this.popUp = false;
+            }
+          })
+          .catch(e => console.error(e))
     }
   }
 }
@@ -110,6 +120,8 @@ export default {
             <span class="popup__member-email" aria-label="email">{{ userSelected.email }}</span>
             <p class="popup__member-description" aria-label="description">{{ userSelected.description }}</p>
           </div>
+
+          <pv-button class="justify-content-center p-2 bg-red-500" @click="kickMember(userSelected.id)">KICK</pv-button>
         </div>
 
         <div class="popup__content-contentinfo" v-if="popUpDetail === 'message'">
@@ -190,10 +202,16 @@ export default {
 }
 
 .popup__content i {
-  font-size: 2.5rem;
+  font-size: 2rem;
   cursor: pointer;
-  top: 5%;
-  right: 5%;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  transition: all .3s ease-in-out;
+}
+
+.popup__content i:hover {
+  opacity: .7;
 }
 
 .popup__member-description {
@@ -213,6 +231,11 @@ export default {
 
 .button:hover {
   transform: scale(1.02);
+}
+
+.popup__content-img img {
+  border-radius: 10px;
+  margin-bottom: 1rem;
 }
 
 @media screen and (max-width: 730px) {

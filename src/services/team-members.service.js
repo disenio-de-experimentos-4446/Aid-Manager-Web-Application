@@ -26,6 +26,17 @@ class TeamMembersService {
         }
         return response;
     }
+
+    async kickMember(idUser) {
+        let response = null;
+        try {
+            response = await axios.delete(`${this.baseUrl}/team-members/${idUser}`);
+        } catch(e) {
+            console.error('Error to kick the member', e);
+        }
+
+        return response;
+    }
 }
 
 export default TeamMembersService;
