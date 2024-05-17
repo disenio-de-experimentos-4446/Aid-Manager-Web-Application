@@ -2,6 +2,7 @@
 import CalendarService from "@/services/calendar.service.js";
 import TrashIcon from "../../assets/trash-icon.svg";
 import EditIcon from "../../assets/edit-event-icon.svg";
+import EventEntity from "@/models/event.entity.js";
 
 export default {
   name: "calendar-content",
@@ -77,26 +78,49 @@ export default {
     },
     saveNewEvent: async function() {
       console.log(this.inputNewEvent)
-      const response = await this.calendarService.saveNewEvent(this.inputNewEvent);
-      if(!response) console.error('Error saving new event');
-      else {
-        await this.getEvents();
-        this.inputNewEvent = {
-          name: "",
-          date: "",
-          location: "",
-          description: "",
-          color: (Math.round(Math.random()))? "#74A38F" : "#98CFD7"
-        };
+      if(this.optionSelected !== "edit") {
+        delete this.inputNewEvent["id"];
 
+        const response = await this.calendarService.saveNewEvent(new EventEntity(this.inputNewEvent));
+        if(!response) console.error('Error saving new event');
+        else {
+          await this.getEvents();
+
+        }
+      }else {
+        const idEvent = this.inputNewEvent["id"];
+        delete this.inputNewEvent["id"];
+
+        await this.calendarService.editEvent(idEvent, new EventEntity(this.inputNewEvent))
+            .then(r => {
+              if(!r) console.error('Error to edit the event with id: ', idEvent);
+              else {
+                this.getEvents();
+              }
+            })
       }
+
+      this.inputNewEvent = {
+        id: "",
+        name: "",
+        date: "",
+        location: "",
+        description: ""
+      };
+      this.optionSelected = "";
       this.togglePopUp();
     },
     deleteEvent: async function(id) {
-      console.log('delete event', id)
       const response = await this.calendarService.deleteEvent(id);
       if(!response) console.log('Error to delete the event with id: ', id);
       else await this.getEvents();
+    },
+    editEvent: function(idEvent) {
+      this.optionSelected = "edit";
+      this.showPopUp = !this.showPopUp;
+      this.newEvent = true;
+
+      this.inputNewEvent["id"] = idEvent;
     }
   }
 }
@@ -121,21 +145,25 @@ export default {
 
         <div class="day-event" v-if="eventsByDay[d.date]" :style="{backgroundColor: eventsByDay[d.date][0].color}"
              @click="toggleOptions(d.date)" @click.stop>
+
           <div v-for="event in eventsByDay[d.date]" :key="event.id" class="event">
             <strong>{{ event.name }}</strong>
 
             <div class="day-event__modify flex flex-column" v-if="showOptions === event.date" :key="event.id">
+
               <div class="day-event__modify-column flex gap-1" @click="deleteEvent(event.id)">
                 <TrashIcon/>
                 <span>Delete</span>
               </div>
 
-              <div class="day-event__modify-column flex gap-1">
-                <EditIcon @click="()=>{optionSelected = 'edit'}"/>
+              <div class="day-event__modify-column flex gap-1" @click="editEvent(event.id)">
+                <EditIcon/>
                 <span>Edit</span>
               </div>
+
             </div>
           </div>
+
         </div>
 
       </div>
@@ -164,12 +192,10 @@ export default {
             <textarea placeholder="Type your description here..." v-model="inputNewEvent['description']"></textarea>
           </form>
 
-          <div class="form__new-event-button" @click="saveNewEvent()">Save</div>
+          <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected !== 'edit'">SAVE</div>
+          <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected === 'edit'">EDIT</div>
         </div>
 
-        <div class="form__edit-event" v-if="optionSelected === 'edit'">
-          <p>ola</p>
-        </div>
       </div>
     </div>
   </div>

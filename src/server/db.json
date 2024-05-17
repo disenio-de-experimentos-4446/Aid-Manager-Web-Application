@@ -1,35 +1,27 @@
 {
   "events": [
     {
-      "id": "512b",
+      "id": "f87f",
       "name": "BREBAJE FINAL",
       "date": "2024-05-26",
       "location": "asd",
       "description": "asd",
+      "color": "#74A38F"
+    },
+    {
+      "id": "1f60", 
+      "name": "Wariqui",
+      "date": "2024-05-16",
+      "location": "Brebaje pre retiro",
+      "description": "traer brebaje",
       "color": "#98CFD7"
     },
     {
-      "id": "ebe1",
-      "name": "brebaje",
-      "date": "2024-05-04",
-      "location": "el brebaje",
-      "description": "el brebaje obligatorio",
-      "color": "#74A38F"
-    },
-    {
-      "id": "70a5",
-      "name": "Wariqui",
-      "date": "2024-05-16",
-      "location": "Mello Arranco",
-      "description": "brebaje pre retiro",
-      "color": "#74A38F"
-    },
-    {
-      "id": "34b4",
-      "name": "asd",
-      "date": "2024-05-02",
-      "location": "asd",
-      "description": "asd",
+      "id": "d1f6",
+      "name": "BREBAJE POST RETIRO",
+      "date": "2024-05-20",
+      "location": "yesihuarique",
+      "description": "",
       "color": "#98CFD7"
     }
   ]
