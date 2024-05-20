@@ -8,6 +8,7 @@ export default {
       userService: new UserService(),
       users: [],
       confirmPassword: '',
+      passwordFieldType: 'password',
       isPasswordNotMatch: false,
       isEmailExists: false,
       isFieldsEmpty: false,
@@ -86,6 +87,10 @@ export default {
       return true;
     },
 
+    togglePasswordFieldType() {
+      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+    },
+
     goToLogin() {
       this.isUserCreated = false;
       this.$router.push('/login');
@@ -116,7 +121,15 @@ export default {
 
         <input type="password" placeholder="Password" class="input-field p-3" v-model="form.password"/>
 
-        <input type="password" placeholder="Confirm password" class="input-field p-3" v-model="confirmPassword"/>
+        <div class="confirm-password-field">
+          <input :type="passwordFieldType" placeholder="Confirm password"
+                 class="input-field p-3" v-model="confirmPassword"
+          />
+          <i :class="passwordFieldType === 'password' ? 'pi pi-eye' : 'pi pi-eye-slash'"
+             @click="togglePasswordFieldType"
+             class="toggle-icon"
+          ></i>
+        </div>
 
         <div class="radio-button-container">
           <input class="radio-input" type="radio" id="director" name="type_user" value="director" v-model="form.role"/>
@@ -269,13 +282,34 @@ export default {
   border: 8px solid #02513D;
 }
 
+.confirm-password-field {
+  align-self: center;
+  position: relative;
+  width: 90%;
+  display:flex;
+  align-items: center;
+}
 
+.input-field {
+  flex: 1;
+  padding-right: 2.5rem;
+}
+
+.toggle-icon {
+  color: #575757;
+  position: absolute;
+  right: 15px;
+  cursor: pointer;
+}
 @media screen and (max-width: 500px) {
   .logo-container {
     flex-direction: column;
     text-align: center;
   }
   .input-field {
+    width: 100%;
+  }
+  .confirm-password-field {
     width: 100%;
   }
   .link {
