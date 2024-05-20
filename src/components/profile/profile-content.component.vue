@@ -68,12 +68,55 @@ export default {
 </script>
 
 <template>
-  <div class="profile-wrapper">
-    <div class="profile-card">
-      <div class="profile-header">
-        <div class="profile-avatar">
-          <img :src="user.profileImg" alt="User Photo" class="avatar">
+  <div class="content">
+    <h2>{{user.firstName + " " + user.lastName}}'s profile:</h2>
+    <div class="flex flex-row">
+      <div class="flex flex-column">
+        <p><strong>Full name:</strong> {{user.firstName + " " + user.lastName}} </p>
+        <p><strong>Age:</strong> 20 years</p>
+        <p><strong>Email:</strong> {{user.email}}</p>
+        <p><strong>ONG:</strong> Hope Haven Org</p>
+
+        <p><strong>Phone:</strong> 123456789</p>
+
+        <p><strong>Ocupation:</strong> Student </p>
+        <p><strong>Bio:</strong> Dedicated psychologist, employs a holistic and empathetic approach to help individuals overcome traumas and foster emotional well-being. He also advocates for mental health in his community through workshops and educational talks. </p>
+      </div>
+
+      <div class="flex flex-col">
+        <div class="avatar-wrapper">
+          <div class="avatar-image">
+            <img :src="user.profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'" alt="User Photo">
+            <div class="avatar-content">
+              <i class="pi pi-camera" style="font-size: 4rem; color: #9f9f9f;"></i>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--
+
+
+  <div class="profile-wrapper">
+    <div class="profile-content">
+      <div class="profile-header">
+
+        <div class="avatar-wrapper">
+          <div class="avatar-image">
+            <img :src="user.profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'" alt="User Photo">
+            <div class="avatar-content">
+              <i class="pi pi-camera" style="font-size: 4rem; color: #9f9f9f;"></i>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
         <div class="profile-info">
           <p class="name">{{ user.firstName + " " + user.lastName }}</p>
           <p class="email">{{ user.email }}</p>
@@ -105,10 +148,20 @@ export default {
       </div>
     </pv-dialog>
   </div>
+  -->
 </template>
 
 <style scoped>
-
+.content {
+  padding:30px;
+}
+.profile-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width:100%;
+}
 .profile-wrapper {
   display: flex;
   justify-content: center;
@@ -224,5 +277,39 @@ export default {
 .form__update-profile-button:hover {
   box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
 }
+.avatar-wrapper {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+}
+.avatar-image {
+  width: 300px;
+  height: 300px;
+  position:relative;
+}
+img {
+  width:100%;
+  display:block;
+  margin:auto;
+}
+.avatar-content {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: all .6s ease-in-out;
+}
+.avatar-content:hover{
+  opacity: 1;
+}
+
 
 </style>

@@ -42,7 +42,7 @@ export default {
       <div class="flex flex-row gap-3">
         <pv-avatar aria-label="yesifoto"
                    class="w-3rem h-3rem align-self-center user-img"
-                   :image="user?.profileImg"
+                   :image="user.profileImg  || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'"
                    shape="circle"
                    @click="navigateToProfile"
                    :class="{ active: $route.path === '/profile' }"/>
