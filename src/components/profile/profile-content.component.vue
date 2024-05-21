@@ -69,18 +69,37 @@ export default {
 
 <template>
   <div class="content">
-    <h2>{{user.firstName + " " + user.lastName}}'s profile:</h2>
     <div class="flex flex-row">
-      <div class="flex flex-column">
-        <p><strong>Full name:</strong> {{user.firstName + " " + user.lastName}} </p>
-        <p><strong>Age:</strong> 20 years</p>
-        <p><strong>Email:</strong> {{user.email}}</p>
-        <p><strong>ONG:</strong> Hope Haven Org</p>
+      <div class=" flex flex-column  user-info">
+        <h2>{{user.firstName + " " + user.lastName}}'s profile:</h2>
 
-        <p><strong>Phone:</strong> 123456789</p>
+        <p class="editable"><strong>Full name:</strong> {{user.firstName + " " + user.lastName}}
+          <i class="pi pi-pencil edit-icon"></i>
+        </p>
 
-        <p><strong>Ocupation:</strong> Student </p>
-        <p><strong>Bio:</strong> Dedicated psychologist, employs a holistic and empathetic approach to help individuals overcome traumas and foster emotional well-being. He also advocates for mental health in his community through workshops and educational talks. </p>
+        <p class="editable"><strong>Age:</strong> 20 years
+          <i class="pi pi-pencil edit-icon"></i>
+        </p>
+
+        <p class="editable"><strong>Email:</strong> {{user.email}}
+          <i class="pi pi-pencil edit-icon"></i>
+        </p>
+
+        <p class="editable"><strong>ONG:</strong> Hope Haven Org
+          <i class="pi pi-pencil edit-icon"></i>
+        </p>
+
+        <p class="editable"><strong>Phone:</strong> 123456789
+          <i class="pi pi-pencil edit-icon"></i>
+        </p>
+
+        <p class="editable"><strong>Ocupation:</strong> Student
+          <i class="pi pi-pencil edit-icon"></i>
+        </p>
+
+        <p class="editable"><strong>Bio:</strong> Dedicated psychologist, employs a holistic and empathetic approach to help individuals overcome traumas and foster emotional well-being. He also advocates for mental health in his community through workshops and educational talks.
+          <i class="pi pi-pencil edit-icon"></i>
+        </p>
       </div>
 
       <div class="flex flex-col">
@@ -155,6 +174,31 @@ export default {
 .content {
   padding:30px;
 }
+.user-info {
+  width: 50%;
+  height: 76vh;
+  justify-content:center;
+  margin-right: 8rem;
+}
+.user-info p, h2 {
+  margin-bottom: 12px;
+}
+.user-info p:last-child {
+  margin-bottom: 0;
+}
+.edit-icon {
+  color: #9f9f9f;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.editable:hover {
+  background-color: #f9f9f9;
+}
+.editable:hover .edit-icon {
+  opacity: 1;
+  cursor: pointer;
+}
+
 .profile-content {
   display: flex;
   flex-direction: row;
