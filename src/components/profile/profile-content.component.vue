@@ -24,8 +24,9 @@ export default {
   methods: {
     clearInputUpdateInfo() {
       this.inputUpdateInfo = {
-        fullName: "",
-        email: "",
+        firstName: "",
+        lastName: "",
+        email: ""
       };
     },
 
@@ -72,11 +73,11 @@ export default {
 <template>
   <div class="content">
     <div class="flex flex-row">
-      <div  role="form" class=" flex flex-column  user-info" @submit.prevent="updateProfile">
+      <form class="flex flex-column user-info" @submit.prevent="updateProfile">
         <h2>{{user.firstName + " " + user.lastName}}'s profile:</h2>
 
         <p class="editable"><strong>Full Name: </strong>
-          <span v-if="!showPopUp">{{ user.firstName + ' '}} </span>
+          <span v-if="!showPopUp">{{ user.firstName + ' ' + user.lastName + ' '}} </span>
           <div v-else class="full-name-input">
             <input type="text" placeholder=" First Name" v-model="inputUpdateInfo['firstName']" >
             <input type="text" placeholder=" Last Name" v-model="inputUpdateInfo['lastName']" >
@@ -89,7 +90,7 @@ export default {
 
         <p class="editable"><strong>Email: </strong>
           <span v-if="!showPopUp">{{ user.email + ' '}} </span>
-          <input v-else type="text" placeholder=" Email" v-model="inputUpdateInfo['email']" >
+          <input v-else type="email" placeholder=" Email" v-model="inputUpdateInfo['email']" >
         </p>
 
         <p class="editable"><strong>ONG:</strong> Hope Haven Org
@@ -108,7 +109,7 @@ export default {
         <button v-if="!showPopUp" class="edit-button" @click="togglePopUp">Edit profile</button>
         <button v-else class="edit-button" type="submit">Save changes</button>
 
-      </div>
+      </form>
 
       <div class="flex flex-col">
         <div class="avatar-wrapper">
@@ -130,59 +131,6 @@ export default {
       </div>
     </pv-dialog>
   </div>
-
-  <!--
-  
-
-    <div class="profile-wrapper">
-      <div class="profile-content">
-        <div class="profile-header">
-
-          <div class="avatar-wrapper">
-            <div class="avatar-image">
-              <img :src="user.profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'" alt="User Photo">
-              <div class="avatar-content">
-                <i class="pi pi-camera" style="font-size: 4rem; color: #9f9f9f;"></i>
-              </div>
-            </div>
-          </div>
-
-
-
-
-
-          <div class="profile-info">
-            <p class="name">{{ user.firstName + " " + user.lastName }}</p>
-            <p class="email">{{ user.email }}</p>
-            <p class="role">{{ user.role }}</p>
-            <button class="edit-button" @click="togglePopUp">Edit profile</button>
-          </div>
-        </div>
-      </div>
-      <div class="popup absolute flex justify-content-center align-items-center" v-if="showPopUp">
-        <div class="popup__content relative border-round-2xl overflow-hidden">
-          <i class="cursor-pointer bg-gray-300 hover:bg-gray-500 transition-duration-300 fa-solid fa-xmark absolute w-auto top-0 right-0 p-3" @click="togglePopUp()"></i>
-
-          <div class="form__update-profile">
-            <form role="form" class="flex flex-column gap-3 justify-content-center align-items-center" @submit.prevent="updateProfile">
-              <input type="text" placeholder="First Name" v-model="inputUpdateInfo['firstName']" >
-              <input type="text" placeholder="Last Name" v-model="inputUpdateInfo['lastName']">
-              <input type="email" placeholder="Email" v-model="inputUpdateInfo['email']">
-              <button class="form__update-profile-button px-5 border-none" type="submit">Save</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isFieldsEmpty" :modal="true" :closable="false">
-        <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
-          <i class="text-7xl pi pi-times-circle text-red-500"></i>
-          <h1>Fill the formulary!</h1>
-          <p class="text-md">There is no information to update a user</p>
-          <pv-button class="py-3 px-5" label="OK" @click="isFieldsEmpty = false"/>
-        </div>
-      </pv-dialog>
-    </div>
-    -->
 </template>
 
 <style scoped>
