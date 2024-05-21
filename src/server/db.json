@@ -2,8 +2,8 @@
   "users": [
     {
       "id": "1",
-      "firstName": "Ramisex",
-      "lastName": "Hotman",
+      "firstName": "Yesi",
+      "lastName": "Hofman",
       "email": "ramisex@aidmanager.com",
       "password": "admin123",
       "profileImg": "https://avatars.githubusercontent.com/u/129230632?v=4",
@@ -20,8 +20,8 @@
     },
     {
       "id": "3",
-      "firstName": "Nekolas",
-      "lastName": "Sopas",
+      "firstName": "Neko",
+      "lastName": "Soaps",
       "email": "neko@aidmanager.com",
       "role": "Director",
       "password": "admin123",
