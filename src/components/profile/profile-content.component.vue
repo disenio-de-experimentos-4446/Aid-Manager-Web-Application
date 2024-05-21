@@ -73,14 +73,15 @@ export default {
 <template>
   <div class="content">
     <div class="flex flex-row">
-      <form class="flex flex-column user-info" @submit.prevent="updateProfile">
+      <form class="flex flex-column user-info form__update-profile" @submit.prevent="updateProfile">
         <h2>{{user.firstName + " " + user.lastName}}'s profile:</h2>
 
-        <p class="editable"><strong>Full Name: </strong>
+        <p class="editable flex flex-col  gap-2">
+          <strong>Full Name:</strong>
           <span v-if="!showPopUp">{{ user.firstName + ' ' + user.lastName + ' '}} </span>
           <div v-else class="full-name-input">
-            <input type="text" placeholder=" First Name" v-model="inputUpdateInfo['firstName']" >
-            <input type="text" placeholder=" Last Name" v-model="inputUpdateInfo['lastName']" >
+            <input type="text" placeholder="First Name" v-model="inputUpdateInfo['firstName']" >
+            <input type="text" placeholder="Last Name" v-model="inputUpdateInfo['lastName']" >
           </div>
         </p>
 
@@ -90,7 +91,7 @@ export default {
 
         <p class="editable"><strong>Email: </strong>
           <span v-if="!showPopUp">{{ user.email + ' '}} </span>
-          <input v-else type="email" placeholder=" Email" v-model="inputUpdateInfo['email']" >
+          <input v-else type="email" placeholder="Email" v-model="inputUpdateInfo['email']" >
         </p>
 
         <p class="editable"><strong>ONG:</strong> Hope Haven Org
@@ -139,7 +140,7 @@ export default {
 }
 .user-info {
   width: 50%;
-  height: 76vh;
+  height: 73vh;
   justify-content:center;
   margin-right: 8rem;
 }
@@ -159,21 +160,6 @@ export default {
   cursor: pointer;
 }
 
-.profile-content {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width:100%;
-}
-.profile-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  position: relative;
-}
 
 .profile-wrapper i {
   border-bottom-left-radius: 8px;
@@ -181,48 +167,6 @@ export default {
 .full-name-input input {
   margin-right: 10px;
   width: 30%;
-}
-.profile-card {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
-
-.profile-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.profile-avatar {
-  margin-bottom: 20px;
-}
-
-.avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-}
-
-.profile-info {
-  text-align: center;
-}
-
-.name {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 10px 0;
-  color: #333;
-}
-
-.email, .role {
-  font-size: 18px;
-  margin: 5px 0;
-  color: #666;
 }
 
 .edit-button {
@@ -243,19 +187,6 @@ export default {
   color: white;
 }
 
-.popup {
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 3;
-}
-.popup__content {
-  max-width: 60%;
-  background-color: #fff;
-  padding: 3rem;
-}
-
-
 .form__update-profile {
   margin-top: 1.5rem;
   padding: .7rem;
@@ -263,29 +194,13 @@ export default {
 }
 
 .form__update-profile input {
-  padding: .5rem;
+  padding: 0.4rem;
   border-radius: 10px;
   outline: none;
   resize: none;
   border: 1px solid #DDDDDD;
 }
-.form__update-profile-button {
-  padding: .5rem;
-  background-color: #74A38F;
-  text-align:center;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 10px;
-  margin-top: 1rem;
-  text-transform: uppercase;
-  font-weight: bold;
-  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.2);
-  transition: all .2s ease-in-out;
-}
 
-.form__update-profile-button:hover {
-  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
-}
 .avatar-wrapper {
   width: 100%;
   height: auto;
@@ -318,6 +233,7 @@ img {
 }
 .avatar-content:hover{
   opacity: 1;
+  cursor: pointer;
 }
 
 
