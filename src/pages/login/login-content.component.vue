@@ -10,6 +10,7 @@ export default {
       email: '',
       formValid: false,
       password: '',
+      passwordFieldType: 'password',
       isRegistered: false,
       showDialog: false,
     }
@@ -49,6 +50,10 @@ export default {
 
       this.users = response.data;
       console.log(response.data);
+    },
+
+    togglePasswordFieldType() {
+      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
     }
 
   }
@@ -70,10 +75,17 @@ export default {
                class="input-field p-3" v-model="email"
                @input="validateForm"
         />
-        <input type="password" placeholder="Password"
-               class="input-field p-3" v-model="password"
-               @input="validateForm"
-        />
+        <div class="password-field">
+          <input :type="passwordFieldType" placeholder="Password"
+                 class="input-field p-3" v-model="password"
+                 @input="validateForm"
+          />
+          <i :class="passwordFieldType === 'password' ? 'pi pi-eye' : 'pi pi-eye-slash'"
+             @click="togglePasswordFieldType"
+             class="toggle-icon"
+          ></i>
+        </div>
+
         <a class="link" href="#" style="color: #02513D; font-style:italic; font-size: 0.8rem;">Forgot your password?</a>
 
         <button :disabled="!formValid" type="submit" class="button p-3" style="color: #fff; margin-top:30px">Sign in
@@ -167,6 +179,25 @@ export default {
   font-weight: normal;
   font-size: 1rem;
 }
+.password-field {
+  align-self: center;
+   position: relative;
+   width: 90%;
+   display:flex;
+   align-items: center;
+ }
+
+.input-field {
+  flex: 1;
+  padding-right: 2.5rem;
+}
+
+.toggle-icon {
+  color: #575757;
+  position: absolute;
+  right: 15px;
+  cursor: pointer;
+}
 
 @media screen and (max-width: 500px) {
   .logo-container {
@@ -176,6 +207,10 @@ export default {
 
   .input-field {
     width: 100%;
+  }
+  .password-field {
+    width: 100%;
+
   }
 
   .link {
