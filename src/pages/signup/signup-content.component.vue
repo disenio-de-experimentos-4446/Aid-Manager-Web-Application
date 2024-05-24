@@ -81,7 +81,6 @@ export default {
         //console.log(response);
         this.$store.commit('updateForm', response.data);
         this.isUserCreated = false;
-        this.goToLogin();
       } catch (error) {
         console.error('Error to register a new user:', error);
       }
