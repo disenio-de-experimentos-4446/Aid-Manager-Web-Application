@@ -47,7 +47,6 @@ export default {
       this.editField[field] = true;
     },
 
-
     async updateProfile() {
 
       console.log(this.inputUpdateInfo);
@@ -58,6 +57,7 @@ export default {
         console.error('Error: Todos los campos deben estar llenos para actualizar el usuario.');
         return;
       }
+
       // si no se ha dado click en el lapiz para editar el campo, se le asigna el valor actual del usuario
       if (!this.editField['fullName']) {
         this.inputUpdateInfo.firstName = this.user.firstName;

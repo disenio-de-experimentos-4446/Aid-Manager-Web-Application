@@ -21,6 +21,17 @@ export class UserService {
         }
     }
 
+    async getCompanyInformationByCode(identificationCode) {
+        try {
+            // Obtenemos la información de la compañía usando el identificationCode
+            const companyResponse = await this.http.get(`companies/?identificationCode=${identificationCode}`);
+            return companyResponse.data[0]; // como es un array, obtenemos el objeto que es unico
+        } catch (error) {
+            console.error(`Error al obtener la información de la compañía con el código de identificación ${identificationCode}:`, error);
+            throw error;
+        }
+    }
+
     async getUserById( id ) {
         try {
             const response = await this.http.get(`users/${id}`);

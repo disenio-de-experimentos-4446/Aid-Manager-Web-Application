@@ -8,7 +8,8 @@ export const store = createStore({
 
     state: {
         // recupramos la data de user que se seteo al inicia el loggin en este caso como 'user'
-        user: JSON.parse(localStorage.getItem('user')) || User
+        user: JSON.parse(localStorage.getItem('user')) || User,
+        form: {}
     },
     mutations: {
         setUser(state, user) {
@@ -21,6 +22,13 @@ export const store = createStore({
         removeUser( state ) {
             state.user = User;
             localStorage.removeItem('user');
+        },
+        updateForm(state, form) {
+            console.log(form);
+            state.form = form;
+        },
+        clearForm(state) {
+            state.form = {};
         }
     },
     actions: {

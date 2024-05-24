@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import './assets/main.css'
+import Clipboard from 'v-clipboard'
 
 // Add PrimeVue
 import PrimeVue from "primevue/config";
@@ -36,6 +37,7 @@ createApp(App)
     .use(PrimeVue, { ripple: true })
     .use(router)
     .use(store)
+    .use(Clipboard)
     .component('pv-card', Card)
     .component('pv-button', Button)
     .component('pv-select-button', SelectButton)
