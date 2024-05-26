@@ -1,11 +1,14 @@
 <script>
+import ProjectCards from '@/components/projects/project-cards.component.vue'
+
 export default {
-  name: "projects"
+  name: "projects",
+  components: {ProjectCards},
 }
 </script>
 
 <template>
-  <h1>Ula soy el proyecto nekogalleta</h1>
+  <ProjectCards></ProjectCards>
 </template>
 
 <style scoped>
