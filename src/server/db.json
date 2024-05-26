@@ -371,17 +371,24 @@
       "date": "2024-05-26",
       "location": "asd",
       "description": "asd",
-      "color": "#98CFD7"
-    },
-    {
-      "id": "ebe1",
-      "name": "brebaje",
-      "date": "2024-05-04",
-      "location": "el brebaje",
-      "description": "el brebaje obligatorio",
       "color": "#74A38F"
     },
     {
+      "id": "1f60",
+      "name": "Wariqui",
+      "date": "2024-05-16",
+      "location": "Brebaje pre retiro",
+      "description": "traer brebaje",
+      "color": "#98CFD7"
+    },
+    {
+      "id": "d1f6",
+      "name": "BREBAJE POST RETIRO",
+      "date": "2024-05-20",
+      "location": "yesihuarique",
+      "description": "",
+      "color": "#98CFD7"
+    },
       "id": "70a5",
       "name": "Wariqui",
       "date": "2024-05-16",
@@ -571,95 +578,6 @@
           "assigned": "EseYesi",
           "due": "872jks",
           "status": "To-Do"
-        }
-      ],
-      "members": [
-        {
-          "id": 1,
-          "name": "personaX",
-          "email": "isiyisi@yisi.com",
-          "role": "Project Leader",
-          "image": "https://static.wikia.nocookie.net/breakingbad/images/5/52/BB_S5A_Jesse_Pinkman.png/revision/latest?cb=20221026171345&path-prefix=es"
-        },
-        {
-          "id": 2,
-          "name": "personaY",
-          "email": "personay@example.com",
-          "role": "Volunteer",
-          "image": "https://example.com/avatar2.jpg"
-        },
-        {
-          "id": 3,
-          "name": "personaZ",
-          "email": "personaz@example.com",
-          "role": "Volunteer",
-          "image": "https://example.com/avatar3.jpg"
-        }
-      ]
-    },
-    {
-      "id": "2",
-      "name": "Clean Carpayo Beach2",
-      "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRlwAa3FhsapzrIDW2IyMtMjR0VTgOmKkEXw6_N60MahSJE_N9Y",
-      "description": "Cleaning Clean Carpayo Beach is a project that aims to clean the beach of Carpayo, located in the district of San Juan de Lurigancho. The project is carried out by a group of volunteers who are committed to the environment and the cleanliness of the beaches.",
-      "tasks": [
-        {
-          "id": 1,
-          "title": "Tarea 1",
-          "assigned": "personaX",
-          "due": "7/10/2018 00:00",
-          "status": "To-Do"
-        },
-        {
-          "id": 2,
-          "title": "Tarea 2",
-          "assigned": "personaY",
-          "due": "7/15/2018 00:00",
-          "status": "To-Do"
-        },
-        {
-          "id": 3,
-          "title": "Tarea 3",
-          "assigned": "personaZ",
-          "due": "7/20/2018 00:00",
-          "status": "Doing"
-        },
-        {
-          "id": 4,
-          "title": "Tarea 4",
-          "assigned": "personaX",
-          "due": "7/25/2018 00:00",
-          "status": "Done"
-        },
-        {
-          "id": 5,
-          "title": "Tarea 5",
-          "assigned": "personaY",
-          "due": "7/30/2018 00:00",
-          "status": "To-Do"
-        }
-      ],
-      "members": [
-        {
-          "id": 1,
-          "name": "personaX",
-          "email": "isiyisi@yisi.com",
-          "role": "Project Leader",
-          "image": "https://static.wikia.nocookie.net/breakingbad/images/5/52/BB_S5A_Jesse_Pinkman.png/revision/latest?cb=20221026171345&path-prefix=es"
-        },
-        {
-          "id": 2,
-          "name": "personaY",
-          "email": "personay@example.com",
-          "role": "Volunteer",
-          "image": "https://example.com/avatar2.jpg"
-        },
-        {
-          "id": 3,
-          "name": "personaZ",
-          "email": "personaz@example.com",
-          "role": "Volunteer",
-          "image": "https://example.com/avatar3.jpg"
         }
       ]
     },

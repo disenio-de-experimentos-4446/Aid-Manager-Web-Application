@@ -1,13 +1,16 @@
 <script>
 import CalendarService from "@/services/calendar.service.js";
 import TrashIcon from "../../assets/trash-icon.svg";
+import EventEntity from "@/models/event.entity.js";
+import DropdownProjects from "@/components/dropdown/dropdown.component.vue";
 import EditIcon from "../../assets/edit-event-icon.svg";
 
 export default {
   name: "calendar-content",
   components: {
+    DropdownProjects,
     TrashIcon,
-    EditIcon
+    EditIcon,
   },
   data() {
     return {
@@ -77,26 +80,49 @@ export default {
     },
     saveNewEvent: async function() {
       console.log(this.inputNewEvent)
-      const response = await this.calendarService.saveNewEvent(this.inputNewEvent);
-      if(!response) console.error('Error saving new event');
-      else {
-        await this.getEvents();
-        this.inputNewEvent = {
-          name: "",
-          date: "",
-          location: "",
-          description: "",
-          color: (Math.round(Math.random()))? "#74A38F" : "#98CFD7"
-        };
+      if(this.optionSelected !== "edit") {
+        delete this.inputNewEvent["id"];
 
+        const response = await this.calendarService.saveNewEvent(new EventEntity(this.inputNewEvent));
+        if(!response) console.error('Error saving new event');
+        else {
+          await this.getEvents();
+
+        }
+      }else {
+        const idEvent = this.inputNewEvent["id"];
+        delete this.inputNewEvent["id"];
+
+        await this.calendarService.editEvent(idEvent, new EventEntity(this.inputNewEvent))
+            .then(r => {
+              if(!r) console.error('Error to edit the event with id: ', idEvent);
+              else {
+                this.getEvents();
+              }
+            })
       }
+
+      this.inputNewEvent = {
+        id: "",
+        name: "",
+        date: "",
+        location: "",
+        description: ""
+      };
+      this.optionSelected = "";
       this.togglePopUp();
     },
     deleteEvent: async function(id) {
-      console.log('delete event', id)
       const response = await this.calendarService.deleteEvent(id);
       if(!response) console.log('Error to delete the event with id: ', id);
       else await this.getEvents();
+    },
+    editEvent: function(idEvent) {
+      this.optionSelected = "edit";
+      this.showPopUp = !this.showPopUp;
+      this.newEvent = true;
+
+      this.inputNewEvent["id"] = idEvent;
     }
   }
 }
@@ -105,6 +131,7 @@ export default {
 <template>
   <div class="calendar relative p-4 lg:p-5">
     <h1 aria-label="title">Calendar</h1>
+    <dropdown-projects></dropdown-projects>
     <div class="calendar__days-week" role="heading">
       <span aria-label="title">SUN</span>
       <span aria-label="title">MON</span>
@@ -130,14 +157,13 @@ export default {
                 <span>Delete</span>
               </div>
 
-              <div class="day-event__modify-column flex gap-1">
-                <EditIcon @click="()=>{optionSelected = 'edit'}"/>
+              <div class="day-event__modify-column flex gap-1" @click="editEvent(event.id)">
+                <EditIcon/>
                 <span>Edit</span>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -164,11 +190,8 @@ export default {
             <textarea placeholder="Type your description here..." v-model="inputNewEvent['description']"></textarea>
           </form>
 
-          <div class="form__new-event-button" @click="saveNewEvent()">Save</div>
-        </div>
-
-        <div class="form__edit-event" v-if="optionSelected === 'edit'">
-          <p>ola</p>
+          <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected !== 'edit'">SAVE</div>
+          <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected === 'edit'">EDIT</div>
         </div>
       </div>
     </div>
@@ -176,7 +199,6 @@ export default {
 </template>
 
 <style scoped>
-
 .calendar {
   display: flex;
   flex-direction: column;
@@ -188,7 +210,7 @@ export default {
 
 .calendar h1 {
   text-align: left;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   font-weight: 400;
   font-size: 2rem;
 }

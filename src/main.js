@@ -22,6 +22,7 @@ import Chart from 'primevue/chart';
 import Dialog from "primevue/dialog";
 import InputNumber from "primevue/inputnumber";
 import Textarea from "primevue/textarea";
+import Dropdown from "primevue/dropdown";
 // App Theme
 import 'primevue/resources/themes/md-light-indigo/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -52,4 +53,5 @@ createApp(App)
     .component('pv-calendar', Calendar)
     .component('pv-input-number', InputNumber)
     .component('pv-text-area', Textarea)
+    .component('pv-dropdown', Dropdown)
     .mount('#app')
