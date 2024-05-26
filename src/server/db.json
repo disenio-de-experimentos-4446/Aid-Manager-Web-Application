@@ -366,7 +366,6 @@
         "date": "2024-05-17T04:36:08.753Z",
         "message": "sdsad"
       },
-      "id": "512b",
       "name": "BREBAJE FINAL",
       "date": "2024-05-26",
       "location": "asd",
@@ -666,7 +665,6 @@
   "events": [
     {
       "id": "512b",
-      "id": "f87f",
       "name": "BREBAJE FINAL",
       "date": "2024-05-26",
       "location": "asd",
@@ -683,23 +681,14 @@
     },
     {
       "id": "70a5",
-      "id": "1f60",
       "name": "Wariqui",
       "date": "2024-05-16",
       "location": "Mello Arranco",
       "description": "brebaje pre retiro",
-      "color": "#74A38F",
-      "location": "Brebaje pre retiro",
-      "description": "traer brebaje",
-      "color": "#98CFD7"
+      "color": "#74A38F"
     },
     {
       "id": "34b4",
-      "name": "asd",
-      "date": "2024-05-02",
-      "location": "asd",
-      "description": "asd",
-      "id": "d1f6",
       "name": "BREBAJE POST RETIRO",
       "date": "2024-05-20",
       "location": "yesihuarique",
