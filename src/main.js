@@ -1,9 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import './assets/main.css'
+import Clipboard from 'v-clipboard'
 
 // Add PrimeVue
 import PrimeVue from "primevue/config";
+import { store } from "@/store/store.js";
 
 // Add PrimeVue Components
 import Card         from 'primevue/card';
@@ -17,6 +19,7 @@ import Toolbar      from 'primevue/toolbar';
 import Rating from 'primevue/rating';
 import Calendar from 'primevue/calendar';
 import Chart from 'primevue/chart';
+import Dialog from "primevue/dialog";
 import InputNumber from "primevue/inputnumber";
 import Textarea from "primevue/textarea";
 import Dropdown from "primevue/dropdown";
@@ -31,11 +34,11 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import router from "@/router/index.js";
 
-
-
 createApp(App)
     .use(PrimeVue, { ripple: true })
     .use(router)
+    .use(store)
+    .use(Clipboard)
     .component('pv-card', Card)
     .component('pv-button', Button)
     .component('pv-select-button', SelectButton)
@@ -46,6 +49,7 @@ createApp(App)
     .component('pv-toolbar', Toolbar)
     .component('pv-rating', Rating)
     .component('pv-chart', Chart)
+    .component('pv-dialog', Dialog)
     .component('pv-calendar', Calendar)
     .component('pv-input-number', InputNumber)
     .component('pv-text-area', Textarea)

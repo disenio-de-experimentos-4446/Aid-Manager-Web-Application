@@ -1,5 +1,5 @@
 <script>
-import AnalyticsContent from "../components/analytics/components/analytics-content/analytics-content.component.vue";
+import AnalyticsContent from "@/components/analytics/analytics-content/analytics-content.component.vue";
 
 export default {
   name: "analytics",

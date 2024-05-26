@@ -1,9 +1,9 @@
 <script>
 import CalendarService from "@/services/calendar.service.js";
 import TrashIcon from "../../assets/trash-icon.svg";
-import EditIcon from "../../assets/edit-event-icon.svg";
 import EventEntity from "@/models/event.entity.js";
 import DropdownProjects from "@/components/dropdown/dropdown.component.vue";
+import EditIcon from "../../assets/edit-event-icon.svg";
 
 export default {
   name: "calendar-content",
@@ -148,12 +148,10 @@ export default {
 
         <div class="day-event" v-if="eventsByDay[d.date]" :style="{backgroundColor: eventsByDay[d.date][0].color}"
              @click="toggleOptions(d.date)" @click.stop>
-
           <div v-for="event in eventsByDay[d.date]" :key="event.id" class="event">
             <strong>{{ event.name }}</strong>
 
             <div class="day-event__modify flex flex-column" v-if="showOptions === event.date" :key="event.id">
-
               <div class="day-event__modify-column flex gap-1" @click="deleteEvent(event.id)">
                 <TrashIcon/>
                 <span>Delete</span>
@@ -163,12 +161,9 @@ export default {
                 <EditIcon/>
                 <span>Edit</span>
               </div>
-
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
 
@@ -198,7 +193,6 @@ export default {
           <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected !== 'edit'">SAVE</div>
           <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected === 'edit'">EDIT</div>
         </div>
-
       </div>
     </div>
   </div>

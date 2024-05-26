@@ -4,6 +4,8 @@ import ProjectIcon from '../assets/project-icon.svg';
 import AnalyticsIcon from '../assets/analytics-icon.svg';
 import CalendarIcon from '../assets/calendar-icon.svg';
 import TeamIcon from '../assets/team-icon.svg';
+import PostIcon from '../assets/post-icon.svg'
+import {mapState} from "vuex";
 
 export default {
   name: "sidebar",
@@ -12,7 +14,8 @@ export default {
     ProjectIcon,
     AnalyticsIcon,
     CalendarIcon,
-    TeamIcon
+    TeamIcon,
+    PostIcon
   },
   props: {
     sidebarVisible: {
@@ -20,9 +23,12 @@ export default {
       required: true
     }
   },
+  computed: {
+    ...mapState(['user'])
+  },
   methods: {
     navigateToHome() {
-      this.$router.push('/');
+      this.$router.push('/home');
     },
     navigateToProjects() {
       this.$router.push('/projects');
@@ -35,12 +41,15 @@ export default {
     },
     navigateToTeam() {
       this.$router.push('/team');
+    },
+    navigateToLogin() {
+      this.$store.commit('removeUser');
+      this.$router.push('/login');
+    },
+    navigateToCreatePost() {
+      this.$router.push('/new-post');
     }
   }
-  // for testing
-  /*updated() {
-    console.log(this.sidebarVisible);
-  }*/
 }
 </script>
 
@@ -51,7 +60,7 @@ export default {
         <ul class="flex flex-column gap-3">
           <li class="flex flex-row gap-3 align-items-center py-3 pl-4 border-round-md"
               @click="navigateToHome"
-              :class="{ active: $route.path === '/' }">
+              :class="{ active: $route.path === '/home' }">
             <HomeIcon></HomeIcon>
             <p class="font-medium text-base">Home</p>
           </li>
@@ -74,15 +83,23 @@ export default {
             <p class="font-medium text-base">Calendar</p>
           </li>
           <li class="flex flex-row gap-3 align-items-center py-3 pl-4 border-round-md"
+              @click="navigateToCreatePost"
+              :class="{ active: $route.path === '/new-post' }"
+              v-if="user.role === 'Director'">
+            <PostIcon></PostIcon>
+            <p class="font-medium text-base">Create Post</p>
+          </li>
+          <li class="flex flex-row gap-3 align-items-center py-3 pl-4 border-round-md"
               @click="navigateToTeam"
-              :class="{ active: $route.path === '/team' }">
+              :class="{ active: $route.path === '/team' }"
+              v-else>
             <TeamIcon></TeamIcon>
             <p class="font-medium text-base">Team</p>
           </li>
         </ul>
         <div class="pr-5">
           <div class="flex flex-row border-top-1 border-gray-500 gap-3 align-items-center pt-4 pl-4">
-            <div class="inline-flex gap-3 cursor-pointer align-items-center">
+            <div @click="navigateToLogin()" class="inline-flex gap-3 cursor-pointer align-items-center">
               <i class="pi pi-sign-out text-gray-700" style="font-size: 1.5rem;"></i>
               <p class="font-medium text-gray-700" style="margin-bottom: 2px">Log out</p>
             </div>
