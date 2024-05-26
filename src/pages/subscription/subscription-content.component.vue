@@ -10,7 +10,6 @@ export default {
     navigateToPayment() {
       this.$router.push('/payment');
     }
-
   }
 }
 </script>

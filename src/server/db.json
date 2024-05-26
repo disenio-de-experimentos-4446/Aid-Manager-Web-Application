@@ -55,6 +55,13 @@
       "country": "Peru",
       "phone": "928318321",
       "identificationCode": "PV0aJSKW"
+    },
+    {
+      "id": "06f6",
+      "brandName": "Fujimori",
+      "country": "Peru",
+      "phone": "311221321",
+      "identificationCode": "ZQZAlBWU"
     }
   ],
   "users": [
@@ -66,7 +73,7 @@
       "password": "admin123",
       "profileImg": "https://avatars.githubusercontent.com/u/129230632?v=4",
       "role": "Director",
-      "companyId": 1
+      "companyName": "HealthForAll"
     },
     {
       "id": "2",
@@ -210,6 +217,26 @@
       "profileImg": "",
       "role": "team",
       "companyName": "PNP"
+    },
+    {
+      "id": "ff52",
+      "firstName": "webo",
+      "lastName": "webo",
+      "email": "olas@gmail.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "director",
+      "companyName": "Fujimori"
+    },
+    {
+      "id": "14a6",
+      "firstName": "ewqeq",
+      "lastName": "qweq",
+      "email": "ewq@eqw",
+      "password": "we",
+      "profileImg": "",
+      "role": "team",
+      "companyName": ""
     }
   ],
   "posts": [
@@ -362,11 +389,11 @@
       "title": "Currents Stats",
       "values": [
         {
-          "time": "13% ahead of schedule",
-          "tasks": "6 tasks to be completed",
-          "workload": "0 tasks overdue",
-          "progress": "33,33% complete",
-          "cost": "35% under budget"
+          "time": "13%",
+          "tasks": "6",
+          "workload": "0",
+          "progress": "33,33%",
+          "cost": "35%"
         }
       ]
     },

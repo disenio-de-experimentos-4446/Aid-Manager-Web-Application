@@ -2,23 +2,33 @@
 
 export default {
   name: "post-card-home",
-  props: ['post']
+  props: ['post'],
+  data() {
+    return {
+      value: 0
+    }
+  }
 }
 </script>
 
 <template>
-  <pv-card style="background-color: #F7F7F7; box-shadow: none; border-radius: 10px" class="shadow-2 w-full px-3 py-4">
+  <pv-card style="background-color: #F7F7F7; box-shadow: none; border-radius: 10px; overflow: hidden" class="shadow-2 w-full px-3 py-4">
     <template #header>
-      <div class="flex flex-row gap-3">
-        <pv-avatar aria-label="yesiJoto"
-                   class="w-3rem h-3rem profile"
-                   :image="post.profile_img"
-                   shape="circle"/>
-        <div class="flex flex-column justify-content-between">
-          <p class="font-medium">{{ post.name }}</p>
-          <div class="flex flex-row align-items-center gap-4">
-            <p class="text-sm text-green-600 font-normal">{{ post.email }}</p>
+      <div class="flex flex-row gap-3 justify-content-between flex-wrap">
+        <div class="flex flex-row gap-3">
+          <pv-avatar aria-label="yesiJoto"
+                     class="w-3rem h-3rem profile"
+                     :image="post.profile_img"
+                     shape="circle"/>
+          <div class="flex flex-column justify-content-between">
+            <p class="font-medium">{{ post.name }}</p>
+            <div class="flex flex-row align-items-center gap-4">
+              <p class="text-sm text-green-600 font-normal" style="text-wrap: wrap">{{ post.email }}</p>
+            </div>
           </div>
+        </div>
+        <div class="align-self-center border-round-2xl">
+          <pv-rating v-model="value" :cancel="false" :stars="5"></pv-rating>
         </div>
       </div>
     </template>

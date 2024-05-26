@@ -32,26 +32,32 @@ export default {
     <h2>Clean Carpayo Beach</h2>
     <h3 class="my-3 font-medium">Current projects:</h3>
     <div class="analytics-container">
-      <pv-card class="card stats w-full">
+      <pv-card class="card stats w-full p-4">
         <template #header>
-          <p class="text">Currents Status:</p>
+          <p class="font-medium mb-3">Currents Status:</p>
         </template>
         <template #content>
-          <div class="flex">
-            <div class="paragraph">
-              <p class="line">Time</p>
-              <p class="line">Tasks</p>
-              <p class="line">Workload</p>
-              <p class="line">Progress</p>
-              <p class="line">Cost</p>
-            </div>
-            <div v-for="(an, index) in analytics" :key="index">
-              <p class="line">{{ an.values[0].time }}</p>
-              <p class="line">{{ an.values[0].tasks }}</p>
-              <p class="line">{{ an.values[0].workload }}</p>
-              <p class="line">{{ an.values[0].progress }}</p>
-              <p class="line">{{ an.values[0].cost }}</p>
-            </div>
+          <div class="flex flex-column flex-1 h-full gap-3">
+            <li class="flex flex-row justify-content-between">
+              <p>Time</p>
+              <span class="text-green-700 font-light">13% ahead of schedule</span>
+            </li>
+            <li class="flex flex-row justify-content-between">
+              <p>Tasks</p>
+              <span class="text-green-700 font-light">6 tasks to be completed</span>
+            </li>
+            <li class="flex flex-row justify-content-between">
+              <p>Workload</p>
+              <span class="text-green-700 font-light">0 tasks overdue</span>
+            </li>
+            <li class="flex flex-row justify-content-between">
+              <p>Progress</p>
+              <span class="text-green-700 font-light">33,33% complete</span>
+            </li>
+            <li class="flex flex-row justify-content-between">
+              <p>Cost</p>
+              <span class="text-green-700 font-light">35% under buget</span>
+            </li>
           </div>
         </template>
       </pv-card>

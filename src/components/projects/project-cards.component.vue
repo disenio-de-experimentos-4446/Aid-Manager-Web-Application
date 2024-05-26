@@ -1,8 +1,8 @@
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0 widthsec">
-    <h1 class="title">Projects</h1>
+    <h1 class="title text-5xl font-medium">Projects</h1>
     <br>
-    <h3 class="subtitle">Current Projects</h3>
+    <h3 class="subtitle font-medium mb-5">Current Projects:</h3>
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
@@ -178,7 +178,6 @@ onMounted(() => {
 
 .title {
   font-family: 'Lora', serif;
-  font-size: 6vh;
   color: #02513D;
   font-weight: unset;
 }
