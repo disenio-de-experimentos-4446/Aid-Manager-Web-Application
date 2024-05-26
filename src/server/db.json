@@ -364,8 +364,8 @@
       "id": "3eac",
       "idMember": {
         "date": "2024-05-17T04:36:08.753Z",
-        "message": "sdsad",
-      }
+        "message": "sdsad"
+      },
       "id": "512b",
       "name": "BREBAJE FINAL",
       "date": "2024-05-26",
@@ -389,6 +389,7 @@
       "description": "",
       "color": "#98CFD7"
     },
+    {
       "id": "70a5",
       "name": "Wariqui",
       "date": "2024-05-16",
@@ -660,38 +661,50 @@
           "image": "https://example.com/avatar3.jpg"
         }
       ]
-    },
-    {
-      "id": "4",
-      "name": "prueba",
-      "image": "img",
-      "description": "descripción prueba",
-      "tasks": [],
-      "members": []
     }
   ],
-  "messages": {
-    "1": [
-      {
-        "id": "1",
-        "date": "2024-04-01",
-        "message": "Message 1",
-        "sender": "Blanqui Tita"
-      },
-      {
-        "id": "2",
-        "date": "2024-04-01",
-        "message": "Message 2",
-        "sender": "Rosa Dita"
-      }
+  "events": [
+    {
+      "id": "512b",
+      "id": "f87f",
+      "name": "BREBAJE FINAL",
+      "date": "2024-05-26",
+      "location": "asd",
+      "description": "asd",
+      "color": "#98CFD7"
     },
     {
-      "id": "c29a",
-      "idMember": {
-        "date": "2024-05-17T04:37:19.471Z",
-        "message": "asdasd",
-        "sender": "Rosa Dita"
-      }
+      "id": "ebe1",
+      "name": "brebaje",
+      "date": "2024-05-04",
+      "location": "el brebaje",
+      "description": "el brebaje obligatorio",
+      "color": "#74A38F"
+    },
+    {
+      "id": "70a5",
+      "id": "1f60",
+      "name": "Wariqui",
+      "date": "2024-05-16",
+      "location": "Mello Arranco",
+      "description": "brebaje pre retiro",
+      "color": "#74A38F",
+      "location": "Brebaje pre retiro",
+      "description": "traer brebaje",
+      "color": "#98CFD7"
+    },
+    {
+      "id": "34b4",
+      "name": "asd",
+      "date": "2024-05-02",
+      "location": "asd",
+      "description": "asd",
+      "id": "d1f6",
+      "name": "BREBAJE POST RETIRO",
+      "date": "2024-05-20",
+      "location": "yesihuarique",
+      "description": "",
+      "color": "#98CFD7"
     }
   ]
 }
