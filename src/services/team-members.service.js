@@ -20,10 +20,21 @@ class TeamMembersService {
     async newMessage(id_user, message) {
         let response = null
         try {
-            response = await axios.post(`${this.baseUrl}/messages/${id_user}`, message);
+            response = await axios.post(`${this.baseUrl}/messages`, message);
         }catch(e) {
             console.error('Error to send the message', e);
         }
+        return response;
+    }
+
+    async kickMember(idUser) {
+        let response = null;
+        try {
+            response = await axios.delete(`${this.baseUrl}/team-members/${idUser}`);
+        } catch(e) {
+            console.error('Error to kick the member', e);
+        }
+
         return response;
     }
 }

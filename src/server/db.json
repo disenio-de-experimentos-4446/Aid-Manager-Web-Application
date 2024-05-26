@@ -339,12 +339,6 @@
       "id": "7f5e"
     },
     {
-      "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/arigeimpleis.jpg",
-      "name": "Arigeimpleis",
-      "email": "arigeimpleis@hotmans.com",
-      "id": "2992"
-    },
-    {
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/nekolas-profile.png",
       "name": "Nicola Hotman",
       "email": "nicola@hotmans.com",
@@ -357,8 +351,21 @@
       "id": "27fb"
     }
   ],
-  "events": [
+  "messages": [
     {
+      "id": "9dd5",
+      "idMember": {
+        "date": "2024-05-17T04:35:46.243Z",
+        "message": "asasd",
+        "sender": "Rosa Dita"
+      }
+    },
+    {
+      "id": "3eac",
+      "idMember": {
+        "date": "2024-05-17T04:36:08.753Z",
+        "message": "sdsad",
+      }
       "id": "512b",
       "name": "BREBAJE FINAL",
       "date": "2024-05-26",
@@ -759,6 +766,14 @@
         "message": "Message 2",
         "sender": "Rosa Dita"
       }
-    ]
-  }
+    },
+    {
+      "id": "c29a",
+      "idMember": {
+        "date": "2024-05-17T04:37:19.471Z",
+        "message": "asdasd",
+        "sender": "Rosa Dita"
+      }
+    }
+  ]
 }
