@@ -54,6 +54,7 @@ export default {
 }
 
 .app-container {
+
   .content-wrapper {
     display: flex;
 
@@ -72,7 +73,9 @@ export default {
 
     .main-container {
       width: calc(100% - 349px);
+      height: 100%;
       min-height: calc(100vh - 112px);
+      position: relative;
     }
     @media(max-width: 1024px) {
       .main-container {

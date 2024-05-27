@@ -25,15 +25,16 @@ export default {
 
 
 <template>
-  <div class="card flex justify-content-start">
-    <pv-dropdown v-model="projectSelected" :options="projects" filter optionLabel="name" placeholder="Select a project" class="w-full md:w-14rem">
-      <template #value="slotProps">
-        <div v-if="slotProps.value" class="flex align-items-center">
-          <div>{{ slotProps.value.name }}</div>
-        </div>
-      </template>
-    </pv-dropdown>
-  </div>
+  <pv-dropdown v-model="projectSelected" :options="projects" optionLabel="name" placeholder="Select a project" class="w-full md:w-14rem p-2 mb-5">
+    <template #value="slotProps">
+      <div v-if="slotProps.value" class="flex align-items-start">
+        <div>{{ slotProps.value.name }}</div>
+      </div>
+    </template>
+    <template #option="slotProps">
+      <div class="p-2">{{ slotProps.option.name }}</div>
+    </template>
+  </pv-dropdown>
 </template>
 
 <style scoped>

@@ -9,16 +9,20 @@ import AnalyticsChartDoughnut
 import {analytic} from "@/models/analytic.entity.js";
 import {AnalyticsService} from "@/services/analytics.service.js";
 import AnalyticsCardReport from "@/components/analytics/analytics-card/analytics-card-report.component.vue";
+import ModalCardContent from "@/components/analytics/modal-card/modal-card-content.component.vue";
 
 export default {
   name: "analytics-card-projects",
   components: {
+    ModalCardContent,
     AnalyticsCardReport,
     AnalyticsChartVerticalBar, AnalyticsChartLine, AnalyticsChartHorizontalBar, AnalyticsChartDoughnut},
   data() {
     return {
       analytics: analytic,
-      AnalyticsApiService: new AnalyticsService()
+      AnalyticsApiService: new AnalyticsService(),
+      selectedCard: null,
+      showDialog: false
     }
   },
   async created() {
@@ -28,11 +32,11 @@ export default {
 }
 </script>
 <template>
-  <section class="h-full p-4 lg:p-5 w-full">
+  <section class="h-full p-4 lg:p-5 w-full relative" style="min-height: 100%">
     <h2>Clean Carpayo Beach</h2>
     <h3 class="my-3 font-medium">Current projects:</h3>
     <div class="analytics-container">
-      <pv-card class="card stats w-full p-4">
+      <pv-card class="card stats w-full p-4 cursor-pointer" @click="selectedCard = 'stats'">
         <template #header>
           <p class="font-medium mb-3">Currents Status:</p>
         </template>
@@ -61,7 +65,7 @@ export default {
           </div>
         </template>
       </pv-card>
-      <pv-card class="card tasks flex w-full flex-column">
+      <pv-card class="card tasks flex w-full flex-column cursor-pointer" @click="selectedCard = 'tasks'">
         <template #header>
           <p class="text">Tasks:</p>
         </template>
@@ -71,7 +75,7 @@ export default {
           </div>
         </template>
       </pv-card>
-      <pv-card class="card payments flex w-full flex-column w-full">
+      <pv-card class="card payments flex w-full flex-column w-full cursor-pointer" @click="selectedCard = 'payments'">
         <template #header>
           <p class="text">Expected payments:</p>
         </template>
@@ -81,7 +85,7 @@ export default {
           </div>
         </template>
       </pv-card>
-      <pv-card class="card progress flex w-full flex-column w-full">
+      <pv-card class="card progress flex w-full flex-column w-full cursor-pointer" @click="selectedCard = 'progress'">
         <template #header>
           <p class="text">Progress:</p>
         </template>
@@ -91,7 +95,7 @@ export default {
           </div>
         </template>
       </pv-card>
-      <pv-card class="card flex w-full flex-column cost">
+      <pv-card class="card flex w-full flex-column cost cursor-pointer" @click="selectedCard = 'stadistics'">
         <template #header>
           <p class="text">Progress:</p>
         </template>
@@ -103,6 +107,7 @@ export default {
       </pv-card>
     </div>
   </section>
+  <modal-card-content v-if="selectedCard" :selectedCard="selectedCard" @close="selectedCard = null"></modal-card-content>
 </template>
 
 <style scoped>
