@@ -62,7 +62,7 @@ export default {
 
       if (this.form.role === 'director') {
         this.createNewUser();
-        this.$router.push('/payment');
+        this.$router.push('/subscription');
       } else {
         this.isUserCreated = true;
       }
