@@ -2,7 +2,7 @@
 import ProjectsService from "@/public/projects.service.js";
 
 export default {
-  name: "dropdown-projects",
+  name: "dropdown-analytics",
   data() {
     return {
       projectsService: new ProjectsService(),
@@ -24,7 +24,7 @@ export default {
 
 
 <template>
-  <pv-dropdown v-model="projectSelected" :options="projects" optionLabel="name" placeholder="Select a project" class="w-full md:w-14rem p-2 mb-5">
+  <pv-dropdown v-model="projectSelected" :options="projects" optionLabel="name" placeholder="Select a project" class="w-full md:w-14rem p-2 mb-4">
     <template #value="slotProps">
       <div v-if="slotProps.value" class="flex align-items-start">
         <div>{{ slotProps.value.name }}</div>
@@ -37,7 +37,5 @@ export default {
 </template>
 
 <style scoped>
-  .card {
-    margin-bottom: 2rem;
-  }
+
 </style>

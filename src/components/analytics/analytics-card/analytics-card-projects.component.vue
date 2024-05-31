@@ -10,10 +10,12 @@ import {analytic} from "@/models/analytic.entity.js";
 import {AnalyticsService} from "@/services/analytics.service.js";
 import AnalyticsCardReport from "@/components/analytics/analytics-card/analytics-card-report.component.vue";
 import ModalCardContent from "@/components/analytics/modal-card/modal-card-content.component.vue";
+import DropdownAnalytics from "@/components/analytics/dropdown-analytics/dropdown-analytics.component.vue";
 
 export default {
   name: "analytics-card-projects",
   components: {
+    DropdownAnalytics,
     ModalCardContent,
     AnalyticsCardReport,
     AnalyticsChartVerticalBar, AnalyticsChartLine, AnalyticsChartHorizontalBar, AnalyticsChartDoughnut},
@@ -33,15 +35,25 @@ export default {
 </script>
 <template>
   <section class="h-full p-4 lg:p-5 w-full relative" style="min-height: 100%">
-    <h2>Clean Carpayo Beach</h2>
-    <h3 class="my-3 font-medium">Current projects:</h3>
+    <div class="flex flex-row justify-content-between flex-wrap gap-0">
+      <div class="flex flex-column gap-4" style="width: unset">
+        <h2 class="title-analytics text-4xl">Analytics</h2>
+        <dropdown-analytics></dropdown-analytics>
+      </div>
+      <div class="align-self-center border-1 flex align-items-center
+        flex-row border-round-2xl text-white mb-2"
+           style="width: unset; background-color: #293A80; padding: 15px 20px; gap: 10px">
+        <p class="w-max">You can view</p>
+        <i class="text-lg pi pi-eye text-green-100"></i>
+      </div>
+    </div>
     <div class="analytics-container">
       <pv-card class="card stats w-full p-4 cursor-pointer" @click="selectedCard = 'stats'">
         <template #header>
           <p class="font-medium mb-3">Currents Status:</p>
         </template>
         <template #content>
-          <div class="flex flex-column flex-1 h-full gap-3">
+          <ul class="flex flex-column flex-1 h-full gap-3">
             <li class="flex flex-row justify-content-between">
               <p>Time</p>
               <span class="text-green-700 font-light">13% ahead of schedule</span>
@@ -62,7 +74,7 @@ export default {
               <p>Cost</p>
               <span class="text-green-700 font-light">35% under buget</span>
             </li>
-          </div>
+          </ul>
         </template>
       </pv-card>
       <pv-card class="card tasks flex w-full flex-column cursor-pointer" @click="selectedCard = 'tasks'">
@@ -111,6 +123,17 @@ export default {
 </template>
 
 <style scoped>
+
+.card:hover {
+  background-color: #F5F5F5;
+}
+
+.title-analytics {
+  font-family: 'Lora', serif;
+  color: #02513D;
+  font-weight: 600 !important;
+  letter-spacing: 1.05px;
+}
 
 .analytics-container {
   display: grid;

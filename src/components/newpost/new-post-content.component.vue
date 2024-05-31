@@ -35,13 +35,13 @@ export default {
 
 <template>
   <section class="new-post-container relative flex flex-column p-4 lg:p-5">
-    <h1 class="text-3xl font-medium mb-3">Create a post</h1>
+    <h1 class="newpost-title text-4xl font-medium mb-3">Create a post</h1>
     <p class="text-sm text-gray-700">No recent publications</p>
     <div class="post-background h-full flex flex-1 align-items-center mt-5 sm:mt-0">
       <div class="post-container shadow-3 p-4 sm:p-5 flex flex-column gap-4">
         <h2 class="font-medium">Celebrating Team Success: Hope Heaven <br/>International Impact in Action</h2>
         <p class="text-base font-medium">Dear Hope Have team: </p>
-        <form class="post-form flex flex-column mt-2" @submit.prevent="onSubmitPost()">
+        <form class="post-form flex flex-column mt-0" @submit.prevent="onSubmitPost()">
           <div class="flex flex-column gap-2">
             <label>Title:</label>
             <input class="input-field border-round-md p-2 line-height-3"
@@ -98,6 +98,12 @@ export default {
 </template>
 
 <style scoped>
+
+.newpost-title {
+  font-family: 'Lora', serif !important;
+  font-weight: 600 !important;
+  color: #02513D;
+}
 
 .error-modal h1, p {
   font-family: "Poppins", serif !important;

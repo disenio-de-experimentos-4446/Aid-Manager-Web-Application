@@ -130,7 +130,7 @@ export default {
 
 <template>
   <div class="calendar relative p-4 lg:p-5 mb-2">
-    <h1 class="calendar-title text-4xl" aria-label="title">Calendar</h1>
+    <h1 class="calendar-title text-4xl mb-4 text-left" aria-label="title">Calendar</h1>
     <dropdown-projects></dropdown-projects>
     <div class="calendar__days-week mt-2" role="heading">
       <span aria-label="title">SUN</span>
@@ -213,13 +213,6 @@ export default {
   font-weight: 600 !important;
   letter-spacing: 1px;
   color: #02513D;
-}
-
-.calendar h1 {
-  text-align: left;
-  margin-bottom: 1rem;
-  font-weight: 400;
-  font-size: 2rem;
 }
 
 .calendar__days-week {
