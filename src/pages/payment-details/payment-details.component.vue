@@ -1,13 +1,22 @@
 <script>
+import {PaymentDetailsService} from "@/services/payment-details.service.js";
+
 export default {
   name: "payment-details-content",
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
+  },
   data() {
     return {
+      paymentService: new PaymentDetailsService(),
       isFieldsEmpty: false,
       areFieldsNotValid: false,
       paymentSuccess: false,
       form: {
-        cardHolder: '',
+        userId: 0,
+        cardHolderName: '',
         cardNumber: '',
         expirationDate: '',
         cvv: ''
@@ -16,7 +25,7 @@ export default {
   },
   methods: {
 
-    onSubmitPayment() {
+    async onSubmitPayment() {
 
       if (!this.areCardFieldsComplete()) {
         this.isFieldsEmpty = true;
@@ -28,13 +37,25 @@ export default {
         return;
       }
 
-      this.paymentSuccess = true;
+      this.form.userId = this.user.id;
+
+      await this.paymentService.savePaymentDetails(this.form)
+          .then(r=> {
+            const result = r.data;
+            if(result.status_code === 202) {
+              this.paymentSuccess = true;
+              console.log(result)
+            }
+
+          })
+
+
     },
 
     areCardFieldsValid() {
 
       // Verificar que cardHolder no tenga más de 20 caracteres
-      if (this.form.cardHolder.trim().length > 20) {
+      if (this.form.cardHolderName.trim().length > 20) {
         return false;
       }
 
@@ -59,7 +80,7 @@ export default {
 
     areCardFieldsComplete() {
       // Verificar que todos los campos estén completos
-      if (!this.form.cardHolder || !this.form.cardNumber || !this.form.expirationDate || !this.form.cvv) {
+      if (!this.form.cardHolderName || !this.form.cardNumber || !this.form.expirationDate || !this.form.cvv) {
         return false;
       }
 
@@ -86,7 +107,7 @@ export default {
 
       <form class="flex flex-column gap-3" @submit.prevent="onSubmitPayment()">
 
-        <input type="text" placeholder="Cardholder Name" class="input-field  p-3" v-model="form.cardHolder"/>
+        <input type="text" placeholder="Cardholder Name" class="input-field  p-3" v-model="form.cardHolderName"/>
 
         <input type="text" placeholder="Card Number" class="input-field  p-3" v-model="form.cardNumber"/>
 

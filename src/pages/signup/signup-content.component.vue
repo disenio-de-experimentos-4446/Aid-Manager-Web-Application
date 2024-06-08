@@ -1,11 +1,13 @@
 <script>
 import {UserService} from "@/services/user.service.js";
+import {CompanyService} from "@/services/company.service.js";
 
 export default {
   name: "signup-content",
   data() {
     return {
       userService: new UserService(),
+      companyService: new CompanyService(),
       users: [],
       confirmPassword: '',
       passwordFieldType: 'password',
@@ -15,6 +17,7 @@ export default {
       isFieldsEmpty: false,
       isUserCreated: false,
       showError: false,
+      existsCompanyId: true,
       message_error: "",
       form: {
         firstName: '',
@@ -27,7 +30,8 @@ export default {
         profileImg: '',
         role: '',
         companyName: '',
-        bio: ""
+        bio: "",
+        companyId: 0
       }
     }
   },
@@ -66,7 +70,7 @@ export default {
       }*/
 
       if (this.form.role === 'director') {
-        await this.createNewUser();
+        await this.createNewUser("director");
 
       } else {
         this.isUserCreated = true;
@@ -74,32 +78,52 @@ export default {
 
     },
 
-    async createNewUser( companyIdentification = "" ) {
+    async createNewUser( companyIdentification ) {
+      if(this.identificationCode === "" && companyIdentification !== "director") {
+        this.isFieldsEmpty = true;
+        return;
+      }
+      if(this.form.role !== "director") {
 
-      // en desuso
-      if (companyIdentification !== "") {
-        const companyInformation = await this.userService.getCompanyInformationByCode(companyIdentification);
-        this.form.companyName = companyInformation.brandName;
+        await this.companyService.getCompanyByUID(companyIdentification)
+            .then(r => {
+              const response = r.data;
+              if(response.status_code == 404) {
+                this.existsCompanyId = false;
+              }else {
+                this.form.companyName = response.company.brandName;
+                this.form.companyId = response.company.identificationCode;
+                this.existsCompanyId = true;
+              }
+            })
       }
 
-      try {
-        console.log(this.form);
-        await this.userService.createNewUser(this.form)
-            .then(r=> {
-              const response = r.data;
-              console.log(response);
-              if(response.status_code !== 202) {
-                this.message_error = response.message;
-                this.showError = true;
-                return;
-              }
-              this.$store.commit('updateForm', response.data);
-              this.isUserCreated = false;
-              this.$router.push('/subscription');
-            })
+      this.form.companyId = this.form.companyId.toString();
 
-      } catch (error) {
-        console.error('Error to register a new user:', error);
+      if(this.existsCompanyId) {
+        try {
+          await this.userService.createNewUser(this.form)
+              .then(r=> {
+                const response = r.data;
+                if(response.status_code !== 202) {
+                  this.message_error = response.message;
+                  this.showError = true;
+                  return;
+                }
+                this.$store.commit('updateForm', response.data);
+                this.$store.state.user = response.data;
+                this.isUserCreated = false;
+                if(this.form.role === "director")
+                  this.$router.push('/subscription');
+                else this.$router.push('/home');
+              })
+
+        } catch (error) {
+          console.error('Error to register a new user:', error);
+        }
+      }else {
+        this.message_error = "The company identification code does not exist";
+        this.showError = true;
       }
     },
 
