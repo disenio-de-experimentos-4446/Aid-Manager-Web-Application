@@ -1,14 +1,22 @@
 import axios from "axios";
+import {environment} from "@/environment/environment.js";
 
 export class UserService {
 
     http = null;
-    baseUrl = "http://localhost:3000/";
-
     constructor() {
         this.http = axios.create({
-            baseURL: this.baseUrl
+            baseURL: environment.baseUrl
         })
+    }
+
+    async authUser(email, password) {
+        try {
+            return await this.http.get(`users/auth?email=${email}&password=${password}`);
+        }catch(e) {
+            console.log('Error to authenticate user')
+            return null;
+        }
     }
 
     async getAllUsers() {
@@ -55,8 +63,7 @@ export class UserService {
 
     async createNewUser( user ) {
         try {
-            const response = await this.http.post('users', user);
-            return response;
+            return await this.http.post('users', user);
         } catch (error) {
             console.error('Error al crear un nuevo usuario:', error);
             throw error;

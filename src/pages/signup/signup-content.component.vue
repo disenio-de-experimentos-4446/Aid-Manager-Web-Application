@@ -14,19 +14,25 @@ export default {
       isEmailExists: false,
       isFieldsEmpty: false,
       isUserCreated: false,
+      showError: false,
+      message_error: "",
       form: {
         firstName: '',
         lastName: '',
+        age: 0,
         email: '',
+        phone: "",
+        occupation: "",
         password: '',
         profileImg: '',
         role: '',
-        companyName: ''
+        companyName: '',
+        bio: ""
       }
     }
   },
   async created() {
-    await this.getUsers();
+    //await this.getUsers();
   },
   methods: {
 
@@ -38,9 +44,7 @@ export default {
       console.log(response.data);
     },
 
-    onSubmitRegister() {
-      console.log(this.form);
-
+    async onSubmitRegister() {
       // verify if the inputs are empty :O
       if (!this.areFieldsComplete()) {
         this.isFieldsEmpty = true;
@@ -54,15 +58,16 @@ export default {
       }
 
       // verify is the email has already been registered in the users array with some method
+      /*
       const emailExists = this.users.some(user => user.email === this.form.email);
       if (emailExists) {
         this.isEmailExists = true;
         return;
-      }
+      }*/
 
       if (this.form.role === 'director') {
-        this.createNewUser();
-        this.$router.push('/subscription');
+        await this.createNewUser();
+
       } else {
         this.isUserCreated = true;
       }
@@ -71,16 +76,28 @@ export default {
 
     async createNewUser( companyIdentification = "" ) {
 
+      // en desuso
       if (companyIdentification !== "") {
         const companyInformation = await this.userService.getCompanyInformationByCode(companyIdentification);
         this.form.companyName = companyInformation.brandName;
       }
 
       try {
-        const response = await this.userService.createNewUser(this.form);
-        //console.log(response);
-        this.$store.commit('updateForm', response.data);
-        this.isUserCreated = false;
+        console.log(this.form);
+        await this.userService.createNewUser(this.form)
+            .then(r=> {
+              const response = r.data;
+              console.log(response);
+              if(response.status_code !== 202) {
+                this.message_error = response.message;
+                this.showError = true;
+                return;
+              }
+              this.$store.commit('updateForm', response.data);
+              this.isUserCreated = false;
+              this.$router.push('/subscription');
+            })
+
       } catch (error) {
         console.error('Error to register a new user:', error);
       }
@@ -200,6 +217,15 @@ export default {
              placeholder="7w9Klb" style="letter-spacing: 1.5px">
       <p class="text-md">You are one step away from starting a great adventure with us!</p>
       <pv-button style="letter-spacing: .8px" class="py-3 px-5" label="Join" @click="createNewUser(this.identificationCode)"/>
+    </div>
+  </pv-dialog>
+  <!-- Display modal to errors x -->
+  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="showError" :modal="true" :closable="false">
+    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
+      <i class="text-7xl pi pi-times-circle text-red-500"></i>
+      <h1>Error!</h1>
+      <p class="text-md">{{message_error}}</p>
+      <pv-button class="py-3 px-5" label="OK" @click="showError = false"/>
     </div>
   </pv-dialog>
 </template>
