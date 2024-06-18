@@ -1,11 +1,14 @@
 <script>
+import TeamContent from "@/components/team/team-content.component.vue";
+
 export default {
-  name: "team"
+  name: "team-page",
+  components: {TeamContent},
 }
 </script>
 
 <template>
-  <h1>Ula soy team</h1>
+  <team-content></team-content>
 </template>
 
 <style scoped>

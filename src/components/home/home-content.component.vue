@@ -48,11 +48,11 @@ export default {
 </script>
 
 <template>
-  <section class="flex h-full flex-column lg:pb-0">
+  <section class="flex h-full flex-column lg:pb-5 p-4 lg:p-5">
     <div class="flex home-hero-container border-round-xl">
       <img class="home-hero-image border-round-xl" src="../../assets/home-hero.png"/>
     </div>
-    <h2 class="text-xl font-normal my-4">New posts:</h2>
+    <h2 class="home-title text-xl font-normal my-4">New posts:</h2>
     <post-list-home :posts="posts"></post-list-home>
   </section>
 </template>
@@ -61,6 +61,11 @@ export default {
 
 section {
   background-color: #FFF;
+}
+
+.home-title {
+  font-family: 'Poppins', serif;
+  font-weight: 500 !important;
 }
 
 .home-hero-container {
