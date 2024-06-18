@@ -5,8 +5,16 @@ export default {
   props: ['post'],
   data() {
     return {
+      hasRate: false,
       value: 0
     }
+  },
+  methods: {
+    onClickRating() {
+      this.hasRate = true;
+      console.log("oli boli");
+    }
+
   }
 }
 </script>
@@ -28,7 +36,7 @@ export default {
           </div>
         </div>
         <div class="align-self-center border-round-2xl">
-          <pv-rating v-model="value" :cancel="false" :stars="5"></pv-rating>
+          <pv-rating @update:modelValue="onClickRating" v-model="value" :cancel="false" :stars="5"></pv-rating>
         </div>
       </div>
     </template>
@@ -49,6 +57,14 @@ export default {
       </div>
     </template>
   </pv-card>
+  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="hasRate" :modal="true" :closable="false">
+    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
+      <i class="text-7xl pi pi-star-fill text-yellow-500"></i>
+      <h1>Rating Submitted!</h1>
+      <p class="text-md">Your rating for the post has been successfully recorded</p>
+      <pv-button class="py-3 px-5" label="OK" @click="hasRate = false"/>
+    </div>
+  </pv-dialog>
 </template>
 
 <style scoped>

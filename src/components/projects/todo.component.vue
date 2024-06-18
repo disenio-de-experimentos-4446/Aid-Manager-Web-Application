@@ -48,9 +48,9 @@ onMounted(fetchTasks);
 
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
-    <h1 class="title">{{ project ? project.name : '' }}</h1>
+    <h1 class="title-projects text-4xl">{{ project ? project.name : '' }}</h1>
     <br>
-    <h3 class="subtitle">Tasks</h3>
+    <h3 class="subtitle text-xl">Tasks assigned:</h3>
 
     <div class="column-container">
       <columnC task-column="To-Do" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
@@ -61,6 +61,14 @@ onMounted(fetchTasks);
 </template>
 
 <style scoped>
+
+.title-projects {
+  font-family: 'Lora', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+  color: #02513D;
+}
+
 .title {
   font-family: 'Lora', serif;
   font-size: 6vh;
@@ -70,9 +78,8 @@ onMounted(fetchTasks);
 
 .subtitle {
   font-family: 'Lora', serif;
-  font-size: 2vh;
-  color: #02513D;
-  font-weight: bold;
+  color: #000000;
+  font-weight: 600;
 }
 
 .column-container {

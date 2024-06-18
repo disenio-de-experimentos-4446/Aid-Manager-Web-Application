@@ -40,6 +40,18 @@ class CalendarService {
 
         return response;
     }
+
+    async editEvent(id, eventModified) {
+        let response = null;
+
+        try {
+            response = await axios.put(`${this.baseUrl}/events/${id}`,  eventModified);
+        }catch(e) {
+            console.error('Error to edit the event', id, e);
+        }
+
+        return response;
+    }
 }
 
 export default CalendarService
