@@ -1,13 +1,17 @@
 <script>
+import CalendarContent from "@/components/calendar/calendar-content.component.vue";
+
 export default {
-  name: "calendar"
+  name: "calendar-dates",
+  components: {CalendarContent},
 }
 </script>
 
 <template>
-  <h1>Ola no soy calendar</h1>
+  <calendar-content></calendar-content>
 </template>
 
 <style scoped>
+
 
 </style>
