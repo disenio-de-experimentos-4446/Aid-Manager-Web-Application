@@ -49,7 +49,6 @@ export default defineComponent({
 .project-card {
   width: 20%;
   height: 100%;
-  margin: 1rem;
   object-fit: cover;
 
 }
@@ -65,9 +64,16 @@ export default defineComponent({
   margin-top: 0.5rem;
 }
 
-.img-but{
-  width:100%;
-  object-fit:cover
+.img-but {
+  width: 100%;
+  object-fit: cover
+}
+
+@media (max-width: 768px) {
+  .project-card {
+    width: 100%;
+    height: auto;
+  }
 }
 
 </style>
