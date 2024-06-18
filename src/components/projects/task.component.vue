@@ -145,7 +145,7 @@ const items = ref([{
     <div class="title">
 
       <div>
-        <h3 style=" font-weight:normal;">{{ title }}</h3>
+        <h3 class="task-title" style="font-weight:normal;">{{ title }}</h3>
         <p>Assigned to: {{ assigned }}</p>
         <p>Due: {{ due }}</p>
       </div>
@@ -194,6 +194,13 @@ const items = ref([{
 </template>
 
 <style scoped>
+
+.task-title {
+  font-family: 'Lora', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+}
+
 .title {
   display: flex;
   flex-direction: row;

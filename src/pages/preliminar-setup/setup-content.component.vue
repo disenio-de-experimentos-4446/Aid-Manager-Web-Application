@@ -4,6 +4,11 @@ import {CompanyService} from "@/services/company.service.js";
 
 export default {
   name: "setup-content",
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
+  },
   data() {
     return {
       userService: new UserService(),
@@ -15,11 +20,12 @@ export default {
         country: '',
         phone: '',
         identificationCode: '',
+        userId: 0
       }
     }
   },
   async created() {
-    await this.getUsers();
+    //await this.getUsers();
   },
   methods: {
 
@@ -34,22 +40,26 @@ export default {
 
         this.form.identificationCode = this.generateOrganizationId();
         // Llamamos al método createCompany y le pasamos la data del formulario
-        const response = await this.companyService.createCompany(this.form);
-        console.log('Compañía creada con éxito:', response.data);
+        this.form.userId = this.user.id;
+        await this.companyService.createCompany(this.form)
+            .then(async r=> {
+              const result = r.data;
+              if(result.status_code === 200) {
+                console.log('osi ermanita')
+                // actualizamos la propiedad CompanyName del form del registro para "director" con form.brandName....
+                await this.companyService.editCompanyId(this.form.userId, this.form.identificationCode).then(r => {
+                  this.$store.commit('updateForm', {
+                    ...this.$store.state.form,
+                    companyName: this.form.brandName
+                  });
 
-        // actualizamos la propiedad CompanyName del form del registro para "director" con form.brandName
-        this.$store.commit('updateForm', {
-          ...this.$store.state.form,
-          companyName: this.form.brandName
-        });
-
-        // actualizamos el usuario en la fakepapi
-        await this.userService.updateUser(this.$store.state.form);
+                  this.hasSuccessful = true;
+                });
+              }
+            })
       } catch (error) {
         console.error('Error al crear la compañía:', error);
       }
-
-      this.hasSuccessful = true;
     },
 
     async getUsers() {

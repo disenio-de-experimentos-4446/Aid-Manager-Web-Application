@@ -129,10 +129,10 @@ export default {
 </script>
 
 <template>
-  <div class="calendar relative p-4 lg:p-5">
-    <h1 aria-label="title">Calendar</h1>
+  <div class="calendar relative p-4 lg:p-5 mb-2">
+    <h1 class="calendar-title text-4xl mb-4 text-left" aria-label="title">Calendar</h1>
     <dropdown-projects></dropdown-projects>
-    <div class="calendar__days-week" role="heading">
+    <div class="calendar__days-week mt-2" role="heading">
       <span aria-label="title">SUN</span>
       <span aria-label="title">MON</span>
       <span aria-label="title">TUES</span>
@@ -208,11 +208,11 @@ export default {
   font-family: "Poppins", sans-serif;
 }
 
-.calendar h1 {
-  text-align: left;
-  margin-bottom: 1rem;
-  font-weight: 400;
-  font-size: 2rem;
+.calendar-title {
+  font-family: 'Lora', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+  color: #02513D;
 }
 
 .calendar__days-week {

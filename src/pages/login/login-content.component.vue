@@ -13,27 +13,22 @@ export default {
       passwordFieldType: 'password',
       isRegistered: false,
       showDialog: false,
+      message_error: ""
     }
   },
-  async created() {
-    await this.getUsers();
-  },
   methods: {
-    handleSubmitLogin() {
+    async handleSubmitLogin() {
       this.isRegistered = false;
-      console.log('Email entered:', this.email);
-      console.log('Password entered:', this.password);
-
-      for (let i = 0; i < this.users.length; i++) {
-        // recorremos y vericamos que coincida las propidades de algun objeto con los inputs
-        if (this.users[i].email === this.email && this.users[i].password === this.password) {
-          this.isRegistered = true;
-          // guardamos el usuario en el almacen Vuex ubicado en store.js
-          this.$store.commit('setUser', this.users[i]);
-          this.$router.push('/home');
-          break;
-        }
-      }
+      await this.userService.authUser(this.email, this.password)
+          .then(r => {
+            const result = r.data
+            if(result.status_code !== 202) this.message_error = result.message;
+            else {
+              this.isRegistered = true;
+              this.$store.commit('setUser', result.data);
+              this.$router.push('/home');
+            }
+          })
 
       if (!this.isRegistered) {
         this.showDialog = true;
@@ -42,14 +37,6 @@ export default {
 
     validateForm() {
       this.formValid = this.email !== '' && this.password !== '';
-    },
-
-    async getUsers() {
-      // obtenemos la respuesta del endpoint
-      const response = await this.userService.getAllUsers();
-
-      this.users = response.data;
-      console.log(response.data);
     },
 
     togglePasswordFieldType() {
@@ -101,7 +88,7 @@ export default {
     <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
       <i class="text-7xl pi pi-exclamation-circle text-red-500"></i>
       <h1>Login Failed!</h1>
-      <p class="text-md">Invalid email or password, please enter your credentials again</p>
+      <p class="text-md">{{ message_error }}</p>
       <pv-button class="py-3 px-5" label="OK" @click="showDialog = false"/>
     </div>
   </pv-dialog>
