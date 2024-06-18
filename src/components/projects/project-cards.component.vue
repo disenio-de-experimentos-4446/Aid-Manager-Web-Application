@@ -1,8 +1,8 @@
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0 widthsec">
-    <h1 class="title">Projects</h1>
+    <h1 class="title-projects text-4xl font-medium">Projects</h1>
     <br>
-    <h3 class="subtitle">Current Projects</h3>
+    <h3 class="subtitle font-medium mb-5">Current Projects:</h3>
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
@@ -132,6 +132,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+.title-projects {
+  font-family: 'Lora', serif;
+  color: #02513D;
+  font-weight: 600 !important;
+  letter-spacing: 1.05px;
+}
 /* Estilos específicos para el componente ProjectCards */
 .project-cards {
   display: flex;
@@ -178,9 +185,8 @@ onMounted(() => {
 
 .title {
   font-family: 'Lora', serif;
-  font-size: 6vh;
   color: #02513D;
-  font-weight: unset;
+  font-weight: 600 !important;
 }
 
 .subtitle {

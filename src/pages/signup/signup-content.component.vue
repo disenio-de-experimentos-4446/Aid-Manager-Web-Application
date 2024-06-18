@@ -1,30 +1,42 @@
 <script>
 import {UserService} from "@/services/user.service.js";
+import {CompanyService} from "@/services/company.service.js";
 
 export default {
   name: "signup-content",
   data() {
     return {
       userService: new UserService(),
+      companyService: new CompanyService(),
       users: [],
       confirmPassword: '',
       passwordFieldType: 'password',
+      identificationCode: '',
       isPasswordNotMatch: false,
       isEmailExists: false,
       isFieldsEmpty: false,
       isUserCreated: false,
+      showError: false,
+      existsCompanyId: true,
+      message_error: "",
       form: {
         firstName: '',
         lastName: '',
+        age: 0,
         email: '',
+        phone: "",
+        occupation: "",
         password: '',
         profileImg: '',
-        role: ''
+        role: '',
+        companyName: '',
+        bio: "",
+        companyId: 0
       }
     }
   },
   async created() {
-    await this.getUsers();
+    //await this.getUsers();
   },
   methods: {
 
@@ -36,9 +48,7 @@ export default {
       console.log(response.data);
     },
 
-    async registerNewUser() {
-      console.log(this.form);
-
+    async onSubmitRegister() {
       // verify if the inputs are empty :O
       if (!this.areFieldsComplete()) {
         this.isFieldsEmpty = true;
@@ -52,19 +62,68 @@ export default {
       }
 
       // verify is the email has already been registered in the users array with some method
+      /*
       const emailExists = this.users.some(user => user.email === this.form.email);
       if (emailExists) {
         this.isEmailExists = true;
         return;
+      }*/
+
+      if (this.form.role === 'director') {
+        await this.createNewUser("director");
+
+      } else {
+        this.isUserCreated = true;
       }
 
-      // create new user when all validations have been passed
-      try {
-        const response = await this.userService.createNewUser(this.form);
-        console.log(response);
-        this.isUserCreated = true;
-      } catch(error) {
-        console.error('Error to register a new user:', error);
+    },
+
+    async createNewUser( companyIdentification ) {
+      if(this.identificationCode === "" && companyIdentification !== "director") {
+        this.isFieldsEmpty = true;
+        return;
+      }
+      if(this.form.role !== "director") {
+
+        await this.companyService.getCompanyByUID(companyIdentification)
+            .then(r => {
+              const response = r.data;
+              if(response.status_code == 404) {
+                this.existsCompanyId = false;
+              }else {
+                this.form.companyName = response.company.brandName;
+                this.form.companyId = response.company.identificationCode;
+                this.existsCompanyId = true;
+              }
+            })
+      }
+
+      this.form.companyId = this.form.companyId.toString();
+
+      if(this.existsCompanyId) {
+        try {
+          await this.userService.createNewUser(this.form)
+              .then(r=> {
+                const response = r.data;
+                if(response.status_code !== 202) {
+                  this.message_error = response.message;
+                  this.showError = true;
+                  return;
+                }
+                this.$store.commit('updateForm', response.data);
+                this.$store.state.user = response.data;
+                this.isUserCreated = false;
+                if(this.form.role === "director")
+                  this.$router.push('/subscription');
+                else this.$router.push('/home');
+              })
+
+        } catch (error) {
+          console.error('Error to register a new user:', error);
+        }
+      }else {
+        this.message_error = "The company identification code does not exist";
+        this.showError = true;
       }
     },
 
@@ -92,9 +151,10 @@ export default {
     },
 
     goToLogin() {
+      this.$store.commit('clearForm');
       this.isUserCreated = false;
       this.$router.push('/login');
-    }
+    },
 
   }
 }
@@ -104,13 +164,13 @@ export default {
 <template>
   <div class="signup-container min-h-screen flex">
     <div class="logo-container flex">
-      <img src="../../assets/logoAidManager.png" alt="logo" />
+      <img src="../../assets/logoAidManager.png" alt="logo"/>
       <span class="font-bold text-4xl">AidManager</span>
     </div>
     <div class="card flex">
       <span class="title font-normal" style="font-size:1rem">Transform your fundraising efforts with precision analytics.</span>
 
-      <form class="flex flex-column gap-3" @submit.prevent="registerNewUser">
+      <form class="flex flex-column gap-3" @submit.prevent="onSubmitRegister()">
 
         <div class="user-name-container">
           <input type="text" placeholder="First Name" class="input-field p-3" v-model="form.firstName"/>
@@ -141,7 +201,9 @@ export default {
         <button class="button p-3" style="color: #fff; margin-top:30px">Sign up</button>
       </form>
     </div>
-    <h3 class="card-footer">Already have an account? <router-link to="/login" class="link" style="font-weight: 600">Log in</router-link></h3>
+    <h3 class="card-footer">Already have an account?
+      <router-link to="/login" class="link" style="font-weight: 600">Log in</router-link>
+    </h3>
   </div>
   <!-- display modal when the password and password confirm do not match -->
   <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isPasswordNotMatch" :modal="true" :closable="false">
@@ -174,9 +236,20 @@ export default {
   <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isUserCreated" :modal="true" :closable="false">
     <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
       <i class="text-7xl pi pi-check-circle text-green-500"></i>
-      <h1>User created successfully!</h1>
-      <p class="text-md">You are ready to start a adventure with us</p>
-      <pv-button class="py-3 px-5" label="Go to Login" @click="goToLogin"/>
+      <h2>Enter your Organization's Unique ID</h2>
+      <input v-model="identificationCode" class="w-full border-1 input-field border-round-md py-2 text-lg text-center"
+             placeholder="7w9Klb" style="letter-spacing: 1.5px">
+      <p class="text-md">You are one step away from starting a great adventure with us!</p>
+      <pv-button style="letter-spacing: .8px" class="py-3 px-5" label="Join" @click="createNewUser(this.identificationCode)"/>
+    </div>
+  </pv-dialog>
+  <!-- Display modal to errors x -->
+  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="showError" :modal="true" :closable="false">
+    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
+      <i class="text-7xl pi pi-times-circle text-red-500"></i>
+      <h1>Error!</h1>
+      <p class="text-md">{{message_error}}</p>
+      <pv-button class="py-3 px-5" label="OK" @click="showError = false"/>
     </div>
   </pv-dialog>
 </template>
@@ -190,12 +263,14 @@ export default {
   justify-content: center;
   padding: 0 20px;
 }
+
 .logo-container {
   align-items: center;
   justify-content: center;
   gap: 1rem;
   margin-top: 4rem;
 }
+
 .card {
   width: 100%;
   max-width: 700px;
@@ -206,19 +281,22 @@ export default {
   justify-content: center;
   padding: 40px;
   margin: 40px;
-  flex-direction:column;
+  flex-direction: column;
 }
+
 .title {
   margin-bottom: 40px;
   font-size: 0.8rem;
 }
+
 .input-field {
-  align-self:center;
+  align-self: center;
   width: 90%;
   border-radius: 20px;
   border: 1px solid #BDBDBD;
   color: #0009;
 }
+
 .user-name-container {
   align-self: center;
   width: 90%;
@@ -226,24 +304,28 @@ export default {
   justify-content: space-between;
   gap: 10px;
 }
+
 .input-field:focus {
   background-color: #F7F7F7;
 }
+
 .button {
   width: 40%;
-  align-self:center;
+  align-self: center;
   background-color: #02513D;
   border: none;
   border-radius: 30px;
   cursor: pointer;
 }
+
 .button:hover {
   background-color: #024030;
 }
+
 .link {
   width: 90%;
-  align-self:center;
-  text-align:right;
+  align-self: center;
+  text-align: right;
   color: #02513D;
   text-decoration: none;
 }
@@ -253,11 +335,15 @@ export default {
   font-size: 1rem;
   margin: 0 0 3rem 0;
 }
+
 .radio-button-container {
-   display: flex;
-   justify-content: center;
-   align-items: center;
- }
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
 .radio-label {
   margin-right: 25px;
   line-height: 32px;
@@ -286,13 +372,12 @@ export default {
   align-self: center;
   position: relative;
   width: 90%;
-  display:flex;
+  display: flex;
   align-items: center;
 }
 
 .input-field {
   flex: 1;
-  padding-right: 2.5rem;
 }
 
 .toggle-icon {
@@ -301,26 +386,32 @@ export default {
   right: 15px;
   cursor: pointer;
 }
+
 @media screen and (max-width: 500px) {
   .logo-container {
     flex-direction: column;
     text-align: center;
   }
+
   .input-field {
     width: 100%;
   }
+
   .confirm-password-field {
     width: 100%;
   }
+
   .link {
     width: 100%;
   }
+
   .user-name-container {
     flex-direction: column;
     width: 100%;
     gap: 1rem;
   }
 }
+
 @media screen and (max-width: 560px) {
   .button {
     width: 80%;

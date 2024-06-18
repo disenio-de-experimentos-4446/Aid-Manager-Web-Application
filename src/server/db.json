@@ -1,4 +1,69 @@
 {
+  "companies": [
+    {
+      "id": "1",
+      "brandName": "HealthForAll",
+      "identificationCode": "Q58mBJ",
+      "country": "Peru",
+      "phone": "32134512"
+    },
+    {
+      "id": "2",
+      "brandName": "ConnectHands",
+      "identificationCode": "DiPW3n",
+      "country": "Chile",
+      "phone": "21391218"
+    },
+    {
+      "id": "a8d3",
+      "brandName": "olapeurba",
+      "identificationCode": "yKTtwH",
+      "country": "Peru",
+      "phone": "21315212"
+    },
+    {
+      "id": "4b6f",
+      "brandName": "odebretch",
+      "country": "Peru",
+      "phone": "2139123142",
+      "identificationCode": "SnZx86"
+    },
+    {
+      "id": "d95d",
+      "brandName": "dwq",
+      "country": "dqwdwq",
+      "phone": "dqwdq",
+      "identificationCode": "E6je2pvT"
+    },
+    {
+      "id": "bea0",
+      "brandName": "FuerzaPopulr",
+      "country": "China",
+      "phone": "982182172",
+      "identificationCode": "jCo2cGqL"
+    },
+    {
+      "id": "102d",
+      "brandName": "PNP",
+      "country": "Peru",
+      "phone": "92313218",
+      "identificationCode": "1zUVflD9"
+    },
+    {
+      "id": "27f9",
+      "brandName": "JNP",
+      "country": "Peru",
+      "phone": "928318321",
+      "identificationCode": "PV0aJSKW"
+    },
+    {
+      "id": "06f6",
+      "brandName": "Fujimori",
+      "country": "Peru",
+      "phone": "311221321",
+      "identificationCode": "ZQZAlBWU"
+    }
+  ],
   "users": [
     {
       "id": "1",
@@ -7,7 +72,8 @@
       "email": "ramisex@aidmanager.com",
       "password": "admin123",
       "profileImg": "https://avatars.githubusercontent.com/u/129230632?v=4",
-      "role": "Director"
+      "role": "Director",
+      "companyName": "HealthForAll"
     },
     {
       "id": "2",
@@ -16,7 +82,9 @@
       "email": "rosadita@aidmanager.com",
       "password": "admin123",
       "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/Manuel.jpg?raw=true",
-      "role": "Team"
+      "role": "Team",
+      "companyName": "LoveForNeko",
+      "companyId": 1
     },
     {
       "id": "3",
@@ -25,7 +93,8 @@
       "email": "neko@aidmanager.com",
       "role": "Director",
       "password": "admin123",
-      "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/arigeimpleis.jpg?raw=true"
+      "profileImg": "https://github.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/blob/main/assets/members-profile/arigeimpleis.jpg?raw=true",
+      "companyId": 2
     },
     {
       "id": "4",
@@ -33,8 +102,9 @@
       "lastName": "Vago",
       "email": "monitas123@aidmanager.com",
       "password": "admin123",
-      "profileImg": "",
-      "role": "Team"
+      "profileImg": "https://randomuser.me/api/portraits/thumb/men/75.jpg",
+      "role": "Team",
+      "companyId": 1
     },
     {
       "id": "5",
@@ -82,130 +152,92 @@
       "role": "Director"
     },
     {
-      "id": "10",
-      "firstName": "Noah",
-      "lastName": "Wilson",
-      "email": "noah_wilson@aidmanager.com",
-      "password": "admin123",
-      "profileImg": "",
-      "role": "Team"
-    },
-    {
-      "id": "11",
-      "firstName": "Isabella",
-      "lastName": "Moore",
-      "email": "isabella_moore@aidmanager.com",
-      "password": "admin123",
-      "profileImg": "",
-      "role": "Director"
-    },
-    {
-      "id": "12",
-      "firstName": "Jacob",
-      "lastName": "Taylor",
-      "email": "jacob_taylor@aidmanager.com",
-      "password": "admin123",
-      "profileImg": "",
-      "role": "Team"
-    },
-    {
-      "id": "13",
-      "firstName": "Ethan",
-      "lastName": "Thomas",
-      "email": "ethan.thomas@aidmanager.com",
-      "password": "hashed_password",
-      "profileImg": "",
-      "role": "Director"
-    },
-    {
-      "id": "14",
-      "firstName": "Olivia",
-      "lastName": "Jackson",
-      "email": "olivia.jackson@aidmanager.com",
-      "password": "hashed_password",
-      "profileImg": "",
-      "role": "Team"
-    },
-    {
-      "id": "15",
-      "firstName": "Aiden",
-      "lastName": "White",
-      "email": "aiden.white@aidmanager.com",
-      "password": "hashed_password",
-      "profileImg": "",
-      "role": "Director"
-    },
-    {
-      "id": "16",
-      "firstName": "Sophie",
-      "lastName": "Harris",
-      "email": "sophie.harris@aidmanager.com",
-      "password": "hashed_password",
-      "profileImg": "",
-      "role": "Team"
-    },
-    {
-      "id": "17",
-      "firstName": "Lucas",
-      "lastName": "Martin",
-      "email": "lucas.martin@aidmanager.com",
-      "password": "hashed_password",
-      "profileImg": "",
-      "role": "Director"
-    },
-    {
-      "id": "18",
-      "firstName": "Emily",
-      "lastName": "Thompson",
-      "email": "emily.thompson@aidmanager.com",
-      "password": "hashed_password",
-      "profileImg": "",
-      "role": "Team"
-    },
-    {
-      "id": "19",
-      "firstName": "Matthew",
-      "lastName": "Garcia",
-      "email": "matthew.garcia@aidmanager.com",
-      "password": "hashed_password",
-      "profileImg": "",
-      "role": "Director"
-    },
-    {
-      "id": "20",
-      "firstName": "Ava",
-      "lastName": "Martinez",
-      "email": "ava.martinez@aidmanager.com",
-      "password": "hashed_password",
-      "profileImg": "",
-      "role": "Team"
-    },
-    {
-      "id": "0c8b",
-      "firstName": "wqdq",
-      "lastName": "wqdqw",
-      "email": "blanquita@aidmanager.com",
-      "password": "sexo",
-      "profileImg": "",
-      "role": "director"
-    },
-    {
-      "id": "3419",
-      "firstName": "sexo",
-      "lastName": "sexo",
-      "email": "sexo@hotman",
-      "password": "sexo",
+      "id": "098e",
+      "firstName": "wq",
+      "lastName": "dwq",
+      "email": "dqw@swqd",
+      "password": "we",
       "profileImg": "",
       "role": "team"
     },
     {
-      "id": "aa4d",
-      "firstName": "neko",
-      "lastName": "sexo",
-      "email": "swwq@xs",
-      "password": "sexo",
+      "id": "4284",
+      "firstName": "qwe",
+      "lastName": "ewq",
+      "email": "we@swq",
+      "password": "we",
       "profileImg": "",
       "role": "team"
+    },
+    {
+      "id": "d54d",
+      "firstName": "dwq",
+      "lastName": "dqw",
+      "email": "we@qww",
+      "password": "we",
+      "profileImg": "",
+      "role": "team",
+      "companyName": "HealthForAll"
+    },
+    {
+      "id": "b028",
+      "firstName": "braulio",
+      "lastName": "turrones",
+      "email": "turroncitos@wawawa.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "team",
+      "companyName": "ConnectHands"
+    },
+    {
+      "id": "a471",
+      "firstName": "sebastian",
+      "lastName": "piñera",
+      "email": "sebas@aidmanager.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "director",
+      "companyName": "JNP"
+    },
+    {
+      "id": "b686",
+      "firstName": "pablo",
+      "lastName": "webo",
+      "email": "pablo@gmail.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "team",
+      "companyName": "JNP"
+    },
+    {
+      "id": "2420",
+      "firstName": "webo",
+      "lastName": "webo",
+      "email": "webo@gmail.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "team",
+      "companyName": "PNP"
+    },
+    {
+      "id": "ff52",
+      "firstName": "webo",
+      "lastName": "webo",
+      "email": "olas@gmail.com",
+      "password": "admin123",
+      "profileImg": "",
+      "role": "director",
+      "companyName": "Fujimori"
+    },
+    {
+      "id": "14a6",
+      "firstName": "ewqeq",
+      "lastName": "qweq",
+      "email": "ewq@eqw",
+      "password": "we",
+      "profileImg": "",
+      "role": "team",
+      "companyName": ""
     }
   ],
   "posts": [
@@ -308,12 +340,6 @@
       "id": "7f5e"
     },
     {
-      "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/arigeimpleis.jpg",
-      "name": "Arigeimpleis",
-      "email": "arigeimpleis@hotmans.com",
-      "id": "2992"
-    },
-    {
       "image": "https://raw.githubusercontent.com/AplicacionesWeb-WX54/si730-WX54-Grupo1-Repository/main/assets/members-profile/nekolas-profile.png",
       "name": "Nicola Hotman",
       "email": "nicola@hotmans.com",
@@ -326,22 +352,42 @@
       "id": "27fb"
     }
   ],
-  "events": [
+  "messages": [
     {
-      "id": "512b",
+      "id": "9dd5",
+      "idMember": {
+        "date": "2024-05-17T04:35:46.243Z",
+        "message": "asasd",
+        "sender": "Rosa Dita"
+      }
+    },
+    {
+      "id": "3eac",
+      "idMember": {
+        "date": "2024-05-17T04:36:08.753Z",
+        "message": "sdsad"
+      },
       "name": "BREBAJE FINAL",
       "date": "2024-05-26",
       "location": "asd",
       "description": "asd",
+      "color": "#74A38F"
+    },
+    {
+      "id": "1f60",
+      "name": "Wariqui",
+      "date": "2024-05-16",
+      "location": "Brebaje pre retiro",
+      "description": "traer brebaje",
       "color": "#98CFD7"
     },
     {
-      "id": "ebe1",
-      "name": "brebaje",
-      "date": "2024-05-04",
-      "location": "el brebaje",
-      "description": "el brebaje obligatorio",
-      "color": "#74A38F"
+      "id": "d1f6",
+      "name": "BREBAJE POST RETIRO",
+      "date": "2024-05-20",
+      "location": "yesihuarique",
+      "description": "",
+      "color": "#98CFD7"
     },
     {
       "id": "70a5",
@@ -358,11 +404,11 @@
       "title": "Currents Stats",
       "values": [
         {
-          "time": "13% ahead of schedule",
-          "tasks": "6 tasks to be completed",
-          "workload": "0 tasks overdue",
-          "progress": "33,33% complete",
-          "cost": "35% under budget"
+          "time": "13%",
+          "tasks": "6",
+          "workload": "0",
+          "progress": "33,33%",
+          "cost": "35%"
         }
       ]
     },
@@ -426,7 +472,7 @@
           "expected": [
             65,
             59,
-            80
+            65
           ]
         }
       ]
@@ -534,95 +580,6 @@
           "due": "872jks",
           "status": "To-Do"
         }
-      ],
-      "members": [
-        {
-          "id": 1,
-          "name": "personaX",
-          "email": "isiyisi@yisi.com",
-          "role": "Project Leader",
-          "image": "https://static.wikia.nocookie.net/breakingbad/images/5/52/BB_S5A_Jesse_Pinkman.png/revision/latest?cb=20221026171345&path-prefix=es"
-        },
-        {
-          "id": 2,
-          "name": "personaY",
-          "email": "personay@example.com",
-          "role": "Volunteer",
-          "image": "https://example.com/avatar2.jpg"
-        },
-        {
-          "id": 3,
-          "name": "personaZ",
-          "email": "personaz@example.com",
-          "role": "Volunteer",
-          "image": "https://example.com/avatar3.jpg"
-        }
-      ]
-    },
-    {
-      "id": "2",
-      "name": "Clean Carpayo Beach2",
-      "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRlwAa3FhsapzrIDW2IyMtMjR0VTgOmKkEXw6_N60MahSJE_N9Y",
-      "description": "Cleaning Clean Carpayo Beach is a project that aims to clean the beach of Carpayo, located in the district of San Juan de Lurigancho. The project is carried out by a group of volunteers who are committed to the environment and the cleanliness of the beaches.",
-      "tasks": [
-        {
-          "id": 1,
-          "title": "Tarea 1",
-          "assigned": "personaX",
-          "due": "7/10/2018 00:00",
-          "status": "To-Do"
-        },
-        {
-          "id": 2,
-          "title": "Tarea 2",
-          "assigned": "personaY",
-          "due": "7/15/2018 00:00",
-          "status": "To-Do"
-        },
-        {
-          "id": 3,
-          "title": "Tarea 3",
-          "assigned": "personaZ",
-          "due": "7/20/2018 00:00",
-          "status": "Doing"
-        },
-        {
-          "id": 4,
-          "title": "Tarea 4",
-          "assigned": "personaX",
-          "due": "7/25/2018 00:00",
-          "status": "Done"
-        },
-        {
-          "id": 5,
-          "title": "Tarea 5",
-          "assigned": "personaY",
-          "due": "7/30/2018 00:00",
-          "status": "To-Do"
-        }
-      ],
-      "members": [
-        {
-          "id": 1,
-          "name": "personaX",
-          "email": "isiyisi@yisi.com",
-          "role": "Project Leader",
-          "image": "https://static.wikia.nocookie.net/breakingbad/images/5/52/BB_S5A_Jesse_Pinkman.png/revision/latest?cb=20221026171345&path-prefix=es"
-        },
-        {
-          "id": 2,
-          "name": "personaY",
-          "email": "personay@example.com",
-          "role": "Volunteer",
-          "image": "https://example.com/avatar2.jpg"
-        },
-        {
-          "id": 3,
-          "name": "personaZ",
-          "email": "personaz@example.com",
-          "role": "Volunteer",
-          "image": "https://example.com/avatar3.jpg"
-        }
       ]
     },
     {
@@ -704,30 +661,40 @@
           "image": "https://example.com/avatar3.jpg"
         }
       ]
-    },
-    {
-      "id": "4",
-      "name": "prueba",
-      "image": "img",
-      "description": "descripción prueba",
-      "tasks": [],
-      "members": []
     }
   ],
-  "messages": {
-    "1": [
-      {
-        "id": "1",
-        "date": "2024-04-01",
-        "message": "Message 1",
-        "sender": "Blanqui Tita"
-      },
-      {
-        "id": "2",
-        "date": "2024-04-01",
-        "message": "Message 2",
-        "sender": "Rosa Dita"
-      }
-    ]
-  }
+  "events": [
+    {
+      "id": "512b",
+      "name": "BREBAJE FINAL",
+      "date": "2024-05-26",
+      "location": "asd",
+      "description": "asd",
+      "color": "#98CFD7"
+    },
+    {
+      "id": "ebe1",
+      "name": "brebaje",
+      "date": "2024-05-04",
+      "location": "el brebaje",
+      "description": "el brebaje obligatorio",
+      "color": "#74A38F"
+    },
+    {
+      "id": "70a5",
+      "name": "Wariqui",
+      "date": "2024-05-16",
+      "location": "Mello Arranco",
+      "description": "brebaje pre retiro",
+      "color": "#74A38F"
+    },
+    {
+      "id": "34b4",
+      "name": "BREBAJE POST RETIRO",
+      "date": "2024-05-20",
+      "location": "yesihuarique",
+      "description": "",
+      "color": "#98CFD7"
+    }
+  ]
 }
