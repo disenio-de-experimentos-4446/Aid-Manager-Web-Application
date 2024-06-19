@@ -24,6 +24,22 @@ export default {
     this.fetchNewPosts();
   },
   methods: {
+
+    formatDate(dateString) {
+      let date = new Date(dateString);
+      // Opciones para el formato de la fecha
+      let options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      };
+
+      return date.toLocaleString('en-US', options);
+    },
+
     buildPostListFromResponseData(items) {
       return items.map(item => {
         let user = new User(
@@ -33,12 +49,17 @@ export default {
             item.user.email,
             item.user.profileImg
         );
+
+        let formattedDate = this.formatDate(item.createdAt);
+
         return new PostEntity(
             item.id,
             user,
             item.title,
+            item.subject,
             item.description,
-            item.rating
+            item.rating,
+            formattedDate
         )
       })
     },
@@ -46,7 +67,7 @@ export default {
     fetchNewPosts() {
       this.postApi.getAllPostsByCompanyId(this.user.companyId)
           .then(response => {
-            let items =  response.data;
+            let items = response.data;
             this.posts = this.buildPostListFromResponseData(items);
             console.log(items);
           })

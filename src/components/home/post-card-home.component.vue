@@ -1,4 +1,14 @@
 <script>
+import image1 from "../../assets/post-comment-image-1.webp";
+import image2 from "../../assets/post-comment-image-2.webp";
+import image3 from "../../assets/post-comment-image-3.webp";
+import image4 from "../../assets/post-comment-image-4.webp";
+import image5 from "../../assets/post-comment-image-5.webp";
+import image6 from "../../assets/post-comment-image-6.webp";
+import image7 from "../../assets/post-comment-image-7.webp";
+import image8 from "../../assets/post-comment-image-8.webp";
+import image9 from "../../assets/post-comment-image-9.webp";
+import image10 from "../../assets/post-comment-image-10.webp";
 
 import {PostApiService} from "@/services/post.service.js";
 
@@ -9,7 +19,10 @@ export default {
     return {
       hasRate: false,
       value: 0,
-      postApi: new PostApiService()
+      postApi: new PostApiService(),
+      images: [
+        image1, image2, image3, image4, image5, image6, image7, image8, image9, image10
+      ]
     }
   },
   computed: {
@@ -27,6 +40,24 @@ export default {
             console.log(response);
             this.post.rating = newRating;
           })
+    },
+
+    generateRandomImagesForPosts() {
+      let selectedImages = [];
+      // Set keyword it uses to store unique values
+      let randomNumbers = new Set();
+
+      while (randomNumbers.size < 3) {
+        let randomNumber = Math.floor(Math.random() * 10);
+        randomNumbers.add(randomNumber);
+      }
+
+      for (let randomNumber of randomNumbers) {
+        let image = this.images[randomNumber];
+        selectedImages.push(image);
+      }
+
+      return selectedImages;
     }
   }
 }
@@ -55,9 +86,10 @@ export default {
       </div>
     </template>
     <template #title>
-      <p class="my-3 text-lg font-medium">{{ post.title }}</p>
+      <p style="margin-bottom: 12px" class="mt-3 text-lg font-medium">{{ post.title }}</p>
     </template>
     <template #subtitle>
+      <p class="mb-3 subject text-black-alpha-90 text-base font-normal"><span class="font-medium text-blue-900">Subject:</span> {{ post.subject }}</p>
       <p class="mb-1">Dear Hope Haven Team,</p>
     </template>
     <template #content>
@@ -65,8 +97,16 @@ export default {
         {{ post.description }}
       </p>
       <div class="card-image-container mt-3 w-full">
-        <div v-for="image in post.images" class="image-container">
-          <img class="border-round-lg" :src="image"/>
+        <div class="images-post-container">
+          <div v-for="image in generateRandomImagesForPosts()" class="image-container">
+            <img class="border-round-lg" :src="image" alt=""/>
+          </div>
+        </div>
+        <div class="date-container flex-1">
+          <div class="flex align-items-center" style="gap: 9px">
+            <i style="margin-bottom: -1.5px" class="text-2xl pi pi-clock text-green-800"></i>
+            <span class="text-base date">{{ post.createdAt }}</span>
+          </div>
         </div>
       </div>
     </template>
@@ -83,19 +123,58 @@ export default {
 
 <style scoped>
 
+.subject{
+  letter-spacing: 0.2px;
+}
+
+.date {
+  font-family: 'Lora', serif !important;
+  font-weight: 500;
+  color: gray;
+}
+
 .post-comment {
   letter-spacing: -.2px
 }
 
 .card-image-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-img {
-  width: 100%;
-  height: 200px;
+.images-post-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.card-image-container .image-container {
+  display: flex;
+  flex-grow: 1;
+}
+
+.date-container {
+  display: flex;
+  align-items: end;
+  justify-content: end;
+}
+
+.card-image-container img {
+  flex-grow: 1;
+  width: 300px;
+  min-height: 100%;
+  height: 225px;
+  object-fit: cover;
+}
+
+@media (min-width: 1660px) {
+
+  .card-image-container {
+    flex-direction: row;
+  }
+
 }
 
 .profile {
