@@ -2,6 +2,7 @@
 import PostListHome from "@/components/home/post-list-home.component.vue";
 import {PostApiService} from "@/services/post.service.js";
 import PostEntity from "@/models/post.entity.js";
+import {User} from "@/models/user.entity.js";
 
 export default {
   name: "home-content",
@@ -14,33 +15,41 @@ export default {
       postApi: new PostApiService()
     }
   },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
+  },
   created() {
     this.fetchNewPosts();
   },
   methods: {
-    buildPostListFromResponseData( items ) {
-      return items.map (item => {
+    buildPostListFromResponseData(items) {
+      return items.map(item => {
+        let user = new User(
+            item.user.id,
+            item.user.firstName,
+            item.user.lastName,
+            item.user.email,
+            item.user.profileImg
+        );
         return new PostEntity(
-          item.id,
-          item.name,
-          item.email,
-          item.title,
-          item.description,
-          item.profile_img,
-          item.publication_date,
-          item.images
+            item.id,
+            user,
+            item.title,
+            item.description,
+            item.rating
         )
       })
     },
 
     fetchNewPosts() {
-      this.postApi.getLastPosts()
+      this.postApi.getAllPostsByCompanyId(this.user.companyId)
           .then(response => {
             let items =  response.data;
             this.posts = this.buildPostListFromResponseData(items);
             console.log(items);
           })
-
     }
 
   }

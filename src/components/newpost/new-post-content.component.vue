@@ -1,4 +1,6 @@
 <script>
+import {PostApiService} from "@/services/post.service.js";
+
 export default {
   name: "new-post-content",
   data() {
@@ -9,7 +11,13 @@ export default {
         title: '',
         subject: '',
         description: ''
-      }
+      },
+      postApi: new PostApiService()
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
     }
   },
   methods: {
@@ -23,6 +31,12 @@ export default {
       else {
         this.hasCompleted = true;
       }
+
+      this.postApi.createNewPost(this.user.id, this.user.companyId, this.formPost)
+          .then(response => {
+            console.log(response);
+          })
+
     },
 
     areFieldsEmpty() {
@@ -37,10 +51,10 @@ export default {
   <section class="new-post-container relative flex flex-column p-4 lg:p-5">
     <h1 class="newpost-title text-4xl font-medium mb-3">Create a post</h1>
     <p class="text-sm text-gray-700">No recent publications</p>
-    <div class="post-background h-full flex flex-1 align-items-center mt-5 sm:mt-0">
+    <div class="post-background h-full flex flex-1 align-items-center mt-5 sm:mt-3">
       <div class="post-container shadow-3 p-4 sm:p-5 flex flex-column gap-4">
         <h2 class="font-medium">Celebrating Team Success: Hope Heaven <br/>International Impact in Action</h2>
-        <p class="text-base font-medium">Dear Hope Have team: </p>
+        <p class="text-base font-medium -mt-1">Dear Hope Have team: </p>
         <form class="post-form flex flex-column mt-0" @submit.prevent="onSubmitPost()">
           <div class="flex flex-column gap-2">
             <label>Title:</label>

@@ -142,7 +142,7 @@ export default {
       <div class="flex flex-col">
         <div class="avatar-wrapper">
           <div class="avatar-image">
-            <img :src="user.profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'" alt="User Photo">
+            <img class="h-full" :src="user.profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'" alt="User Photo">
             <div class="avatar-content">
               <i class="pi pi-camera" style="font-size: 4rem; color: #9f9f9f;"></i>
             </div>
@@ -239,7 +239,7 @@ export default {
 }
 .avatar-image {
   width: 300px;
-  height: 300px;
+  height: 350px;
   position:relative;
 }
 img {
@@ -258,7 +258,7 @@ img {
   justify-content: center;
   background: rgba(0, 0, 0, 0.6);
   opacity: 0;
-  transition: all .6s ease-in-out;
+  transition: all .5s ease-in-out;
 }
 .avatar-content:hover{
   opacity: 1;
