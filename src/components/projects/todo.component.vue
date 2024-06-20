@@ -1,9 +1,19 @@
 <script setup>
 import {ref, onMounted, watchEffect, nextTick} from 'vue';
 import columnC from './column.component.vue';
+import {fetchTaskData} from "@/services/projects-api.services.js";
+
 
 const props = defineProps({
   id: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
     type: String,
     required: true,
   },
@@ -14,12 +24,11 @@ const reload = ref(false); // Propiedad reactiva para controlar la recarga de da
 const project = ref();
 
 // Función para cargar los datos del proyecto
-const fetchTasks = body => {
-  fetch(`http://localhost:3000/projects/${props.id}`)
-      .then(response => response.json(body))
+const fetchTasks = () => {
+  fetchTaskData(props.id)
       .then(data => {
         project.value = data;
-        console.log('Project loaded:', project.value.tasks)
+        console.log('Project loaded:', project.value)
       })
       .catch(error => {
         console.error('Error al obtener datos de la API:', error);
@@ -48,14 +57,15 @@ onMounted(fetchTasks);
 
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
-    <h1 class="title-projects text-4xl">{{ project ? project.name : '' }}</h1>
+    <h1 class="title-projects text-4xl">{{ this.name }}</h1>
+    <p class="text-lg">{{ this.description }}</p>
     <br>
     <h3 class="subtitle text-xl">Tasks assigned:</h3>
 
     <div class="column-container">
-      <columnC task-column="To-Do" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
-      <columnC task-column="Doing" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
-      <columnC task-column="Done" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
+      <columnC task-column="TODO" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
+      <columnC task-column="DOING" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
+      <columnC task-column="DONE" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
     </div>
   </section>
 </template>

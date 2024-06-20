@@ -1,8 +1,10 @@
 import axios from 'axios';
+import {environment} from "@/environment/environment.js";
+const BaseUrl = environment.baseUrl + '/projects';
 // Función para obtener la lista de proyectos desde la API
 export async function fetchProjects() {
     try {
-        const response = await axios.get("http://localhost:3000/projects");
+        const response = await axios.get(BaseUrl);
 
         console.log("Datos obtenidos de la API:", response.data);
         return response.data; // Devuelve la lista de proyectos obtenidos de la API
@@ -14,7 +16,7 @@ export async function fetchProjects() {
 
 export const addProject = async (projectData) => {
     try {
-        const response = await axios.post('http://localhost:3000/projects', projectData, {
+        const response = await axios.post(BaseUrl, projectData, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -34,7 +36,7 @@ export const addProject = async (projectData) => {
 // Función para obtener los datos de tareas de un proyecto específico desde la API
 export async function fetchTaskData(projectId) {
     try {
-        const response = await axios.get(`http://localhost:3000/projects/${projectId}`);
+        const response = await axios.get(BaseUrl+`/${projectId}/task-items`);
 
         console.log("Datos obtenidos de la API para TASKS:", response.data);
         return response.data; // Devuelve la lista de proyectos obtenidos de la API
@@ -57,7 +59,7 @@ export async function addTask(projectId, newTask) {
         project.tasks.push(newTask);
 
         // Actualizar el proyecto en la API con el nuevo arreglo de tareas
-        const response = await axios.put(`http://localhost:3000/projects/${projectId}`, project);
+        const response = await axios.put(BaseUrl+`/${projectId}/task-items`, project);
         return response.data; // Devuelve los datos actualizados del proyecto
     } catch (error) {
         console.error('Error al agregar la tarea al proyecto:', error);

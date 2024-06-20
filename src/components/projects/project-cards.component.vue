@@ -93,9 +93,7 @@ const createProject = async () => {
       name: newProject.value.name,
       image: newProject.value.image,
       description: newProject.value.description,
-      tasks: [], // Puedes inicializar con un array vacío si es necesario
-      members: [] // Puedes inicializar con un array vacío si es necesario
-    };
+      };
 
 
     const addedProject = await addProject(projectData); // Llama a la función del servicio
@@ -106,9 +104,7 @@ const createProject = async () => {
       name: addedProject.name,
       image: addedProject.image,
       description: addedProject.description,
-      tasks: addedProject.tasks || [], // Puedes inicializar con un array vacío si es necesario
-      members: addedProject.members || [] // Puedes inicializar con un array vacío si es necesario
-    });
+     });
 
     console.log('Nuevo proyecto agregado:', addedProject);
 

@@ -33,6 +33,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
 });
 const toggle = (event) => {
   menu.value.toggle(event);
@@ -146,6 +150,7 @@ const items = ref([{
 
       <div>
         <h3 class="task-title" style="font-weight:normal;">{{ title }}</h3>
+        <p>{{description}}</p>
         <p>Assigned to: {{ assigned }}</p>
         <p>Due: {{ due }}</p>
       </div>

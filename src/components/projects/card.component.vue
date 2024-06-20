@@ -33,11 +33,15 @@ export default defineComponent({
   methods: {
     openTodo() {
       const encodedId = this.id;
+      const projectName = this.name;
+      const projectDescription = this.description;
       console.log(encodedId);
       this.$router.push({
         name: 'projectTodo',
         params: {
           id: encodedId,
+          name: projectName,
+          description: projectDescription,
         },
       });
     },

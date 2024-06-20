@@ -13,7 +13,7 @@ import Calendar from "primevue/calendar";
 
 // Variables reactivas
 const state = ref({
-  tasks: [],
+  tasks: TaskEntity[{}],
   totalTasks: 0,
   newTask: ref(new TaskEntity()),
   reload: false,
@@ -44,11 +44,11 @@ const props = defineProps({
 // Función para cambiar el color dinámico
 function cambiarColor(taskColumn) {
   switch (taskColumn) {
-    case 'To-Do':
+    case 'TODO':
       return '#FFDBDB';
-    case 'Doing':
+    case 'DOING':
       return '#FFF3DB';
-    case 'Done':
+    case 'DONE':
       return '#DBE9FF';
     default:
       return ''; // Color por defecto
@@ -59,9 +59,10 @@ function cambiarColor(taskColumn) {
 const fetchTasks = () => {
   fetchTaskData(props.id)
       .then((data) => {
-        state.value.totalTasks = data.tasks.length;
-        state.value.tasks = data.tasks.filter((task) => task.status === props.taskColumn);
+        state.value.totalTasks = data.length;
+        state.value.tasks = data.filter((task) => task.state === props.taskColumn);
 
+        console.log('Tasks loaded:', state.value.tasks);
       })
       .catch((error) => {
         console.error('Error al obtener datos de la API:', error);
@@ -147,8 +148,8 @@ const taskDel = () => {
       </template>
       <template #content>
         <div class="overflow">
-          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.assigned"
-                :due="task.due" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
+          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :description="task.description" :assigned="task.userId"
+                :due="task.dueDate" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
         </div>
       </template>
       <template #footer>
