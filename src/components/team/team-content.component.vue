@@ -56,19 +56,22 @@ export default {
         return;
       }
 
+      console.log(this.userSelected);
+
       const body = {
-        idMember: {
-          date: new Date(),
-          message: this.message,
-          sender: this.userSelected.name // here should be the user name with the session active (global storage ><)
-        }
+        date: new Date(),
+        message: this.message,
+        userIdReceiver: parseInt(this.userSelected.id),
+        userIdSender: this.$store.state.user.id
       }
 
-      const result = await this.teamMemberService.newMessage(idMember, body)
+      const result = await this.teamMemberService.newMessage(body)
       if (!result) {
         console.error("Failed to send message")
       } else {
         console.log("Message sent")
+        // alert window message sent
+        window.alert("Message sent")
       }
 
       this.popUp = false;
