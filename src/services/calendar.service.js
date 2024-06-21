@@ -1,16 +1,17 @@
 import axios from "axios";
+import {environment} from "@/environment/environment.js";
 
 class CalendarService {
     baseUrl = ""
     constructor() {
-        this.baseUrl = "http://localhost:3000"
+        this.baseUrl = environment.baseUrl;
     }
 
-    async getEventsCalendar() {
+    async getEventsCalendar(projectId) {
         let response = null;
 
         try {
-            response = await axios.get(`${this.baseUrl}/events`)
+            response = await axios.get(`${this.baseUrl}/events/${projectId}`);
         }catch(e) {
             console.error('Error to obtain the events calendar', e)
         }
@@ -22,6 +23,7 @@ class CalendarService {
         let response = null;
 
         try {
+            console.log('event save:', event)
             response = await axios.post(`${this.baseUrl}/events`, event);
         }catch(e){
             console.error('Error to save the event', e)
