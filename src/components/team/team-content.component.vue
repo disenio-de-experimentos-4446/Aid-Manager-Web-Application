@@ -18,6 +18,8 @@ export default {
       members: [],
       message: "",
       messageSent: true,
+      roleUser: this.$store.state.user.role,
+      userId: this.$store.state.user.id,
       teamMemberService: new TeamMembersService()
     }
   },
@@ -34,8 +36,11 @@ export default {
           .catch(e => console.error(e))
 
       if (members) {
+        console.log('members', members);
+        const companyId = this.$store.state.user.companyId;
         members.forEach((m) => {
-          this.members.push(new TeamMemberEntity(m));
+          if(m.companyId === companyId)
+            this.members.push(new TeamMemberEntity(m));
         })
       }
     },
@@ -131,7 +136,7 @@ export default {
             <p class="popup__member-description" aria-label="description">{{ userSelected.description }}</p>
           </div>
 
-          <pv-button class="justify-content-center p-2 bg-red-500" @click="kickMember(userSelected.id)">KICK</pv-button>
+          <pv-button class="justify-content-center p-2 bg-red-500" @click="kickMember(userSelected.id)" v-if="this.roleUser === 'director' && this.userId !== userSelected.id">KICK</pv-button>
         </div>
 
         <div class="popup__content-contentinfo" v-if="popUpDetail === 'message'">

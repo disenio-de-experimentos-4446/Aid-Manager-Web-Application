@@ -1,16 +1,16 @@
 import axios from "axios";
+import {environment} from "@/environment/environment.js";
 
 class TeamMembersService {
     baseUrl = ""
     constructor(){
-        this.baseUrl = "http://localhost:3000"
+        this.baseUrl = environment.baseUrl;
     }
 
     async getMembers() {
         let response = null
         try {
-            response = await axios.get(`${this.baseUrl}/team-members`);
-
+            response = await axios.get(`${this.baseUrl}/users`);
         }catch(e) {
             console.error('Error to obtain the team members', e);
         }
@@ -30,7 +30,7 @@ class TeamMembersService {
     async kickMember(idUser) {
         let response = null;
         try {
-            response = await axios.delete(`${this.baseUrl}/team-members/${idUser}`);
+            response = await axios.put(`${this.baseUrl}/users/kick-member/${idUser}`);
         } catch(e) {
             console.error('Error to kick the member', e);
         }
