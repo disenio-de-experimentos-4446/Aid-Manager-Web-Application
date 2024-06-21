@@ -123,6 +123,9 @@ export default {
       this.newEvent = true;
 
       this.inputNewEvent["id"] = idEvent;
+    },
+    receiveProjectSelected(project) {
+      console.log('project selected', project);
     }
   }
 }
@@ -131,7 +134,7 @@ export default {
 <template>
   <div class="calendar relative p-4 lg:p-5 mb-2">
     <h1 class="calendar-title text-4xl mb-4 text-left" aria-label="title">Calendar</h1>
-    <dropdown-projects></dropdown-projects>
+    <dropdown-projects @projectSelected="receiveProjectSelected"></dropdown-projects>
     <div class="calendar__days-week mt-2" role="heading">
       <span aria-label="title">SUN</span>
       <span aria-label="title">MON</span>
