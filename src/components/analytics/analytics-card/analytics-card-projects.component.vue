@@ -221,17 +221,4 @@ export default {
   padding-bottom: 10px;
 }
 
-.paragraph {
-  margin-right: 6rem;
-  padding-left: 40px;
-}
-
-.icon {
-  padding-top: 5.5rem;
-  padding-left: 11rem;
-}
-
-.line {
-  margin-bottom: 1rem;
-}
 </style>

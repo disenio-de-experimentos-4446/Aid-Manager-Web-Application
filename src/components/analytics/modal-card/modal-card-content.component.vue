@@ -117,7 +117,7 @@ export default {
       <div class="flex flex-column gap-3 align-items-center relative mt-5">
         <form class="flex flex-column align-items-center" @submit.prevent="onUpdate()">
           <div class="flex relative">
-            <img src="../../../assets/image-chart-ball.png" class="w-14rem h-full"/>
+            <img src="../../../assets/image-chart-ball.png" class="w-14rem h-full" alt="chart ball"/>
             <div class="flex absolute flex-column py-5 w-full h-full top-0 left-0">
               <div class="flex flex-row justify-content-between">
                 <input class="w-3rem p-1" placeholder="200"/>
@@ -190,7 +190,7 @@ export default {
             </div>
           </div>
           <div class="my-6 flex">
-            <img src="../../../assets/image-paymant-progress.png" class="w-full sm:w-26rem h-full"/>
+            <img src="../../../assets/image-paymant-progress.png" class="w-full sm:w-26rem h-full" alt="chart payment"/>
           </div>
           <div class="flex flex-row align-items-center justify-content-center flex-wrap gap-5">
             <div class="flex flex-row align-items-center gap-2">
@@ -341,7 +341,7 @@ export default {
             </div>
           </div>
           <div class="flex" style="margin: 35px 0">
-            <img src="../../../assets/image-progress-months(1).png" class="w-full sm:w-30rem h-full"/>
+            <img src="../../../assets/image-progress-months(1).png" class="w-full sm:w-30rem h-full" alt="chart progress"/>
           </div>
           <div class="flex flex-row align-items-center justify-content-center flex-wrap gap-5">
             <div class="flex flex-row align-items-center gap-2">
@@ -415,7 +415,7 @@ export default {
             </div>
           </div>
           <div class="my-6 flex">
-            <img src="../../../assets/image-progressbar.png" class="w-full sm:w-26rem h-full"/>
+            <img src="../../../assets/image-progressbar.png" class="w-full sm:w-26rem h-full" alt="chart progress bar"/>
           </div>
           <div class="flex flex-row align-items-center justify-content-center flex-wrap gap-5">
             <div class="flex flex-row align-items-center gap-2">
