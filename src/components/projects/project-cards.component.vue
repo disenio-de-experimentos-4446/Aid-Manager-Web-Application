@@ -6,8 +6,8 @@
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
-        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image"
-                         :id="project.id"/>
+        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl"
+                         :id="project.id" :description="project.description"/>
 
         <!-- Botón para agregar un nuevo proyecto -->
         <div class="add-project">
@@ -15,7 +15,7 @@
         </div>
 
         <!-- Diálogo para agregar un nuevo proyecto -->
-        <Dialog modal="true" class="p-dialog" v-model:visible="visible">
+        <Dialog class="p-dialog" modal:true v-model:visible="visible">
           <div style="padding: 2rem">
             <h2 class="p-dialog-title block font-semibold mb-5">Add your project</h2>
             <span class="p-text-secondary block mb-5">Add your project info.</span>
@@ -62,13 +62,16 @@ import {addProject} from "@/services/projects-api.services.js";
 const visible = ref(false);
 const projects = ref([]);
 const newProject = ref({ProjectsEntity});
+let companyId = localStorage.getItem('companyId');
+companyId = companyId.slice(1,companyId.length-1)
 
 
 // Método para obtener proyectos
 const getProjects = () => {
-  fetchProjects()
+  fetchProjects(companyId)
       .then(data => {
         projects.value = data;
+        console.log('Projects loaded:', projects.value);
       })
       .catch(error => {
         console.error('Error al obtener datos de la API:', error);
@@ -89,21 +92,22 @@ const createProject = async () => {
 
   try {
     const projectData = {
-      id: String(projects.value.length + 1), // Puedes generar un ID único aquí
       name: newProject.value.name,
-      image: newProject.value.image,
+      imageUrl: newProject.value.image,
       description: newProject.value.description,
+      companyId: companyId,
       };
 
 
     const addedProject = await addProject(projectData); // Llama a la función del servicio
-
+    console.log(companyId);
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
     projects.value.push({
-      id: addedProject.id,
+      id: projects.value.length + 1, // Puedes generar un ID único aquí
       name: addedProject.name,
       image: addedProject.image,
       description: addedProject.description,
+      companyId: companyId,
      });
 
     console.log('Nuevo proyecto agregado:', addedProject);
@@ -124,6 +128,7 @@ const createProject = async () => {
 // Obtener proyectos al montar el componente
 onMounted(() => {
   getProjects();
+
 });
 </script>
 
@@ -146,7 +151,7 @@ onMounted(() => {
 
 .add-project {
   width: 20%;
-  margin: 1rem;
+  margin: 0 1rem 1rem 1rem;
 }
 
 .addBut {

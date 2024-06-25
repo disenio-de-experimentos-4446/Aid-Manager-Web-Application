@@ -2,22 +2,22 @@
 import {ref, onMounted, watchEffect, nextTick} from 'vue';
 import columnC from './column.component.vue';
 import {fetchTaskData} from "@/services/projects-api.services.js";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
+
+let name = route.query.name;
+let description = route.query.description;
 
 const props = defineProps({
   id: {
     type: String,
     required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
+  }
 });
+
+
+
 const reload = ref(false); // Propiedad reactiva para controlar la recarga de datos
 
 // Variable reactiva para almacenar los datos del proyecto
@@ -25,6 +25,8 @@ const project = ref();
 
 // Función para cargar los datos del proyecto
 const fetchTasks = () => {
+  console.log("Name and desc", name, description)
+  console.log('Fetching tasks for project:', props.id);
   fetchTaskData(props.id)
       .then(data => {
         project.value = data;
@@ -57,8 +59,8 @@ onMounted(fetchTasks);
 
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
-    <h1 class="title-projects text-4xl">{{ this.name }}</h1>
-    <p class="text-lg">{{ this.description }}</p>
+    <h1 class="title-projects text-4xl">Project {{ name }}</h1>
+    <p class="text-lg">{{ description }}</p>
     <br>
     <h3 class="subtitle text-xl">Tasks assigned:</h3>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="project-card">
     <Button class="img-but" @click="openTodo()">
-      <img :src="image" alt="Project Image" class="project-image" />
+      <img :src="image" alt="Not a valid image" class="project-image" />
     </Button>
     <div class="project-name">{{ name }}</div>
   </div>
@@ -10,6 +10,7 @@
 <script>
 import { defineComponent } from 'vue';
 import Button from 'primevue/button';
+
 
 export default defineComponent({
   name: 'CardsComponent',
@@ -23,6 +24,10 @@ export default defineComponent({
       required: false,
     },
     id: {
+      type: Number,
+      required: true,
+    },
+    description: {
       type: String,
       required: true,
     },
@@ -35,14 +40,16 @@ export default defineComponent({
       const encodedId = this.id;
       const projectName = this.name;
       const projectDescription = this.description;
-      console.log(encodedId);
+      console.log(encodedId, projectName, projectDescription);
       this.$router.push({
         name: 'projectTodo',
         params: {
           id: encodedId,
+          },
+        query:{
           name: projectName,
-          description: projectDescription,
-        },
+          description: projectDescription
+        }
       });
     },
   },

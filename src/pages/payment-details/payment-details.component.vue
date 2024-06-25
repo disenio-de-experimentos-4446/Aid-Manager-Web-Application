@@ -56,22 +56,26 @@ export default {
 
       // Verificar que cardHolder no tenga más de 20 caracteres
       if (this.form.cardHolderName.trim().length > 20) {
+        console.log('cardHolderName error');
         return false;
       }
 
       // Verificar que cvv tenga 3 digitos
       if (this.form.cvv.length !== 3) {
+        console.log('cvv error')
         return false;
       }
 
       // Verificar que expirationDate tenga el formato MM/DD/YY
       const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d\d$/;
       if (!datePattern.test(this.form.expirationDate)) {
+        console.log('datePattern error');
         return false;
       }
 
       // Verificar que cardNumber tenga exactamente 16 dígitos
       if (this.form.cardNumber.trim().length !== 16) {
+        console.log('cardNumber error', this.form.cardNumber.trim().length);
         return false;
       }
 
@@ -81,6 +85,7 @@ export default {
     areCardFieldsComplete() {
       // Verificar que todos los campos estén completos
       if (!this.form.cardHolderName || !this.form.cardNumber || !this.form.expirationDate || !this.form.cvv) {
+        console.log('empty fields');
         return false;
       }
 

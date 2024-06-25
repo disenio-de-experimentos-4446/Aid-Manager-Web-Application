@@ -2,10 +2,10 @@ import axios from 'axios';
 import {environment} from "@/environment/environment.js";
 const BaseUrl = environment.baseUrl + '/projects';
 // Función para obtener la lista de proyectos desde la API
-export async function fetchProjects() {
+export async function fetchProjects(companyId) {
     try {
-        const response = await axios.get(BaseUrl);
 
+        const response = await axios.get(BaseUrl+`/${companyId}`);
         console.log("Datos obtenidos de la API:", response.data);
         return response.data; // Devuelve la lista de proyectos obtenidos de la API
     } catch (error) {
@@ -16,6 +16,7 @@ export async function fetchProjects() {
 
 export const addProject = async (projectData) => {
     try {
+        console.log("ProjectData", projectData);
         const response = await axios.post(BaseUrl, projectData, {
             headers: {
                 'Content-Type': 'application/json'
@@ -51,15 +52,8 @@ export async function fetchTaskData(projectId) {
 
 export async function addTask(projectId, newTask) {
     try {
-        // Obtener el proyecto actual (incluyendo el arreglo de tareas)
-        const project = await fetchTaskData(projectId);
-
-        // Agregar la nueva tarea al arreglo existente de tareas del proyecto
-        console.log("Project", newTask);
-        project.tasks.push(newTask);
-
-        // Actualizar el proyecto en la API con el nuevo arreglo de tareas
-        const response = await axios.put(BaseUrl+`/${projectId}/task-items`, project);
+        // Agregar a tasks la nueva tarea
+        const response = await axios.post(BaseUrl+`/${projectId}/task-items`, newTask);
         return response.data; // Devuelve los datos actualizados del proyecto
     } catch (error) {
         console.error('Error al agregar la tarea al proyecto:', error);
@@ -67,13 +61,10 @@ export async function addTask(projectId, newTask) {
     }
 }
 
-export async function deleteTask(projectID, taskID){
+export async function deleteTask(projectId, taskID){
     try{
-        const project = await fetchTaskData(projectID);
-        console.log("Task a eliminar" , taskID);
-        project.tasks = project.tasks.filter(task => task.id !== taskID);
-        console.log("Project con task borrada", project);
-        const response = await axios.put(`http://localhost:3000/projects/${projectID}`, project);
+        const response = await axios.delete(BaseUrl+`/${projectId}/task-items/${taskID}`);
+        console.log("Task eliminada", response.data);
         return response.data;
     } catch (error) {
         console.error('Error al Eliminar la tarea al proyecto:', error);
@@ -81,21 +72,16 @@ export async function deleteTask(projectID, taskID){
     }
 }
 
-export async function editTask(projectID, taskID, taskData){
+export async function editTask(projectId, taskData){
+
+    console.log(taskData);
+
     try{
-        const project = await fetchTaskData(projectID);
-        console.log("Task a editar" , taskID);
-        project.tasks = project.tasks.map(task => {
-            if(task.id === taskID){
-                return taskData;
-            }
-            return task;
-        });
-        console.log("Project con task editada", project);
-        const response = await axios.put(`http://localhost:3000/projects/${projectID}`, project);
+        const response = await axios.put(BaseUrl+`/${projectId}/task-items`, taskData);
+        console.log("Task editada", response.data);
         return response.data;
     } catch (error) {
-        console.error('Error al Editar la tarea al proyecto:', error);
+        console.error('Error al Editar la tarea', error);
         throw error;
     }
 }
