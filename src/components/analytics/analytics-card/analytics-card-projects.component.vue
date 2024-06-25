@@ -30,6 +30,17 @@ export default {
   async created() {
     const response = await this.AnalyticsApiService.getAnalytic();
     this.analytics = response.data;
+  },
+  methods: {
+    async updateAnalytics(graphicId, newGraphicData) {
+      try {
+        const response = await this.AnalyticsApiService.updateAnalytics(graphicId, newGraphicData);
+        // Here you can handle the response, for example, updating the local data
+        this.analytics = response.data;
+      } catch (error) {
+        console.error('Error updating graphic:', error);
+      }
+    }
   }
 }
 </script>
@@ -119,7 +130,7 @@ export default {
       </pv-card>
     </div>
   </section>
-  <modal-card-content v-if="selectedCard" :selectedCard="selectedCard" @close="selectedCard = null"></modal-card-content>
+  <modal-card-content v-if="selectedCard" :selectedCard="selectedCard" @close="selectedCard = null" @update="updateAnalytics"></modal-card-content>
 </template>
 
 <style scoped>

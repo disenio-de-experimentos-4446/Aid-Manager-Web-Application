@@ -1,11 +1,17 @@
 <script>
+import { AnalyticsService } from "@/services/analytics.service.js";
+
 export default {
   name: "modal-card-content",
   props: ['selectedCard'],
-  emits: ['close'],
+  emits: ['close', 'update'], // Add 'update' to the list of emitted events
   data() {
     return {
-        hasUpdated: false
+      hasUpdated: false,
+      analyticsService: new AnalyticsService(), // Initialize the AnalyticsService
+      analyticsId: null, // Add this line
+      currentData: {}, // Initialize currentData as an empty object
+      expectedData: {}, // Initialize expectedData as an empty object
     }
   },
   methods: {
@@ -15,11 +21,20 @@ export default {
 
     onUpdate() {
       this.hasUpdated = true;
+      this.$emit('update'); // Emit the 'update' event when the "Update" button is clicked
+    },
+
+    async handleUpdateClick() {
+      // Call the updateAnalytics method from the AnalyticsService with the updated data
+      await this.analyticsService.updateAnalytics(this.analyticsId, {
+        current: this.currentData,
+        expected: this.expectedData
+      });
+      this.onUpdate();
     }
   }
 }
 </script>
-
 <template>
   <section
       class="modal-background w-full bg-white-alpha-40 absolute top-0 left-0 bottom-0 right-0 flex align-items-center justify-content-center">
@@ -412,7 +427,7 @@ export default {
               <p>Expected</p>
             </div>
           </div>
-          <button class="mt-5 align-self-center shadow-1 border-1 border-gray-300 uppercase py-2 px-5
+          <button @click="handleUpdateClick" class="mt-5 align-self-center shadow-1 border-1 border-gray-300 uppercase py-2 px-5
           font-medium text-base cursor-pointer border-round-2xl
           hover:bg-green-700 hover:text-white transition-duration-200 transition-all animation-ease-in"
                   style="letter-spacing: 1px; justify-self: center">
