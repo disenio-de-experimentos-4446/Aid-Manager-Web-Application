@@ -1,14 +1,15 @@
 import axios from "axios";
+import {environment} from "@/environment/environment.js";
 
 class ProjectsService {
     constructor() {
-        this.baseUrl = 'http://localhost:3000';
+        this.baseUrl = environment.baseUrl;
     }
 
-    async getProjects() {
+    async getProjects(companyId) {
         let response = null;
         try {
-            response = await axios.get(`${this.baseUrl}/projects`);
+            response = await axios.get(`${this.baseUrl}/projects/${companyId}`);
         }catch(e) {
             console.error(e);
         }

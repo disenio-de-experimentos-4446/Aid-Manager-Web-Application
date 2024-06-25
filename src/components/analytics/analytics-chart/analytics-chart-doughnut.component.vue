@@ -1,40 +1,39 @@
 <script>
-import {AnalyticsService} from "@/services/analytics.service.js";
-import {analytic} from "@/models/analytic.entity.js";
+import { AnalyticsService } from "@/services/analytics.service.js";
+
 export default {
   name: 'analytics-chart-doughnut',
   data() {
     return {
       chartData: null,
-      analytics: analytic,
-      AnalyticsApiService: new AnalyticsService(),
-      chartOptions: {
-        cutout: '60%'
-      }
+      chartOptions: null,
+      AnalyticsApiService: new AnalyticsService()
     };
   },
   async created() {
     const response = await this.AnalyticsApiService.getAnalytic();
-    this.analytics = response.data;
-    this.chartData = this.setChartData();
+    const tasksAnalytics = response.data.find(analytic => analytic.title === 'Tasks');
+    this.chartData = this.setChartData(tasksAnalytics.current);
     this.chartOptions = this.setChartOptions();
   },
-
   methods: {
-    setChartData() {
-      const documentStyle = getComputedStyle(document.body);
-
-      const progressAnalytics = this.analytics.find(analytic => analytic.title === 'Tasks');
-
-      const data = [progressAnalytics.values[0]['to-do'], progressAnalytics.values[0]['in-progress'], progressAnalytics.values[0]['done']] ;
-
+    setChartData(currentData) {
+      const documentStyle = getComputedStyle(document.documentElement);
       return {
-        labels: ['To-Do', 'In Progress', 'Done'],
+        labels: ['To Do', 'In Progress', 'Done'],
         datasets: [
           {
-            data: data,
-            backgroundColor: [documentStyle.getPropertyValue('--teal-200'), documentStyle.getPropertyValue('--green-200'), documentStyle.getPropertyValue('--green-500')],
-            hoverBackgroundColor: [documentStyle.getPropertyValue('--teal-200'), documentStyle.getPropertyValue('--green-200'), documentStyle.getPropertyValue('--green-500')]
+            data: currentData,
+            backgroundColor: [
+              documentStyle.getPropertyValue('--teal-200'),
+              documentStyle.getPropertyValue('--green-200'),
+              documentStyle.getPropertyValue('--green-500')
+            ],
+            borderColor: [
+              documentStyle.getPropertyValue('--teal-200'),
+              documentStyle.getPropertyValue('--green-200'),
+              documentStyle.getPropertyValue('--green-500')
+            ]
           }
         ]
       };
@@ -42,18 +41,14 @@ export default {
     setChartOptions() {
       const documentStyle = getComputedStyle(document.documentElement);
       const textColor = documentStyle.getPropertyValue('--text-color');
-
       return {
         plugins: {
           legend: {
             labels: {
-              cutout: '60%',
               color: textColor
             }
           }
-        },
-        responsive: true,
-        maintainAspectRatio: false
+        }
       };
     }
   }

@@ -20,11 +20,14 @@ export default {
   methods: {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
-      const verticalBarAnalytics = this.analytics.find(analytic => analytic.title === 'Progress-bar');
-      const currentData =  verticalBarAnalytics.values[0]['current'];
-      const expectedData =  verticalBarAnalytics.values[0]['expected'];
+
+      const vertialBarChartAnalytics = this.analytics.find(analytic => analytic.title === 'ProgressBar');
+
+      const currentData =  vertialBarChartAnalytics.current;
+      const expectedData =  vertialBarChartAnalytics.expected;
+
       return {
-        labels: ['Actual', 'Planned','Budget'],
+        labels: ['Actual', 'Planned', 'Budget'],
         datasets: [
           {
             label: 'Current',

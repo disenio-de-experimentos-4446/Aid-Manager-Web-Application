@@ -22,10 +22,12 @@ export default {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
 
+// Find the 'Payments' analytics data
       const horizontalBarAnalytics = this.analytics.find(analytic => analytic.title === 'Payments');
 
-      const currentData =  horizontalBarAnalytics.values[0]['current'];
-      const expectedData =  horizontalBarAnalytics.values[0]['expected'];
+// Use the 'current' and 'expected' values from the 'Payments' analytics data
+      const currentData = horizontalBarAnalytics.current;
+      const expectedData = horizontalBarAnalytics.expected;
 
       return {
         labels: ['Transportation', 'Food', 'Water'],

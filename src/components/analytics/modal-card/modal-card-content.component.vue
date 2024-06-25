@@ -1,11 +1,17 @@
 <script>
+import { AnalyticsService } from "@/services/analytics.service.js";
+
 export default {
   name: "modal-card-content",
   props: ['selectedCard'],
-  emits: ['close'],
+  emits: ['close', 'update'], // Add 'update' to the list of emitted events
   data() {
     return {
-        hasUpdated: false
+      hasUpdated: false,
+      analyticsService: new AnalyticsService(), // Initialize the AnalyticsService
+      analyticsId: null, // Add this line
+      currentData: {}, // Initialize currentData as an empty object
+      expectedData: {}, // Initialize expectedData as an empty object
     }
   },
   methods: {
@@ -15,11 +21,20 @@ export default {
 
     onUpdate() {
       this.hasUpdated = true;
+      this.$emit('update'); // Emit the 'update' event when the "Update" button is clicked
+    },
+
+    async handleUpdateClick() {
+      // Call the updateAnalytics method from the AnalyticsService with the updated data
+      await this.analyticsService.updateAnalytics(this.analyticsId, {
+        current: this.currentData,
+        expected: this.expectedData
+      });
+      this.onUpdate();
     }
   }
 }
 </script>
-
 <template>
   <section
       class="modal-background w-full bg-white-alpha-40 absolute top-0 left-0 bottom-0 right-0 flex align-items-center justify-content-center">
@@ -102,7 +117,7 @@ export default {
       <div class="flex flex-column gap-3 align-items-center relative mt-5">
         <form class="flex flex-column align-items-center" @submit.prevent="onUpdate()">
           <div class="flex relative">
-            <img src="../../../assets/image-chart-ball.png" class="w-14rem h-full"/>
+            <img src="../../../assets/image-chart-ball.png" class="w-14rem h-full" alt="chart ball"/>
             <div class="flex absolute flex-column py-5 w-full h-full top-0 left-0">
               <div class="flex flex-row justify-content-between">
                 <input class="w-3rem p-1" placeholder="200"/>
@@ -175,7 +190,7 @@ export default {
             </div>
           </div>
           <div class="my-6 flex">
-            <img src="../../../assets/image-paymant-progress.png" class="w-full sm:w-26rem h-full"/>
+            <img src="../../../assets/image-paymant-progress.png" class="w-full sm:w-26rem h-full" alt="chart payment"/>
           </div>
           <div class="flex flex-row align-items-center justify-content-center flex-wrap gap-5">
             <div class="flex flex-row align-items-center gap-2">
@@ -326,7 +341,7 @@ export default {
             </div>
           </div>
           <div class="flex" style="margin: 35px 0">
-            <img src="../../../assets/image-progress-months(1).png" class="w-full sm:w-30rem h-full"/>
+            <img src="../../../assets/image-progress-months(1).png" class="w-full sm:w-30rem h-full" alt="chart progress"/>
           </div>
           <div class="flex flex-row align-items-center justify-content-center flex-wrap gap-5">
             <div class="flex flex-row align-items-center gap-2">
@@ -400,7 +415,7 @@ export default {
             </div>
           </div>
           <div class="my-6 flex">
-            <img src="../../../assets/image-progressbar.png" class="w-full sm:w-26rem h-full"/>
+            <img src="../../../assets/image-progressbar.png" class="w-full sm:w-26rem h-full" alt="chart progress bar"/>
           </div>
           <div class="flex flex-row align-items-center justify-content-center flex-wrap gap-5">
             <div class="flex flex-row align-items-center gap-2">
@@ -412,7 +427,7 @@ export default {
               <p>Expected</p>
             </div>
           </div>
-          <button class="mt-5 align-self-center shadow-1 border-1 border-gray-300 uppercase py-2 px-5
+          <button @click="handleUpdateClick" class="mt-5 align-self-center shadow-1 border-1 border-gray-300 uppercase py-2 px-5
           font-medium text-base cursor-pointer border-round-2xl
           hover:bg-green-700 hover:text-white transition-duration-200 transition-all animation-ease-in"
                   style="letter-spacing: 1px; justify-self: center">

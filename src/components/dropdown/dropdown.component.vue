@@ -11,13 +11,20 @@ export default {
     };
   },
   async mounted() {
-    await this.projectsService.getProjects()
+    const companyId = this.$store.state.user.companyId;
+    await this.projectsService.getProjects(companyId)
         .then(r => {
-          if(!r) console.error('Error to get projects');
+          if(!r) console.log('No projects found')
           else {
-            this.projects = r.data.filter(p => p.name)
+            console.log(r.data)
+            this.projects = r.data;
           }
         })
+  },
+  methods: {
+    sendProjectIdSelected(projectId) {
+      this.$emit('projectSelected', projectId)
+    }
   }
 }
 </script>
@@ -31,7 +38,7 @@ export default {
       </div>
     </template>
     <template #option="slotProps">
-      <div class="p-2">{{ slotProps.option.name }}</div>
+      <div class="p-2" style="width:100%;" @click="sendProjectIdSelected(slotProps.option.id)">{{ slotProps.option.name }}</div>
     </template>
   </pv-dropdown>
 </template>
