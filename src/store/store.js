@@ -18,6 +18,7 @@ export const store = createStore({
             // se llama al metodo cuando el usuario se logeo y manda la data al local storage
             // para que la data persista cuando se haga un reload
             localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('companyId', JSON.stringify(user.companyId));
         },
         removeUser( state ) {
             state.user = User;
