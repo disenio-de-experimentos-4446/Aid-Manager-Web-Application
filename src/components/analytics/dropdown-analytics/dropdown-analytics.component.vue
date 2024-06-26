@@ -6,7 +6,7 @@ export default {
   data() {
     return {
       projectsService: new ProjectsService(),
-      projectSelected: null,
+      projectSelected: 1,
       projects: []
     };
   },
@@ -14,14 +14,28 @@ export default {
     const companyId = this.$store.state.user.companyId;
     await this.projectsService.getProjects(companyId)
         .then(r => {
-          if(!r) console.log('No projects found')
-          else {
+          if(!r)
+          {
+            console.log('No projects found')
+            let template = {
+              id: 1,
+              name: 'No projects found'
+            }
+            this.projectSelected(template)
+            console.log(template)
+          }else {
             console.log(r.data)
             this.projects = r.data;
           }
         })
+  },watch: {
+    projectSelected(newVal) {
+      console.log('Project selected:', newVal.id, newVal.name);
+      this.$emit('project-selected', newVal.id, newVal.name);
+    }
   }
 }
+
 </script>
 
 

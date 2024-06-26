@@ -1,33 +1,48 @@
 <script>
 import {analytic} from "@/models/analytic.entity.js";
 import {AnalyticsService} from "@/services/analytics.service.js";
+import ModalCardContent from "@/components/analytics/modal-card/modal-card-content.component.vue";
 export default {
   name: 'analytics-chart-vertical-bar',
+  components: {ModalCardContent},
   data() {
     return {
       chartData: null,
       chartOptions: null,
       analytics: analytic,
-      AnalyticsApiService: new AnalyticsService()
+      AnalyticsApiService: new AnalyticsService(),
+      selectedCard: null
     };
   },
   async created() {
-    const response = await this.AnalyticsApiService.getAnalytic();
-    this.analytics = response.data;
-    this.chartData = this.setChartData();
-    this.chartOptions = this.setChartOptions();
+    console.log('AnalyticsVert Id:', this.projectId);
+    try{
+      const response = await this.AnalyticsApiService.getAnalytic(this.projectId);
+      this.analytics = response.data;
+      this.chartData = this.setChartData();
+      this.chartOptions = this.setChartOptions();
+      console.log('AnalyticsChartVerticalBar created:', response.data);
+    }catch (error) {
+      console.error('Error getting analytics:', error);
+    }
+
+  },props: {
+    projectId: {
+      type: Number,
+      required: true
+    }
   },
   methods: {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
 
-      const vertialBarChartAnalytics = this.analytics.find(analytic => analytic.title === 'ProgressBar');
+      const verticalBarChartAnalytics = this.analytics.find(analytic => analytic.title === 'statistics');
 
-      const currentData =  vertialBarChartAnalytics.current;
-      const expectedData =  vertialBarChartAnalytics.expected;
+      const currentData =  verticalBarChartAnalytics.current;
+      const expectedData =  verticalBarChartAnalytics.expected;
 
       return {
-        labels: ['Actual', 'Planned', 'Budget'],
+        labels: ['Expenses', 'Budget', 'Over/Under'],
         datasets: [
           {
             label: 'Current',
@@ -84,14 +99,47 @@ export default {
           }
         }
       };
+    },
+    async updateAnalytics(){
+      try{
+        const response = await this.AnalyticsApiService.getAnalytic(this.projectId);
+        this.analytics = response.data;
+        this.chartData = this.setChartData();
+        this.chartOptions = this.setChartOptions();
+        console.log('AnalyticsChartHorizontalBar created:', response.data);
+      } catch (error) {
+        console.error('Error getting analytics:', error);
+      }
     }
   }
 };
 </script>
 <template>
-  <div class="card w-full p-5 flex">
-    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-12rem w-full"  />
+  <div class="card w-full p-5 flex" >
+    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="card h-12rem w-full" style="z-index:unset;"/>
+    <button class="p-button card" @click="selectedCard = 'statistics'">Edit</button>
   </div>
+  <modal-card-content v-if="selectedCard" :selectedCard="selectedCard" :Data="this.analytics"
+                      @close="selectedCard = null" @update="updateAnalytics"></modal-card-content>
+
 </template>
 <style scoped>
+.card {
+  flex-direction: column;
+  justify-content: center;
+  position: unset !important;
+  z-index: unset !important;
+}
+.p-button{
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
 </style>

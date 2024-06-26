@@ -7,29 +7,34 @@ const http = axios.create({
 
 export class AnalyticsService {
 
-    async getAnalytic() {
-        return await http.get('/analytics');
+    async getAnalytic(projectId) {
+        console.log('projectId', projectId);
+        try{
+            return await http.get(`/analytics/${projectId}`);
+        }catch (error){
+            console.error('Error al obtener los datos de la API:', error);
+            throw error;
+        }
     }
 
-    async postAnalytics(analyticsData) {
-        return await http.post('/analytics', {
-            title: analyticsData.title,
-            description: analyticsData.description,
-            cost: analyticsData.cost,
-            progress: analyticsData.progress,
-            current: analyticsData.current,
-            expected: analyticsData.expected
-        });
+    async postAnalytics(projectId,analyticsData) {
+        try {
+            return await http.post(`/analytics/${projectId}`,analyticsData);
+        }catch (error){
+            console.error('Error al postear los datos de la API:', error);
+            throw error;
+        }
     }
-
-    async updateAnalytics(analyticsId, analyticsData) {
-        return await http.put(`/analytics/${analyticsId}`, {
-            title: analyticsData.title,
-            description: analyticsData.description,
-            cost: analyticsData.cost,
-            progress: analyticsData.progress,
-            current: analyticsData.current,
-            expected: analyticsData.expected
-        });
+    async updateAnalytics(projectId,analyticsId, analyticsData) {
+        try {
+            return await http.put(`/analytics/${projectId}/${analyticsId}`, analyticsData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        }catch (error){
+            console.error('Error al postear los datos de la API:', error);
+            throw error;
+        }
     }
 }

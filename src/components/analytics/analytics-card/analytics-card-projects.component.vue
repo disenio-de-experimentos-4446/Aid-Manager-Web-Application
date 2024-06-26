@@ -24,32 +24,53 @@ export default {
       analytics: analytic,
       AnalyticsApiService: new AnalyticsService(),
       selectedCard: null,
-      showDialog: false
+      projectId: null,
+      showDialog: false,
+      tasks: [],
+      completed: 0,
+      workload: 0,
+      progress: 0,
+      budget: 0,
+      projectName: null
     }
-  },
-  async created() {
-    const response = await this.AnalyticsApiService.getAnalytic();
-    this.analytics = response.data;
   },
   methods: {
-    async updateAnalytics(graphicId, newGraphicData) {
+     updateProjectId(id, name) {
+      this.projectId = id;
+      this.projectName = name;
+      this.fetchAnalytics();
+    }, handleTaskData(data) {
+      this.tasks = data;
+      console.log('DATA RECEIVED', data);
+
+      this.completed = data.filter(task => task.state === 'DONE').length;
+      this.workload = data.filter(task => task.state === 'TODO').length;
+      this.progress = (this.completed / data.length * 100).toFixed(2);
+      let bud = this.analytics.find(analytic => analytic.title === 'statistics');
+      console.log(bud, "SEXXXXXXXXXX")
+      this.budget = (bud.current[1]/100 * bud.current[2]).toFixed(2);
+
+    },
+    async fetchAnalytics() {
       try {
-        const response = await this.AnalyticsApiService.updateAnalytics(graphicId, newGraphicData);
-        // Here you can handle the response, for example, updating the local data
+        const response = await this.AnalyticsApiService.getAnalytic(this.projectId);
         this.analytics = response.data;
+        console.log('AnalyticsCardProjects created:', response.data);
       } catch (error) {
-        console.error('Error updating graphic:', error);
+        console.error('Error getting analytics:', error);
       }
-    }
+    },
   }
+
 }
 </script>
 <template>
   <section class="h-full p-4 lg:p-5 w-full relative" style="min-height: 100%">
     <div class="flex flex-row justify-content-between flex-wrap gap-0">
       <div class="flex flex-column gap-4" style="width: unset">
-        <h2 class="title-analytics text-4xl">Analytics</h2>
-        <dropdown-analytics></dropdown-analytics>
+        <div><h2 v-if="projectName" class="title-analytics text-4xl">{{projectName}} Project </h2><h2 class="title-analytics text-4xl">Analytics</h2></div>
+
+        <dropdown-analytics @project-selected="updateProjectId"></dropdown-analytics>
       </div>
       <div class="align-self-center border-1 flex align-items-center
         flex-row border-round-2xl text-white mb-2"
@@ -58,79 +79,80 @@ export default {
         <i class="text-lg pi pi-eye text-green-100"></i>
       </div>
     </div>
-    <div class="analytics-container">
-      <pv-card class="card stats w-full p-4 cursor-pointer" @click="selectedCard = 'stats'">
+    <div v-if="projectId" class="analytics-container">
+      <pv-card class="card stats w-full p-4 cursor-pointer">
         <template #header>
           <p class="font-medium mb-3">Currents Status:</p>
         </template>
         <template #content>
           <ul class="flex flex-column flex-1 h-full gap-3">
             <li class="flex flex-row justify-content-between">
-              <p>Time</p>
-              <span class="text-green-700 font-light">13% ahead of schedule</span>
+              <p></p>
             </li>
             <li class="flex flex-row justify-content-between">
               <p>Tasks</p>
-              <span class="text-green-700 font-light">6 tasks to be completed</span>
+              <span class="text-green-700 font-light">{{ completed }} tasks completed</span>
             </li>
             <li class="flex flex-row justify-content-between">
               <p>Workload</p>
-              <span class="text-green-700 font-light">0 tasks overdue</span>
+              <span class="text-green-700 font-light"> {{ workload }} tasks in progress</span>
             </li>
             <li class="flex flex-row justify-content-between">
               <p>Progress</p>
-              <span class="text-green-700 font-light">33,33% complete</span>
+              <span class="text-green-700 font-light">{{ progress }}% complete</span>
             </li>
             <li class="flex flex-row justify-content-between">
-              <p>Cost</p>
-              <span class="text-green-700 font-light">35% under buget</span>
+              <p>Over/Under</p>
+              <span class="text-green-700 font-light">{{ budget }}% budget</span>
             </li>
           </ul>
         </template>
       </pv-card>
-      <pv-card class="card tasks flex w-full flex-column cursor-pointer" @click="selectedCard = 'tasks'">
+      <pv-card class="card tasks flex w-full flex-column cursor-pointer">
         <template #header>
           <p class="text">Tasks:</p>
         </template>
         <template #content>
           <div class="flex w-full">
-            <analytics-chart-doughnut></analytics-chart-doughnut>
+            <analytics-chart-doughnut v-if="projectId" :projectId="projectId" @tasksData="handleTaskData"></analytics-chart-doughnut>
           </div>
         </template>
       </pv-card>
-      <pv-card class="card payments flex w-full flex-column w-full cursor-pointer" @click="selectedCard = 'payments'">
+      <pv-card class="card payments flex w-full flex-column w-full cursor-pointer">
         <template #header>
-          <p class="text">Expected payments:</p>
+          <p class="text">Expected Amounts:</p>
         </template>
         <template #content>
           <div class="graph">
-            <analytics-chart-horizontal-bar></analytics-chart-horizontal-bar>
+            <analytics-chart-horizontal-bar v-if="projectId" :projectId="projectId"></analytics-chart-horizontal-bar>
           </div>
         </template>
       </pv-card>
-      <pv-card class="card progress flex w-full flex-column w-full cursor-pointer" @click="selectedCard = 'progress'">
+      <pv-card class="card progress flex w-full flex-column w-full cursor-pointer">
         <template #header>
-          <p class="text">Progress:</p>
+          <p class="text">Monthly Income Projections:</p>
         </template>
         <template #content>
           <div class="flex">
-            <analytics-chart-line></analytics-chart-line>
+            <analytics-chart-line v-if="projectId" :projectId="projectId"></analytics-chart-line>
           </div>
         </template>
       </pv-card>
-      <pv-card class="card flex w-full flex-column cost cursor-pointer" @click="selectedCard = 'stadistics'">
+      <pv-card class="card flex w-full flex-column cost cursor-pointer">
         <template #header>
-          <p class="text">Progress:</p>
+          <p class="text">Budget Planning:</p>
         </template>
         <template #content>
           <div class="flex">
-            <analytics-chart-vertical-bar></analytics-chart-vertical-bar>
+            <analytics-chart-vertical-bar v-if="projectId" :projectId="projectId"></analytics-chart-vertical-bar>
           </div>
         </template>
       </pv-card>
     </div>
+    <div v-if="!projectId">
+      <p class="text-center">Select a project to view analytics</p>
+    </div>
   </section>
-  <modal-card-content v-if="selectedCard" :selectedCard="selectedCard" @close="selectedCard = null" @update="updateAnalytics"></modal-card-content>
 </template>
 
 <style scoped>

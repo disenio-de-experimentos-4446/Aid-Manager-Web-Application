@@ -58,10 +58,12 @@ import CardsComponent from '@/components/projects/card.component.vue';
 import {ProjectsEntity} from "@/models/projects.entity.js";
 import {fetchProjects} from "@/services/projects-api.services.js";
 import {addProject} from "@/services/projects-api.services.js";
-// Variables reactivas
+import {AnalyticsService} from "@/services/analytics.service.js";
+
 const visible = ref(false);
 const projects = ref([]);
 const newProject = ref({ProjectsEntity});
+let analyticService = new AnalyticsService();
 let companyId = localStorage.getItem('companyId');
 companyId = companyId.slice(1,companyId.length-1)
 
@@ -100,6 +102,9 @@ const createProject = async () => {
 
 
     const addedProject = await addProject(projectData); // Llama a la función del servicio
+
+    const newProjectId = addedProject.id;
+
     console.log(companyId);
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
     projects.value.push({
@@ -111,6 +116,39 @@ const createProject = async () => {
      });
 
     console.log('Nuevo proyecto agregado:', addedProject);
+    const AnalyticsData = [{
+      title: "statistics",
+      description: "statistics",
+      cost:1200,
+      progress: 20,
+      current: [0,0,0],
+      expected: [0,0,0],
+    },
+      {
+        title: "progress",
+        description: "progress",
+        cost:1200,
+        progress: 20,
+        current: [0,0,0,0,0,0,0,0,0,0,0,0],
+        expected: [0,0,0,0,0,0,0,0,0,0,0,0],
+      },
+      {
+        title: "payments",
+        description: "payments",
+        cost:1200,
+        progress: 20,
+        current: [0,0,0],
+        expected: [0,0,0],
+      }];
+
+    console.log("LAST ID:", newProjectId);
+
+    await analyticService.postAnalytics(newProjectId,AnalyticsData[0]);
+    await analyticService.postAnalytics( newProjectId,AnalyticsData[1]);
+    await analyticService.postAnalytics(newProjectId,AnalyticsData[2]);
+
+
+
 
     // Limpiar los campos del nuevo proyecto después de guardarlo
     newProject.value.name = '';
