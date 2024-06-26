@@ -14,14 +14,25 @@ export default {
       isFieldsEmpty: false,
       userService: new UserService(),
       showPopUp: false,
+      showImageUrlInput: false,
       inputUpdateInfo: {
         firstName: "",
         lastName: "",
-        email: ""
+        email: "",
+        age: "",
+        phone: "",
+        ocupation: "",
+        bio: "",
+        profileImg: ""
       },
       editField: {
         fullName: false,
-        email: false
+        email: false,
+        age: false,
+        phone: false,
+        ocupation: false,
+        bio: false,
+        profileImg: false
       }
 
     }
@@ -31,7 +42,12 @@ export default {
       this.inputUpdateInfo = {
         firstName: "",
         lastName: "",
-        email: ""
+        email: "",
+        age: "",
+        phone: "",
+        ocupation: "",
+        bio: "",
+        profileImg: ""
       };
     },
 
@@ -39,8 +55,42 @@ export default {
       this.showPopUp = !this.showPopUp;
       this.editField = {
         fullName: false,
-        email: false
+        email: false,
+        age: false,
+        phone: false,
+        ocupation: false,
+        bio: false,
+        profileImg: false
       };
+    },
+    async updateProfileImg() {
+      if(this.inputUpdateInfo.profileImg === "") {
+        return;
+      }
+
+      const newUser = {
+        ...this.user,
+        profileImg: this.inputUpdateInfo.profileImg,
+        id: this.$route.params.id
+      };
+
+      const response = this.userService.updateUserByEmail(this.user.email, newUser);
+      response.then((data) => {
+        const user = data.data
+
+        this.$store.dispatch('updateUser', user);
+
+        this.clearInputUpdateInfo(); // limpamos el form luego de enviado
+        this.togglePopUp(); // cerramos el popap >.<
+      })
+          .catch((error) => {
+            console.error('Error al actualizar el usuario:', error);
+          });
+    },
+
+    ToggleInputProfileImage() {
+      this.showImageUrlInput = !this.showImageUrlInput;
+      this.updateProfileImg();
     },
 
     toggleEditField(field) {
@@ -49,10 +99,9 @@ export default {
 
     async updateProfile() {
 
-      console.log(this.inputUpdateInfo);
-
       // verificamos si los campos de entrada están vacíos
-      if (((!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName) && this.editField['fullName'])|| (!this.inputUpdateInfo.email && this.editField['email'])) {
+      if (((!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName) && this.editField['fullName'])|| (!this.inputUpdateInfo.age && this.editField['age']) || (!this.inputUpdateInfo.phone && this.editField['phone']) || (!this.inputUpdateInfo.ocupation && this.editField['ocupation']) || (!this.inputUpdateInfo.bio && this.editField['bio']) || (!this.inputUpdateInfo.profileImg && this.editField['profileImg'])
+      ) {
         this.isFieldsEmpty = true;
         console.error('Error: Todos los campos deben estar llenos para actualizar el usuario.');
         return;
@@ -66,6 +115,21 @@ export default {
       if (!this.editField['email']) {
         this.inputUpdateInfo.email = this.user.email;
       }
+      if (!this.editField['age']) {
+        this.inputUpdateInfo.age = this.user.age;
+      }
+      if (!this.editField['phone']) {
+        this.inputUpdateInfo.phone = this.user.phone;
+      }
+      if (!this.editField['ocupation']) {
+        this.inputUpdateInfo.ocupation = this.user.ocupation;
+      }
+      if (!this.editField['bio']) {
+        this.inputUpdateInfo.bio = this.user.bio;
+      }
+      if (!this.editField['profileImg']) {
+        this.inputUpdateInfo.profileImg = this.user.profileImg;
+      }
 
       // usamos el spread operator "..." para planchar la data del form en el estado user
       // , ademas incluyendo el id que recibimos por parametro de la ruta
@@ -75,14 +139,18 @@ export default {
         id: this.$route.params.id
       };
 
-      try {
-        // disparamos el updateUser pasando como param el nuevo user con la data actualizada
-        await this.$store.dispatch('updateUser', newUser);
+      const response = this.userService.updateUserByEmail(this.user.email, newUser);
+      response.then((data) => {
+        const user = data.data
+
+        this.$store.dispatch('updateUser', user);
+
         this.clearInputUpdateInfo(); // limpamos el form luego de enviado
         this.togglePopUp(); // cerramos el popap >.<
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error('Error al actualizar el usuario:', error);
-      }
+      });
 
     }
 
@@ -108,30 +176,36 @@ export default {
 
         </p>
 
-        <p class="editable flex gap-2"><strong>Age:</strong> 20 years
-          <i v-if=showPopUp class="pi pi-pencil edit-icon"></i> <!--posteriomente se habilitara la opc de editar, cuando el usuario tenga estos atributos-->
+        <p class="editable flex gap-2"><strong>Age: </strong>
+          <span v-if="!editField['age']">{{ user.age}} years</span>
+          <input v-else type="number" placeholder="Age" v-model="inputUpdateInfo['age']" >
+          <i v-if="!editField['age'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('age')"></i>
         </p>
 
         <p class="editable flex gap-2"><strong>Email: </strong>
-          <span v-if="!editField['email']">{{ user.email}} </span>
-          <input v-else type="email" placeholder="Email" v-model="inputUpdateInfo['email']" >
-          <i v-if="!editField['email'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('email')"></i>
+          <span class="non-editable">{{ user.email}}</span>
         </p>
 
-        <p class="editable flex gap-2"><strong>ONG:</strong>Hope Haven Org
-          <i v-if=showPopUp class="pi pi-pencil edit-icon"></i> <!--posteriomente se habilitara la opc de editar, cuando el usuario tenga estos atributos-->
+        <p class="editable flex gap-2"><strong>ONG:</strong>
+        <span class="non-editable">{{ user.companyName}}</span>
         </p>
 
-        <p class="editable flex gap-2"><strong>Phone:</strong>123456789
-          <i v-if=showPopUp class="pi pi-pencil edit-icon"></i> <!--posteriomente se habilitara la opc de editar, cuando el usuario tenga estos atributos-->
+        <p class="editable flex gap-2"><strong>Phone: </strong>
+          <span v-if="!editField['phone']">{{ user.phone}} </span>
+          <input v-else type="text" placeholder="Phone" v-model="inputUpdateInfo['phone']" >
+          <i v-if="!editField['phone'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('phone')"></i>
         </p>
 
-        <p class="editable flex gap-2"><strong>Ocupation:</strong>Student
-          <i v-if=showPopUp class="pi pi-pencil edit-icon"></i> <!--posteriomente se habilitara la opc de editar, cuando el usuario tenga estos atributos-->
+        <p class="editable flex gap-2"><strong>Ocupation: </strong>
+          <span v-if="!editField['ocupation']">{{ user.ocupation }} </span>
+          <input v-else type="text" placeholder="Ocupation" v-model="inputUpdateInfo['ocupation']" >
+          <i v-if="!editField['ocupation'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('ocupation')"></i>
         </p>
 
-        <p class="editable"><strong>Bio:</strong> Dedicated psychologist, employs a holistic and empathetic approach to help individuals overcome traumas and foster emotional well-being. He also advocates for mental health in his community through workshops and educational talks.
-          <i v-if=showPopUp class="pi pi-pencil edit-icon"></i> <!--posteriomente se habilitara la opc de editar, cuando el usuario tenga estos atributos-->
+        <p class="editable"><strong>Bio: </strong>
+          <span v-if="!editField['bio']">{{ user.bio}} </span>
+          <textarea v-else placeholder="Bio" v-model="inputUpdateInfo['bio']" ></textarea>
+          <i v-if="!editField['bio'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('bio')"></i>
         </p>
 
         <button v-if="!showPopUp" class="edit-button" @click="togglePopUp">Edit profile</button>
@@ -143,13 +217,26 @@ export default {
         <div class="avatar-wrapper">
           <div class="avatar-image">
             <img :src="user.profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'" alt="User Photo">
-            <div class="avatar-content">
+            <div class="avatar-content" @click="ToggleInputProfileImage">
               <i class="pi pi-camera" style="font-size: 4rem; color: #9f9f9f;"></i>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+
+    <pv-dialog :style="{margin: '0 10px'}" :visible.sync="showImageUrlInput" :modal="true" :closable="false">
+      <div class="p-5 flex flex-column align-items-center gap-5 text-center">
+        <h2>Enter your profile image url: </h2>
+        <input type="text" placeholder="Profile Image Url" v-model="inputUpdateInfo['profileImg']" >
+        <pv-button class="py-3 px-5" label="OK" @click="ToggleInputProfileImage"/>
+      </div>
+    </pv-dialog>
+
+
+
+
     <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isFieldsEmpty" :modal="true" :closable="false">
       <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
         <i class="text-7xl pi pi-times-circle text-red-500"></i>
@@ -184,6 +271,9 @@ export default {
   transition: opacity 0.3s ease;
 }
 .editable {
+}
+.non-editable {
+  color: #737373;
 }
 .editable:hover .edit-icon {
   opacity: 1;
