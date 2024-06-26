@@ -58,6 +58,7 @@ import CardsComponent from '@/components/projects/card.component.vue';
 import {ProjectsEntity} from "@/models/projects.entity.js";
 import {fetchProjects} from "@/services/projects-api.services.js";
 import {addProject} from "@/services/projects-api.services.js";
+import {AnalyticsService} from "@/services/analytics.service.js";
 // Variables reactivas
 const visible = ref(false);
 const projects = ref([]);
@@ -65,8 +66,8 @@ const newProject = ref({ProjectsEntity});
 
 
 // Método para obtener proyectos
-const getProjects = () => {
-  fetchProjects()
+const getProjects = (companyId) => {
+  fetchProjects(companyId)
       .then(data => {
         projects.value = data;
       })
@@ -87,14 +88,14 @@ const createProject = async () => {
     return;
   }
 
+  const user = ref(JSON.parse(localStorage.getItem('user')));
+
   try {
     const projectData = {
-      id: String(projects.value.length + 1), // Puedes generar un ID único aquí
       name: newProject.value.name,
-      image: newProject.value.image,
       description: newProject.value.description,
-      tasks: [], // Puedes inicializar con un array vacío si es necesario
-      members: [] // Puedes inicializar con un array vacío si es necesario
+      imageUrl: newProject.value.image,
+      companyId: user.value?.companyId
     };
 
 
@@ -106,11 +107,24 @@ const createProject = async () => {
       name: addedProject.name,
       image: addedProject.image,
       description: addedProject.description,
-      tasks: addedProject.tasks || [], // Puedes inicializar con un array vacío si es necesario
-      members: addedProject.members || [] // Puedes inicializar con un array vacío si es necesario
     });
 
-    console.log('Nuevo proyecto agregado:', addedProject);
+    function initializeArray(size) {
+      return Array.from({length: size}, () => 0);
+    }
+
+    console.log(addedProject.id);
+    const analyticsService = new AnalyticsService();
+    const analyticsData = {
+      projectId: addedProject.id,
+      lines: initializeArray(24),
+      payments: initializeArray(6),
+      progressbar: initializeArray(6),
+      status: initializeArray(5),
+      tasks: initializeArray(3)
+    };
+
+    await analyticsService.createNewAnalytics(analyticsData);
 
     // Limpiar los campos del nuevo proyecto después de guardarlo
     newProject.value.name = '';
@@ -127,7 +141,11 @@ const createProject = async () => {
 
 // Obtener proyectos al montar el componente
 onMounted(() => {
-  getProjects();
+
+  // get the user of local storage
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  getProjects(user?.companyId);
 });
 </script>
 

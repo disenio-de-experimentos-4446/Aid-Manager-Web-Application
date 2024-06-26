@@ -4,31 +4,46 @@ import {AnalyticsService} from "@/services/analytics.service.js";
 
 export default {
   name: 'analytics-chart-line',
+  props: {
+    analytics: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       chartData: null,
       chartOptions: null,
-      analytics: analytic,
-      AnalyticsApiService: new AnalyticsService()
     };
   },
+  watch: {
+    analytics: {
+      handler() {
+        this.updateChartData();
+      },
+      deep: true
+    }
+  },
   async created() {
-    const response = await this.AnalyticsApiService.getAnalytic();
-    this.analytics = response.data;
-    this.chartData = this.setChartData();
-    this.chartOptions = this.setChartOptions();
+    this.updateChartData();
   },
   methods: {
-    setChartData() {
+
+    updateChartData() {
+      if (this.analytics && this.analytics.lines) {
+        const currentData = this.analytics.lines.slice(0, 12);
+        const expectedData = this.analytics.lines.slice(12, 24);
+
+        this.chartData = this.setChartData(currentData, expectedData);
+        this.chartOptions = this.setChartOptions(currentData, expectedData);
+      }
+    },
+
+    setChartData(currentData, expectedData) {
       const documentStyle = getComputedStyle(document.documentElement);
 
-      const lineAnalytics = this.analytics.find(analytic => analytic.title === 'Progress-line');
-
-      const currentData =  lineAnalytics.values[0]['current'];
-      const expectedData =  lineAnalytics.values[0]['expected'];
-
       return {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'september','October', 'November','december'],
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'september', 'October', 'November', 'december'],
         datasets: [
           {
             label: 'Current',
@@ -49,7 +64,7 @@ export default {
         ]
       };
     },
-    setChartOptions() {
+    setChartOptions(currentData, expectedData) {
       const documentStyle = getComputedStyle(document.documentElement);
       const textColor = documentStyle.getPropertyValue('--text-color');
       const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
@@ -82,7 +97,25 @@ export default {
               color: surfaceBorder
             }
           }
-        }
+        },
+        datasets: [
+          {
+            label: 'Current',
+            data: currentData,
+            fill: false,
+            backgroundColor: documentStyle.getPropertyValue('--green-300'),
+            borderColor: documentStyle.getPropertyValue('--green-300'),
+            tension: 0.4
+          },
+          {
+            label: 'Expected',
+            data: expectedData,
+            fill: false,
+            backgroundColor: documentStyle.getPropertyValue('--green-500'),
+            borderColor: documentStyle.getPropertyValue('--green-500'),
+            tension: 0.4
+          }
+        ]
       };
     }
   }
@@ -90,7 +123,7 @@ export default {
 </script>
 <template>
   <div class="card w-full flex p-3">
-    <pv-chart type="line" :data="chartData" :options="chartOptions" class="w-full h-12rem" />
+    <pv-chart type="line" :data="chartData" :options="chartOptions" class="w-full h-12rem"/>
   </div>
 </template>
 
