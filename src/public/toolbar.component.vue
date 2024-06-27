@@ -1,11 +1,25 @@
 <script>
+import TeamMembersService from "@/services/team-members.service.js";
+
 export default {
   name: "toolbar",
+  data() {
+    return {
+      members: 0,
+      teamMemberService: new TeamMembersService()
+    }
+  },
   props: {
     toggleNav: {
       type: Function,
       required: true
     }
+  },
+  async mounted() {
+    await this.teamMemberService.getMembers()
+        .then(r => {
+          if (r) this.members = r.data.length;
+        })
   },
   computed: {
     user() {
@@ -54,7 +68,7 @@ export default {
           <div class="flex flex-row align-items-center gap-3">
             <p class="text-sm text-green-600 font-normal">{{ user?.companyName }}</p>
             <div class="members-quantity">
-              <i class="pi pi-user mr-2" style="font-size: .8rem; color: #008A66"></i><span class="text-sm">23</span>
+              <i class="pi pi-user mr-2" style="font-size: .8rem; color: #008A66"></i><span class="text-sm">{{members}}</span>
             </div>
           </div>
         </div>

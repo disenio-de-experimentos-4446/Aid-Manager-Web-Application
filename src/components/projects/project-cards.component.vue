@@ -6,7 +6,7 @@
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
-        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image"
+        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl"
                          :id="project.id"/>
 
         <!-- Botón para agregar un nuevo proyecto -->
@@ -141,7 +141,7 @@ const createProject = async () => {
 
 // Obtener proyectos al montar el componente
 onMounted(() => {
-
+  console.log('projects', projects)
   // get the user of local storage
   const user = JSON.parse(localStorage.getItem('user'));
 

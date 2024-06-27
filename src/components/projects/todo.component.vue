@@ -1,6 +1,7 @@
 <script setup>
 import {ref, onMounted, watchEffect, nextTick} from 'vue';
 import columnC from './column.component.vue';
+import {environment} from "@/environment/environment.js";
 
 const props = defineProps({
   id: {
@@ -15,7 +16,7 @@ const project = ref();
 
 // Función para cargar los datos del proyecto
 const fetchTasks = body => {
-  fetch(`http://localhost:3000/projects/${props.id}`)
+  fetch(`${environment.baseUrl}/projects/${props.id}`)
       .then(response => response.json(body))
       .then(data => {
         project.value = data;
@@ -40,7 +41,7 @@ const handleUpdateAll = () => {
 
 
 // Llamar a fetchTasks al montar el componente
-onMounted(fetchTasks);
+//onMounted(fetchTasks);
 
 // Evento personalizado para emitir hacia el componente hijo
 

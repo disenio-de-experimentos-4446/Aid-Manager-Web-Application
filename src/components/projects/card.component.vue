@@ -27,6 +27,9 @@ export default defineComponent({
       required: true,
     },
   },
+  mounted() {
+    console.log(this.image);
+  },
   components: {
     Button,
   },
