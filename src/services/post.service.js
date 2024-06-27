@@ -39,7 +39,6 @@ export class PostApiService {
             // adding the properties passed for param
             post.userId = userId;
             post.companyId = companyId;
-            post.rating = 0;
 
             return await this.http.post(`posts`, post);
         } catch (error) {

@@ -27,7 +27,6 @@ export default {
 
       if (!this.areFieldsEmpty()) {
         this.isFieldsEmpty = true;
-        return;
       }
       else {
         this.hasCompleted = true;
