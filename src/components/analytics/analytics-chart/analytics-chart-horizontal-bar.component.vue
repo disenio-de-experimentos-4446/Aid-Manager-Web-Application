@@ -4,17 +4,30 @@ import {AnalyticsService} from "@/services/analytics.service.js";
 
 export default {
   name: 'analytics-chart-horizontal-bar',
+  props: {
+    analytics: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       chartData: null,
       chartOptions: null,
-      analytics: analytic,
-      AnalyticsApiService: new AnalyticsService()
     };
   },
+  watch: {
+    analytics: {
+      handler() {
+        this.chartData = this.setChartData();
+        this.chartOptions = this.setChartOptions();
+      },
+      deep: true
+    }
+  },
   async created() {
-    const response = await this.AnalyticsApiService.getAnalytic();
-    this.analytics = response.data;
+
+
     this.chartData = this.setChartData();
     this.chartOptions = this.setChartOptions();
   },
@@ -22,10 +35,11 @@ export default {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
 
-      const horizontalBarAnalytics = this.analytics.find(analytic => analytic.title === 'Payments');
+      const payments = this.analytics.payments;
 
-      const currentData =  horizontalBarAnalytics.values[0]['current'];
-      const expectedData =  horizontalBarAnalytics.values[0]['expected'];
+      const midIndex = Math.ceil(payments?.length / 2);
+      const currentData = payments?.slice(0, midIndex);
+      const expectedData = payments?.slice(midIndex);
 
       return {
         labels: ['Transportation', 'Food', 'Water'],
@@ -93,6 +107,6 @@ export default {
 
 <template>
   <div class="card w-full flex p-3">
-    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-12rem w-full"  />
+    <pv-chart type="bar" :data="chartData" :options="chartOptions" class="h-12rem w-full"/>
   </div>
 </template>

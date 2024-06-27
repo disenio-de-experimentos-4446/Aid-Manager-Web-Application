@@ -3,19 +3,30 @@ import {AnalyticsService} from "@/services/analytics.service.js";
 import {analytic} from "@/models/analytic.entity.js";
 export default {
   name: 'analytics-chart-doughnut',
+  props: {
+    analytics: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       chartData: null,
-      analytics: analytic,
-      AnalyticsApiService: new AnalyticsService(),
       chartOptions: {
         cutout: '60%'
       }
     };
   },
+  watch: {
+    analytics: {
+      handler() {
+        this.chartData = this.setChartData();
+        this.chartOptions = this.setChartOptions();
+      },
+      deep: true
+    }
+  },
   async created() {
-    const response = await this.AnalyticsApiService.getAnalytic();
-    this.analytics = response.data;
     this.chartData = this.setChartData();
     this.chartOptions = this.setChartOptions();
   },
@@ -24,15 +35,13 @@ export default {
     setChartData() {
       const documentStyle = getComputedStyle(document.body);
 
-      const progressAnalytics = this.analytics.find(analytic => analytic.title === 'Tasks');
-
-      const data = [progressAnalytics.values[0]['to-do'], progressAnalytics.values[0]['in-progress'], progressAnalytics.values[0]['done']] ;
+      const tasks = this.analytics.tasks;
 
       return {
         labels: ['To-Do', 'In Progress', 'Done'],
         datasets: [
           {
-            data: data,
+            data: tasks,
             backgroundColor: [documentStyle.getPropertyValue('--teal-200'), documentStyle.getPropertyValue('--green-200'), documentStyle.getPropertyValue('--green-500')],
             hoverBackgroundColor: [documentStyle.getPropertyValue('--teal-200'), documentStyle.getPropertyValue('--green-200'), documentStyle.getPropertyValue('--green-500')]
           }
