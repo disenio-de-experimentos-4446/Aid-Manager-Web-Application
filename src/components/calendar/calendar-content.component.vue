@@ -16,6 +16,7 @@ export default {
     return {
       calendarService: new CalendarService(),
       current_date: new Date(),
+      projectIdSelected: 0,
       events: [],
       showOptions: false,
       showPopUp: false,
@@ -27,7 +28,8 @@ export default {
         date: "",
         location: "",
         description: "",
-        color: "#74A38F"
+        color: "#74A38F",
+        projectId: 0
       }
     }
   },
@@ -64,24 +66,32 @@ export default {
       this.togglePopUp();
     },
     getEvents: async function() {
-      const response = await this.calendarService.getEventsCalendar();
-
-      if (response) {
-        this.events = response.data;
+      if(this.projectIdSelected !== 0) {
+        const response = await this.calendarService.getEventsCalendar(this.projectIdSelected);
+        if (response) {
+          this.events = response.data;
+        }
       }
     },
     toggleOptions: function(date) {
-      this.showOptions = this.showOptions === date ? null : date;
-      console.log(this.showOptions)
+      const role = this.$store.state.user.role;
+      if(role === 'director')
+        this.showOptions = this.showOptions === date ? null : date;
     },
     togglePopUp: function() {
-      this.showPopUp = !this.showPopUp;
-      this.newEvent = false;
+      const role = this.$store.state.user.role;
+
+      if(role === 'director') {
+        this.showPopUp = !this.showPopUp;
+        this.newEvent = false;
+      }
     },
     saveNewEvent: async function() {
-      console.log(this.inputNewEvent)
+      if(this.projectIdSelected === 0) return alert('Select a project to save the event');
       if(this.optionSelected !== "edit") {
         delete this.inputNewEvent["id"];
+        this.inputNewEvent["projectId"] = this.projectIdSelected;
+        console.log(new EventEntity(this.inputNewEvent))
 
         const response = await this.calendarService.saveNewEvent(new EventEntity(this.inputNewEvent));
         if(!response) console.error('Error saving new event');
@@ -92,6 +102,7 @@ export default {
       }else {
         const idEvent = this.inputNewEvent["id"];
         delete this.inputNewEvent["id"];
+        delete this.inputNewEvent["projectId"];
 
         await this.calendarService.editEvent(idEvent, new EventEntity(this.inputNewEvent))
             .then(r => {
@@ -123,6 +134,11 @@ export default {
       this.newEvent = true;
 
       this.inputNewEvent["id"] = idEvent;
+    },
+    receiveProjectSelected(project) {
+      console.log('project selected', project);
+      this.projectIdSelected = project;
+      this.getEvents();
     }
   }
 }
@@ -131,7 +147,7 @@ export default {
 <template>
   <div class="calendar relative p-4 lg:p-5 mb-2">
     <h1 class="calendar-title text-4xl mb-4 text-left" aria-label="title">Calendar</h1>
-    <dropdown-projects></dropdown-projects>
+    <dropdown-projects @projectSelected="receiveProjectSelected"></dropdown-projects>
     <div class="calendar__days-week mt-2" role="heading">
       <span aria-label="title">SUN</span>
       <span aria-label="title">MON</span>
