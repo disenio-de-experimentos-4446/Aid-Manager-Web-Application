@@ -13,7 +13,7 @@ import Calendar from "primevue/calendar";
 
 // Variables reactivas
 const state = ref({
-  tasks: [],
+  tasks: TaskEntity[{}],
   totalTasks: 0,
   newTask: ref(new TaskEntity()),
   reload: false,
@@ -44,11 +44,11 @@ const props = defineProps({
 // Función para cambiar el color dinámico
 function cambiarColor(taskColumn) {
   switch (taskColumn) {
-    case 'To-Do':
+    case 'TODO':
       return '#FFDBDB';
-    case 'Doing':
+    case 'DOING':
       return '#FFF3DB';
-    case 'Done':
+    case 'DONE':
       return '#DBE9FF';
     default:
       return ''; // Color por defecto
@@ -59,9 +59,10 @@ function cambiarColor(taskColumn) {
 const fetchTasks = () => {
   fetchTaskData(props.id)
       .then((data) => {
-        state.value.totalTasks = data.tasks.length;
-        state.value.tasks = data.tasks.filter((task) => task.status === props.taskColumn);
+        state.value.totalTasks = data.length;
+        state.value.tasks = data.filter((task) => task.state === props.taskColumn);
 
+        console.log('Tasks loaded:', state.value.tasks);
       })
       .catch((error) => {
         console.error('Error al obtener datos de la API:', error);
@@ -76,15 +77,15 @@ const createTask = async () => {
 
   try {
     const TaskData = {
-      id: state.value.totalTasks + 1, // Puedes generar un ID único aquí
       title: state.value.newTask.title,
-      assigned: state.value.newTask.assigned,
-      due: state.value.newTask.due.toISOString().split('T')[0],
-      status: props.taskColumn, // Puedes inicializar con un array vacío si es necesario
+      description: state.value.newTask.description,
+      userId: state.value.newTask.assigned,
+      dueDate: state.value.newTask.due.toISOString(),
+      state: props.taskColumn, // Puedes inicializar con un array vacío si es necesario
     };
     console.log(TaskData);
 
-    const addedTask = await addTask(props.id, TaskData).then(fetchTasks); // Llama a la función del servicio
+    await addTask(props.id, TaskData).then(fetchTasks); // Llama a la función del servicio
 
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
 
@@ -92,9 +93,9 @@ const createTask = async () => {
     // Limpiar los campos del nuevo proyecto después de guardarlo
     state.value.newTask.title = '';
     state.value.newTask.assigned = '';
+    state.value.newTask.description = '';
     state.value.newTask.due = '';
     // Cerrar el diálogo de agregar proyecto
-    reloadTasks();
     visible.value = false;
   } catch (error) {
     console.error('Error al agregar el proyecto:', error);
@@ -112,9 +113,7 @@ onMounted(() => {
 });
 
 // Función para recargar las tareas manualmente
-const reloadTasks = () => {
-  fetchTasks(); // Volver a cargar las tareas
-};
+
 
 
 // Función para agregar una nueva tarea
@@ -147,8 +146,8 @@ const taskDel = () => {
       </template>
       <template #content>
         <div class="overflow">
-          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.assigned"
-                :due="task.due" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
+          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :description="task.description" :assigned="task.userId"
+                :due="task.dueDate" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
         </div>
       </template>
       <template #footer>
@@ -169,7 +168,10 @@ const taskDel = () => {
           <label for="title" class="font-semibold w-6rem mb-2">Task Title</label>
           <InputText id="title" class="flex flex-auto" autocomplete="off" v-model="state.newTask.title"/>
         </div>
-
+        <div class=" justify-content-around">
+          <label for="description" class="font-semibold w-6rem mb-2">Task Description</label>
+          <InputText id="description" class="flex flex-auto" autocomplete="off" v-model="state.newTask.description"/>
+        </div>
         <div class="  justify-content-around ">
           <label for="assigned" class="font-semibold w-6rem mb-2">Employee Assigned</label>
           <InputText id="assigned" class="flex flex-auto" autocomplete="off" v-model="state.newTask.assigned"/>

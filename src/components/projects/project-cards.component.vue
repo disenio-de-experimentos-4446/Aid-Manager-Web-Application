@@ -6,8 +6,8 @@
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
-        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image"
-                         :id="project.id"/>
+        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl"
+                         :id="project.id" :description="project.description"/>
 
         <!-- Botón para agregar un nuevo proyecto -->
         <div class="add-project">
@@ -15,7 +15,7 @@
         </div>
 
         <!-- Diálogo para agregar un nuevo proyecto -->
-        <Dialog modal="true" class="p-dialog" v-model:visible="visible">
+        <Dialog class="p-dialog" modal:true v-model:visible="visible">
           <div style="padding: 2rem">
             <h2 class="p-dialog-title block font-semibold mb-5">Add your project</h2>
             <span class="p-text-secondary block mb-5">Add your project info.</span>
@@ -59,17 +59,20 @@ import {ProjectsEntity} from "@/models/projects.entity.js";
 import {fetchProjects} from "@/services/projects-api.services.js";
 import {addProject} from "@/services/projects-api.services.js";
 import {AnalyticsService} from "@/services/analytics.service.js";
-// Variables reactivas
+
 const visible = ref(false);
 const projects = ref([]);
 const newProject = ref({ProjectsEntity});
+let analyticService = new AnalyticsService();
+let companyId = localStorage.getItem('companyId');
 
 
 // Método para obtener proyectos
-const getProjects = (companyId) => {
+const getProjects = () => {
   fetchProjects(companyId)
       .then(data => {
         projects.value = data;
+        console.log('Projects loaded:', projects.value);
       })
       .catch(error => {
         console.error('Error al obtener datos de la API:', error);
@@ -88,43 +91,63 @@ const createProject = async () => {
     return;
   }
 
-  const user = ref(JSON.parse(localStorage.getItem('user')));
-
   try {
     const projectData = {
       name: newProject.value.name,
-      description: newProject.value.description,
       imageUrl: newProject.value.image,
-      companyId: user.value?.companyId
-    };
+      description: newProject.value.description,
+      companyId: companyId,
+      };
 
 
     const addedProject = await addProject(projectData); // Llama a la función del servicio
 
+    const newProjectId = addedProject.id;
+
+    console.log(companyId);
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
     projects.value.push({
-      id: addedProject.id,
+      id: projects.value.length + 1, // Puedes generar un ID único aquí
       name: addedProject.name,
       image: addedProject.image,
       description: addedProject.description,
-    });
+      companyId: companyId,
+     });
 
-    function initializeArray(size) {
-      return Array.from({length: size}, () => 0);
-    }
+    console.log('Nuevo proyecto agregado:', addedProject);
+    const AnalyticsData = [{
+      title: "statistics",
+      description: "statistics",
+      cost:1200,
+      progress: 20,
+      current: [0,0,0],
+      expected: [0,0,0],
+    },
+      {
+        title: "progress",
+        description: "progress",
+        cost:1200,
+        progress: 20,
+        current: [0,0,0,0,0,0,0,0,0,0,0,0],
+        expected: [0,0,0,0,0,0,0,0,0,0,0,0],
+      },
+      {
+        title: "payments",
+        description: "payments",
+        cost:1200,
+        progress: 20,
+        current: [0,0,0],
+        expected: [0,0,0],
+      }];
 
-    console.log(addedProject.id);
-    const analyticsService = new AnalyticsService();
-    const analyticsData = {
-      projectId: addedProject.id,
-      lines: initializeArray(24),
-      payments: initializeArray(6),
-      progressbar: initializeArray(6),
-      status: initializeArray(5),
-      tasks: initializeArray(3)
-    };
+    console.log("LAST ID:", newProjectId);
 
-    await analyticsService.createNewAnalytics(analyticsData);
+    await analyticService.postAnalytics(newProjectId,AnalyticsData[0]);
+    await analyticService.postAnalytics( newProjectId,AnalyticsData[1]);
+    await analyticService.postAnalytics(newProjectId,AnalyticsData[2]);
+
+
+
 
     // Limpiar los campos del nuevo proyecto después de guardarlo
     newProject.value.name = '';
@@ -141,11 +164,8 @@ const createProject = async () => {
 
 // Obtener proyectos al montar el componente
 onMounted(() => {
+  getProjects();
 
-  // get the user of local storage
-  const user = JSON.parse(localStorage.getItem('user'));
-
-  getProjects(user?.companyId);
 });
 </script>
 
@@ -168,7 +188,7 @@ onMounted(() => {
 
 .add-project {
   width: 20%;
-  margin: 1rem;
+  margin: 0 1rem 1rem 1rem;
 }
 
 .addBut {
