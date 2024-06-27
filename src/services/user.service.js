@@ -79,4 +79,28 @@ export class UserService {
             throw error;
         }
     }
+
+    async updateUserByEmail(email, body) {
+        const newBody = {
+            firstName: body.firstName,
+            lastName: body.lastName,
+            age: body.age,
+            phone: body.phone,
+            occupation: body.occupation,
+            password: body.password,
+            profileImg: body.profileImg,
+            role: body.role,
+            companyName: body.companyName,
+            bio: body.bio,
+            companyId: body.companyId,
+        }
+
+        try {
+            const response = await this.http.put(`users?email=${email}`, newBody);
+            return response;
+        }catch(e) {
+            console.log('Error to update user')
+            return null;
+        }
+    }
 }

@@ -32,15 +32,8 @@ export const store = createStore({
         }
     },
     actions: {
-        async updateUser({ commit }, user) {
-            try {
-                const updatedUser = await userService.updateUser(user);
-                console.log(updatedUser);
-                commit('setUser', updatedUser);
-            } catch (error) {
-                console.error('Error al actualizar el usuario:', error);
-                throw error;
-            }
+        async updateUser({ commit }, updatedUser) {
+            commit('setUser', updatedUser);
         }
     }
 });
