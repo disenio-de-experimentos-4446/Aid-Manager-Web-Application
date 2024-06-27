@@ -84,6 +84,8 @@ export default {
       if(role === 'director') {
         this.showPopUp = !this.showPopUp;
         this.newEvent = false;
+      }else {
+        alert('You do not have permission to create events, only the director can do it.');
       }
     },
     saveNewEvent: async function() {

@@ -12,6 +12,7 @@ export default {
   },
   data() {
     return {
+      brandName: "",
       popUp: false,
       popUpDetail: "",
       userSelected: null,
@@ -39,8 +40,11 @@ export default {
         console.log('members', members);
         const companyId = this.$store.state.user.companyId;
         members.forEach((m) => {
-          if(m.companyId === companyId)
+          if(m.companyId === companyId) {
+            this.brandName = m.companyName;
+            this.brandName = this.brandName.charAt(0).toUpperCase() + this.brandName.slice(1);
             this.members.push(new TeamMemberEntity(m));
+          }
         })
       }
     },
@@ -95,7 +99,7 @@ export default {
 <template>
   <div class="team__content relative p-4 lg:p-5">
     <div class="team__content-banner flex justify-content-center align-items-center" role="heading">
-      <h1 aria-label="title" class="font-italic team__content-title text-6xl md:text-7xl xl:text-8xl">Yesi's Hotman
+      <h1 aria-label="title" class="font-italic team__content-title text-6xl md:text-7xl xl:text-8xl">{{ brandName }}'s
         Team</h1>
     </div>
 

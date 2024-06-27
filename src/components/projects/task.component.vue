@@ -33,17 +33,12 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
 });
 const toggle = (event) => {
   menu.value.toggle(event);
 };
 
 const emits = defineEmits(['taskDel']);
-
 
 
 const taskDel = (projectId, id) => {
@@ -54,12 +49,12 @@ const taskDel = (projectId, id) => {
   // Aquí puedes agregar la lógica para eliminar la tarea
 };
 
-const editFunc = (projectId, taskData) => {
+const editFunc = (projectId, taskId, taskData) => {
   if (!thisTask.value.title || !thisTask.value.due || !thisTask.value.assigned) {
     alert('Por favor, ingrese el título, el asignado y la fecha.');
   } else {
-    console.log(projectId, taskData);
-    editTask(projectId, taskData).then(() => {
+    console.log(projectId, taskId, taskData);
+    editTask(projectId, taskId, taskData).then(() => {
       visible.value = false;
     }).then(() => {
       emits('taskDel')
@@ -79,47 +74,19 @@ const edit = async () => {
   // Aquí puedes agregar la lógica para editar la tarea
 };
 
-const editTaskDialog = async() =>
-{
-  console.log('Edit Task', thisTask.value);
-  thisTask.value.state = props.state;
-  updateTaskData();
-  console.log(TaskData);
-  editFunc(props.projectId, TaskData);
-};
 
 const handleMove = (destination, data) => {
   console.log(`Moved to: ${destination}`);
-  data.state = destination;
-  console.log(data);
-  editFunc(props.projectId, data)
+  data.value.status = destination
+  editFunc(props.projectId, props.id, data.value)
 };
 
 
 const menu = ref();
 const visible = ref(false);
-const thisTask = ref(new TaskEntity(props.id, props.title, props.assigned, props.due, props.state, props.description));
-let dueDate = new Date(thisTask.value.due);
-let TaskData = {
-    id: thisTask.value.id,
-    title:thisTask.value.title,
-    description: thisTask.value.description,
-    userId: thisTask.value.assigned,
-    dueDate: thisTask.value.due,
-    state: thisTask.value.state, // Puedes inicializar con un array vacío si es necesario
-  };
+const thisTask = ref(new TaskEntity(props.id, props.title, props.assigned, props.due, props.state));
 
-const updateTaskData = () =>
-{
-  TaskData = {
-    id: thisTask.value.id,
-    title:thisTask.value.title,
-    description: thisTask.value.description,
-    userId: thisTask.value.assigned,
-    dueDate: thisTask.value.due,
-    state: thisTask.value.state, // Puedes inicializar con un array vacío si es necesario
-  };
-}
+
 const items = ref([{
   label: 'Delete',
   icon: 'pi pi-trash',
@@ -148,21 +115,21 @@ const items = ref([{
         label: 'To Do',
         icon: 'pi pi-clock',
         command() {
-          handleMove('TODO', TaskData)
+          handleMove('To-Do', thisTask)
         }
       },
       {
         label: 'Doing',
         icon: 'pi pi-wrench',
         command() {
-          handleMove('DOING', TaskData)
+          handleMove('Doing', thisTask)
         }
       },
       {
         label: 'Done',
         icon: 'pi pi-check',
         command() {
-          handleMove('DONE', TaskData)
+          handleMove('Done', thisTask)
         }
       }
     ]
@@ -175,19 +142,19 @@ const items = ref([{
 <template>
 
   <div class="task-card">
-      <div>
-        <div class="title">
-          <h3 class="task-title" style="font-weight:normal;">{{ title }}</h3>
-          <div class="p-button-icon">
-          <Button icon="pi pi-ellipsis-h" aria-label="edit" text @click="toggle"></Button>
-          <TieredMenu class="tier" ref="menu" id="overlay_tmenu" :model="items" popup/>
-        </div>
-        </div>
+    <div class="title">
 
-        <p class="task-desc">{{description}}</p>
+      <div>
+        <h3 class="task-title" style="font-weight:normal;">{{ title }}</h3>
         <p>Assigned to: {{ assigned }}</p>
-        <p>Due: {{ dueDate.toISOString().split('T')[0] }}</p>
+        <p>Due: {{ due }}</p>
       </div>
+      <div class="p-button-icon">
+        <Button icon="pi pi-ellipsis-h" aria-label="edit" text @click="toggle"></Button>
+        <TieredMenu class="tier" ref="menu" id="overlay_tmenu" :model="items" popup/>
+      </div>
+    </div>
+
   </div>
 
   <Dialog modal:true class="p-dialog" v-model:visible="visible" :closeOnOutsideClick="true">
@@ -218,7 +185,7 @@ const items = ref([{
 
       <!-- Botón para agregar el nuevo proyecto -->
       <div class=" justify-content-end gap-2">
-        <Button label="Edit" @click="editTaskDialog" style="background-color: #02513D;"/>
+        <Button label="edit" @click="editFunc(props.projectId, props.id, thisTask)" style="background-color: #02513D;"/>
       </div>
     </div>
   </Dialog>
@@ -234,23 +201,15 @@ const items = ref([{
   letter-spacing: 1px;
 }
 
-.task-desc
-{
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  font-weight: 400;
-}
-
 .title {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
 }
 
 .p-button-icon {
-  padding: 0;
-  margin: 0;
+  padding: 1rem 0;
+  margin: 1rem;
 }
 
 .task-card {
