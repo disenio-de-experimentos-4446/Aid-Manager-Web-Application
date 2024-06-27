@@ -2,6 +2,7 @@
 import PostListHome from "@/components/home/post-list-home.component.vue";
 import {PostApiService} from "@/services/post.service.js";
 import PostEntity from "@/models/post.entity.js";
+import {User} from "@/models/user.entity.js";
 
 export default {
   name: "home-content",
@@ -14,33 +15,62 @@ export default {
       postApi: new PostApiService()
     }
   },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
+  },
   created() {
     this.fetchNewPosts();
   },
   methods: {
-    buildPostListFromResponseData( items ) {
-      return items.map (item => {
+
+    formatDate(dateString) {
+      let date = new Date(dateString);
+      // Opciones para el formato de la fecha
+      let options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      };
+
+      return date.toLocaleString('en-US', options);
+    },
+
+    buildPostListFromResponseData(items) {
+      return items.map(item => {
+        let user = new User(
+            item.user.id,
+            item.user.firstName,
+            item.user.lastName,
+            item.user.email,
+            item.user.profileImg
+        );
+
+        let formattedDate = this.formatDate(item.createdAt);
+
         return new PostEntity(
-          item.id,
-          item.name,
-          item.email,
-          item.title,
-          item.description,
-          item.profile_img,
-          item.publication_date,
-          item.images
+            item.id,
+            user,
+            item.title,
+            item.subject,
+            item.description,
+            item.rating,
+            formattedDate
         )
       })
     },
 
     fetchNewPosts() {
-      this.postApi.getLastPosts()
+      this.postApi.getAllPostsByCompanyId(this.user.companyId)
           .then(response => {
-            let items =  response.data;
+            let items = response.data;
             this.posts = this.buildPostListFromResponseData(items);
             console.log(items);
           })
-
     }
 
   }
