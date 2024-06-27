@@ -44,4 +44,13 @@ export class CompanyService {
         }
     }
 
+    async editUserCompanyName(userItem) {
+        try {
+            return await this.http.patch(`users/company-name`, userItem);
+        } catch (error) {
+            console.error(`Error al editar el nombre de la compañía del usuario ${user.id}:`, error);
+            throw error;
+        }
+    }
+
 }

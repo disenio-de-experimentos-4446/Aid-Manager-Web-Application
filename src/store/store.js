@@ -23,6 +23,10 @@ export const store = createStore({
             state.user = User;
             localStorage.removeItem('user');
         },
+        updateUserCompanyName(state, companyName) {
+            state.user.companyName = companyName;
+            localStorage.setItem('user', JSON.stringify(state.user));
+        },
         updateForm(state, form) {
             console.log(form);
             state.form = form;

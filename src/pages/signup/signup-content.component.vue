@@ -111,7 +111,8 @@ export default {
                   return;
                 }
                 this.$store.commit('updateForm', response.data);
-                this.$store.state.user = response.data;
+                //this.$store.state.user = response.data;
+                this.$store.commit('setUser', response.data);
                 this.isUserCreated = false;
                 if(this.form.role === "director")
                   this.$router.push('/subscription');

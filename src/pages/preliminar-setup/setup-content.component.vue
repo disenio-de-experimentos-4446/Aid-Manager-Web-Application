@@ -30,33 +30,43 @@ export default {
   methods: {
 
     async onSubmitSetup() {
-
       if (!this.areCardFieldsComplete()) {
         this.isFieldsEmpty = true;
         return;
       }
 
       try {
-
         this.form.identificationCode = this.generateOrganizationId();
-        // Llamamos al método createCompany y le pasamos la data del formulario
         this.form.userId = this.user.id;
-        await this.companyService.createCompany(this.form)
-            .then(async r=> {
-              const result = r.data;
-              if(result.status_code === 200) {
-                console.log('osi ermanita')
-                // actualizamos la propiedad CompanyName del form del registro para "director" con form.brandName....
-                await this.companyService.editCompanyId(this.form.userId, this.form.identificationCode).then(r => {
-                  this.$store.commit('updateForm', {
-                    ...this.$store.state.form,
-                    companyName: this.form.brandName
-                  });
+        const response = await this.companyService.createCompany(this.form);
 
-                  this.hasSuccessful = true;
-                });
-              }
-            })
+        if (response.data.status_code !== 200) {
+          throw new Error('Error al crear la compañía');
+        }
+        console.log('osi ermanita');
+        try {
+          await this.companyService.editCompanyId(this.form.userId, this.form.identificationCode);
+          console.log(this.form);
+
+          if (this.form.brandName) {
+            this.$store.commit('updateForm', {
+              ...this.$store.state.form,
+              companyName: this.form.brandName
+            });
+
+            const userToUpdate = {
+              userId: this.user.id,
+              companyName: this.form.brandName
+            };
+            await this.companyService.editUserCompanyName(userToUpdate);
+
+            this.$store.commit('setUser', this.user);
+          }
+
+          this.hasSuccessful = true;
+        } catch (error) {
+          console.error('Error al editar el id de la compañía:', error);
+        }
       } catch (error) {
         console.error('Error al crear la compañía:', error);
       }
