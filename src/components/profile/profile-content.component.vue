@@ -21,7 +21,7 @@ export default {
         email: "",
         age: "",
         phone: "",
-        ocupation: "",
+        occupation: "",
         bio: "",
         profileImg: ""
       },
@@ -30,7 +30,7 @@ export default {
         email: false,
         age: false,
         phone: false,
-        ocupation: false,
+        occupation: false,
         bio: false,
         profileImg: false
       }
@@ -45,7 +45,7 @@ export default {
         email: "",
         age: "",
         phone: "",
-        ocupation: "",
+        occupation: "",
         bio: "",
         profileImg: ""
       };
@@ -58,7 +58,7 @@ export default {
         email: false,
         age: false,
         phone: false,
-        ocupation: false,
+        occupation: false,
         bio: false,
         profileImg: false
       };
@@ -100,10 +100,9 @@ export default {
     async updateProfile() {
 
       // verificamos si los campos de entrada están vacíos
-      if (((!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName) && this.editField['fullName'])|| (!this.inputUpdateInfo.age && this.editField['age']) || (!this.inputUpdateInfo.phone && this.editField['phone']) || (!this.inputUpdateInfo.ocupation && this.editField['ocupation']) || (!this.inputUpdateInfo.bio && this.editField['bio']) || (!this.inputUpdateInfo.profileImg && this.editField['profileImg'])
+      if (((!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName) && this.editField['fullName'])|| (!this.inputUpdateInfo.age && this.editField['age']) || (!this.inputUpdateInfo.phone && this.editField['phone']) || (!this.inputUpdateInfo.occupation && this.editField['occupation']) || (!this.inputUpdateInfo.bio && this.editField['bio']) || (!this.inputUpdateInfo.profileImg && this.editField['profileImg'])
       ) {
         this.isFieldsEmpty = true;
-        console.error('Error: Todos los campos deben estar llenos para actualizar el usuario.');
         return;
       }
 
@@ -121,8 +120,8 @@ export default {
       if (!this.editField['phone']) {
         this.inputUpdateInfo.phone = this.user.phone;
       }
-      if (!this.editField['ocupation']) {
-        this.inputUpdateInfo.ocupation = this.user.ocupation;
+      if (!this.editField['occupation']) {
+        this.inputUpdateInfo.occupation = this.user.occupation;
       }
       if (!this.editField['bio']) {
         this.inputUpdateInfo.bio = this.user.bio;
@@ -177,8 +176,9 @@ export default {
         </p>
 
         <p class="editable flex gap-2"><strong>Age: </strong>
-          <span v-if="!editField['age']">{{ user.age}} years</span>
-          <input v-else type="number" placeholder="Age" v-model="inputUpdateInfo['age']" >
+          <span v-if="user.age === 0 && !editField['age']">No info to display</span>
+          <span v-if="!editField['age'] && user.age !== 0"> {{ user.age}} years</span>
+          <input v-if="editField['age']" type="number" placeholder="Age" v-model="inputUpdateInfo['age']" >
           <i v-if="!editField['age'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('age')"></i>
         </p>
 
@@ -191,18 +191,21 @@ export default {
         </p>
 
         <p class="editable flex gap-2"><strong>Phone: </strong>
+          <span v-if="!editField['phone'] && user.phone === ''">No info to display</span>
           <span v-if="!editField['phone']">{{ user.phone}} </span>
           <input v-else type="text" placeholder="Phone" v-model="inputUpdateInfo['phone']" >
           <i v-if="!editField['phone'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('phone')"></i>
         </p>
 
-        <p class="editable flex gap-2"><strong>Ocupation: </strong>
-          <span v-if="!editField['ocupation']">{{ user.ocupation }} </span>
-          <input v-else type="text" placeholder="Ocupation" v-model="inputUpdateInfo['ocupation']" >
-          <i v-if="!editField['ocupation'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('ocupation')"></i>
+        <p class="editable flex gap-2"><strong>Occupation: </strong>
+          <span v-if="!editField['occupation'] && user.occupation === ''">No info to display</span>
+          <span v-if="!editField['occupation']">{{ user.occupation }} </span>
+          <input v-else type="text" placeholder="Ocupation" v-model="inputUpdateInfo['occupation']" >
+          <i v-if="!editField['occupation'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('occupation')"></i>
         </p>
 
         <p class="editable"><strong>Bio: </strong>
+          <span v-if="!editField['bio'] && user.bio === ''">No info to display</span>
           <span v-if="!editField['bio']">{{ user.bio}} </span>
           <textarea v-else placeholder="Bio" v-model="inputUpdateInfo['bio']" ></textarea>
           <i v-if="!editField['bio'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('bio')"></i>
