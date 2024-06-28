@@ -86,7 +86,7 @@ export default {
   <section class="h-full p-4 lg:p-5 w-full relative" style="min-height: 100%">
     <div class="flex flex-row justify-content-between flex-wrap gap-0">
       <div class="flex flex-column gap-4" style="width: unset">
-        <h2 class="title-analytics text-4xl">Analytics</h2>
+        <h2 class="title-analytics text-4xl" v-t="'analytics.analytics'"></h2>
         <dropdown-analytics @no-projects="handleNoProjects"
                             @project-selected="handleIdProjectSelected"></dropdown-analytics>
       </div>
