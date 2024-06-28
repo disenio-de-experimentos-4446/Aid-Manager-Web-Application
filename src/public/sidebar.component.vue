@@ -44,6 +44,7 @@ export default {
     },
     navigateToLogin() {
       this.$store.commit('removeUser');
+      this.$store.commit('removeToken');
       this.$router.push('/login');
     },
     navigateToCreatePost() {
@@ -85,7 +86,7 @@ export default {
           <li class="flex flex-row gap-3 align-items-center py-3 pl-4 border-round-md"
               @click="navigateToCreatePost"
               :class="{ active: $route.path === '/new-post' }"
-              v-if="user.role === 'Director'">
+              v-if="user && user.role && user.role.toLowerCase() === 'team'">
             <PostIcon></PostIcon>
             <p class="font-medium text-base">Create Post</p>
           </li>

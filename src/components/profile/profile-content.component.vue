@@ -14,11 +14,27 @@ export default {
       isFieldsEmpty: false,
       userService: new UserService(),
       showPopUp: false,
+      showImageUrlInput: false,
       inputUpdateInfo: {
         firstName: "",
         lastName: "",
         email: "",
+        age: "",
+        phone: "",
+        occupation: "",
+        bio: "",
+        profileImg: ""
+      },
+      editField: {
+        fullName: false,
+        email: false,
+        age: false,
+        phone: false,
+        occupation: false,
+        bio: false,
+        profileImg: false
       }
+
     }
   },
   methods: {
@@ -27,22 +43,91 @@ export default {
         firstName: "",
         lastName: "",
         email: "",
+        age: "",
+        phone: "",
+        occupation: "",
+        bio: "",
+        profileImg: ""
       };
     },
 
     togglePopUp() {
       this.showPopUp = !this.showPopUp;
+      this.editField = {
+        fullName: false,
+        email: false,
+        age: false,
+        phone: false,
+        occupation: false,
+        bio: false,
+        profileImg: false
+      };
+    },
+    async updateProfileImg() {
+      if(this.inputUpdateInfo.profileImg === "") {
+        return;
+      }
+
+      const newUser = {
+        ...this.user,
+        profileImg: this.inputUpdateInfo.profileImg,
+        id: this.$route.params.id
+      };
+
+      const response = this.userService.updateUserByEmail(this.user.email, newUser);
+      response.then((data) => {
+        const user = data.data
+
+        this.$store.dispatch('updateUser', user);
+
+        this.clearInputUpdateInfo(); // limpamos el form luego de enviado
+        this.togglePopUp(); // cerramos el popap >.<
+      })
+          .catch((error) => {
+            console.error('Error al actualizar el usuario:', error);
+          });
+    },
+
+    ToggleInputProfileImage() {
+      this.showImageUrlInput = !this.showImageUrlInput;
+      this.updateProfileImg();
+    },
+
+    toggleEditField(field) {
+      this.editField[field] = true;
     },
 
     async updateProfile() {
 
-      console.log(this.inputUpdateInfo);
-
       // verificamos si los campos de entrada están vacíos
-      if (!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName || !this.inputUpdateInfo.email) {
+      if (((!this.inputUpdateInfo.firstName || !this.inputUpdateInfo.lastName) && this.editField['fullName'])|| (!this.inputUpdateInfo.age && this.editField['age']) || (!this.inputUpdateInfo.phone && this.editField['phone']) || (!this.inputUpdateInfo.occupation && this.editField['occupation']) || (!this.inputUpdateInfo.bio && this.editField['bio']) || (!this.inputUpdateInfo.profileImg && this.editField['profileImg'])
+      ) {
         this.isFieldsEmpty = true;
-        console.error('Error: Todos los campos deben estar llenos para actualizar el usuario.');
         return;
+      }
+
+      // si no se ha dado click en el lapiz para editar el campo, se le asigna el valor actual del usuario
+      if (!this.editField['fullName']) {
+        this.inputUpdateInfo.firstName = this.user.firstName;
+        this.inputUpdateInfo.lastName = this.user.lastName;
+      }
+      if (!this.editField['email']) {
+        this.inputUpdateInfo.email = this.user.email;
+      }
+      if (!this.editField['age']) {
+        this.inputUpdateInfo.age = this.user.age;
+      }
+      if (!this.editField['phone']) {
+        this.inputUpdateInfo.phone = this.user.phone;
+      }
+      if (!this.editField['occupation']) {
+        this.inputUpdateInfo.occupation = this.user.occupation;
+      }
+      if (!this.editField['bio']) {
+        this.inputUpdateInfo.bio = this.user.bio;
+      }
+      if (!this.editField['profileImg']) {
+        this.inputUpdateInfo.profileImg = this.user.profileImg;
       }
 
       // usamos el spread operator "..." para planchar la data del form en el estado user
@@ -53,49 +138,108 @@ export default {
         id: this.$route.params.id
       };
 
-      try {
-        // disparamos el updateUser pasando como param el nuevo user con la data actualizada
-        await this.$store.dispatch('updateUser', newUser);
+      const response = this.userService.updateUserByEmail(this.user.email, newUser);
+      response.then((data) => {
+        const user = data.data
+
+        this.$store.dispatch('updateUser', user);
+
         this.clearInputUpdateInfo(); // limpamos el form luego de enviado
         this.togglePopUp(); // cerramos el popap >.<
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error('Error al actualizar el usuario:', error);
-      }
+      });
 
     }
-  }
+
+  },
+
 }
 </script>
 
 <template>
-  <div class="profile-wrapper">
-    <div class="profile-card">
-      <div class="profile-header">
-        <div class="profile-avatar">
-          <img :src="user.profileImg" alt="User Photo" class="avatar">
-        </div>
-        <div class="profile-info">
-          <p class="name">{{ user.firstName + " " + user.lastName }}</p>
-          <p class="email">{{ user.email }}</p>
-          <p class="role">{{ user.role }}</p>
-          <button class="edit-button" @click="togglePopUp">Edit profile</button>
-        </div>
-      </div>
-    </div>
-    <div class="popup absolute flex justify-content-center align-items-center" v-if="showPopUp">
-      <div class="popup__content relative border-round-2xl overflow-hidden">
-        <i class="cursor-pointer bg-gray-300 hover:bg-gray-500 transition-duration-300 fa-solid fa-xmark absolute w-auto top-0 right-0 p-3" @click="togglePopUp()"></i>
+  <div class="content">
+    <div class="profile-content flex">
+      <form class="flex user-info form__update-profile" @submit.prevent="updateProfile">
+        <h2>{{user.firstName + " " + user.lastName}}'s profile:</h2>
 
-        <div class="form__update-profile">
-          <form role="form" class="flex flex-column gap-3 justify-content-center align-items-center" @submit.prevent="updateProfile">
+        <p class="editable flex flex-col  gap-2">
+          <strong>Full Name:</strong>
+          <span v-if="!editField['fullName']">{{ user.firstName + ' ' + user.lastName + ' '}} </span>
+          <div v-else class="full-name-input">
             <input type="text" placeholder="First Name" v-model="inputUpdateInfo['firstName']" >
-            <input type="text" placeholder="Last Name" v-model="inputUpdateInfo['lastName']">
-            <input type="email" placeholder="Email" v-model="inputUpdateInfo['email']">
-            <button class="form__update-profile-button px-5 border-none" type="submit">Save</button>
-          </form>
+            <input type="text" placeholder="Last Name" v-model="inputUpdateInfo['lastName']" >
+          </div>
+          <i v-if="!editField['fullName'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('fullName')"></i>
+
+        </p>
+
+        <p class="editable flex gap-2"><strong>Age: </strong>
+          <span v-if="user.age === 0 && !editField['age']">No info to display</span>
+          <span v-if="!editField['age'] && user.age !== 0"> {{ user.age}} years</span>
+          <input v-if="editField['age']" type="number" placeholder="Age" v-model="inputUpdateInfo['age']" >
+          <i v-if="!editField['age'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('age')"></i>
+        </p>
+
+        <p class="editable flex gap-2"><strong>Email: </strong>
+          <span class="non-editable">{{ user.email}}</span>
+        </p>
+
+        <p class="editable flex gap-2"><strong>ONG:</strong>
+        <span class="non-editable">{{ user.companyName}}</span>
+        </p>
+
+        <p class="editable flex gap-2"><strong>Phone: </strong>
+          <span v-if="!editField['phone'] && user.phone === ''">No info to display</span>
+          <span v-if="!editField['phone']">{{ user.phone}} </span>
+          <input v-else type="text" placeholder="Phone" v-model="inputUpdateInfo['phone']" >
+          <i v-if="!editField['phone'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('phone')"></i>
+        </p>
+
+        <p class="editable flex gap-2"><strong>Occupation: </strong>
+          <span v-if="!editField['occupation'] && user.occupation === ''">No info to display</span>
+          <span v-if="!editField['occupation']">{{ user.occupation }} </span>
+          <input v-else type="text" placeholder="Ocupation" v-model="inputUpdateInfo['occupation']" >
+          <i v-if="!editField['occupation'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('occupation')"></i>
+        </p>
+
+        <p class="editable"><strong>Bio: </strong>
+          <span v-if="!editField['bio'] && user.bio === ''">No info to display</span>
+          <span v-if="!editField['bio']">{{ user.bio}} </span>
+          <textarea v-else placeholder="Bio" v-model="inputUpdateInfo['bio']" ></textarea>
+          <i v-if="!editField['bio'] && showPopUp" class="pi pi-pencil edit-icon" @click="toggleEditField('bio')"></i>
+        </p>
+
+        <button v-if="!showPopUp" class="edit-button" @click="togglePopUp">Edit profile</button>
+        <button v-else class="edit-button" type="submit">Save changes</button>
+
+      </form>
+
+      <div class="flex flex-col">
+        <div class="avatar-wrapper">
+          <div class="avatar-image">
+            <img :src="user.profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'" alt="User Photo">
+            <div class="avatar-content" @click="ToggleInputProfileImage">
+              <i class="pi pi-camera" style="font-size: 4rem; color: #9f9f9f;"></i>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+
+    <pv-dialog :style="{margin: '0 10px'}" :visible.sync="showImageUrlInput" :modal="true" :closable="false">
+      <div class="p-5 flex flex-column align-items-center gap-5 text-center">
+        <h2>Enter your profile image url: </h2>
+        <input type="text" placeholder="Profile Image Url" v-model="inputUpdateInfo['profileImg']" >
+        <pv-button class="py-3 px-5" label="OK" @click="ToggleInputProfileImage"/>
+      </div>
+    </pv-dialog>
+
+
+
+
     <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isFieldsEmpty" :modal="true" :closable="false">
       <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
         <i class="text-7xl pi pi-times-circle text-red-500"></i>
@@ -108,68 +252,52 @@ export default {
 </template>
 
 <style scoped>
-
-.profile-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  position: relative;
+.content {
+  padding:30px;
 }
+.user-info {
+  width: 50%;
+  height: 76vh;
+  justify-content:center;
+  margin-right: 10%;
+  flex-direction: column;
+}
+.user-info p, h2 {
+  margin-bottom: 12px;
+}
+.user-info p:last-child {
+  margin-bottom: 0;
+}
+.edit-icon {
+  color: #9f9f9f;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.editable {
+}
+.non-editable {
+  color: #737373;
+}
+.editable:hover .edit-icon {
+  opacity: 1;
+  cursor: pointer;
+}
+
 
 .profile-wrapper i {
   border-bottom-left-radius: 8px;
 }
-
-.profile-card {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
-
-.profile-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.profile-avatar {
-  margin-bottom: 20px;
-}
-
-.avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-}
-
-.profile-info {
-  text-align: center;
-}
-
-.name {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 10px 0;
-  color: #333;
-}
-
-.email, .role {
-  font-size: 18px;
-  margin: 5px 0;
-  color: #666;
+.full-name-input input {
+  margin-right: 10px;
+  width: 47%;
 }
 
 .edit-button {
-  background-color: #02513D;
-  color: white;
+  border: 1px solid #02513D;
+  background-color: transparent;
+  max-width: 180px;
+  color: #02513D;
   padding: 10px 20px;
-  border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
@@ -178,51 +306,90 @@ export default {
 }
 
 .edit-button:hover {
-  background-color: #024030;
+  background-color: #02513D;
+  color: white;
 }
-
-.popup {
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 3;
-}
-.popup__content {
-  max-width: 60%;
-  background-color: #fff;
-  padding: 3rem;
-}
-
 
 .form__update-profile {
-  margin-top: 1.5rem;
   padding: .7rem;
   font-family: "Poppins", sans-serif;
 }
 
 .form__update-profile input {
-  padding: .5rem;
+  padding: 0.4rem;
   border-radius: 10px;
   outline: none;
   resize: none;
   border: 1px solid #DDDDDD;
 }
-.form__update-profile-button {
-  padding: .5rem;
-  background-color: #74A38F;
-  text-align:center;
-  color: #fff;
+
+.avatar-wrapper {
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+}
+.avatar-image {
+  width: 300px;
+  height: 350px;
+  position:relative;
+}
+img {
+  width:100%;
+  display:block;
+  margin:auto;
+}
+.avatar-content {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: all .5s ease-in-out;
+}
+.avatar-content:hover{
+  opacity: 1;
   cursor: pointer;
-  border-radius: 10px;
-  margin-top: 1rem;
-  text-transform: uppercase;
-  font-weight: bold;
-  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.2);
-  transition: all .2s ease-in-out;
+}
+@media only screen and (max-width: 700px) {
+  .profile-content {
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+  align-items: center;
+  }
+  .user-info{
+    width: 100%;
+    margin-right: 0;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .full-name-input input {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .user-info p,
+  h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .editable p {
+    margin-right: 0.5rem;
+  }
+
+  .edit-button {
+    margin-top: 1rem;
+  }
 }
 
-.form__update-profile-button:hover {
-  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
-}
+
+
 
 </style>

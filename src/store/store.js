@@ -8,9 +8,14 @@ export const store = createStore({
 
     state: {
         // recupramos la data de user que se seteo al inicia el loggin en este caso como 'user'
-        user: JSON.parse(localStorage.getItem('user')) || User
+        user: JSON.parse(localStorage.getItem('user')) || User,
+        form: {}
     },
     mutations: {
+        setToken(state, token) {
+            state.token = token;
+            localStorage.setItem('token', token);
+        },
         setUser(state, user) {
             console.log('setUser mutation called with:', user);
             state.user = user;
@@ -21,18 +26,26 @@ export const store = createStore({
         removeUser( state ) {
             state.user = User;
             localStorage.removeItem('user');
+        },
+        removeToken( state ) {
+            state.token = null;
+            localStorage.removeItem('token');
+        },
+        updateUserCompanyName(state, companyName) {
+            state.user.companyName = companyName;
+            localStorage.setItem('user', JSON.stringify(state.user));
+        },
+        updateForm(state, form) {
+            console.log(form);
+            state.form = form;
+        },
+        clearForm(state) {
+            state.form = {};
         }
     },
     actions: {
-        async updateUser({ commit }, user) {
-            try {
-                const updatedUser = await userService.updateUser(user);
-                console.log(updatedUser);
-                commit('setUser', updatedUser);
-            } catch (error) {
-                console.error('Error al actualizar el usuario:', error);
-                throw error;
-            }
+        async updateUser({ commit }, updatedUser) {
+            commit('setUser', updatedUser);
         }
     }
 });

@@ -12,12 +12,16 @@ import Setup from "@/pages/preliminar-setup/setup-content.component.vue";
 import NewPost from "@/pages/new-post.component.vue";
 import Profile from "@/pages/profile.component.vue";
 import ProjectsComponent from "@/pages/projects.component.vue";
+import Subscription from "@/pages/subscription/subscription-content.component.vue";
+import Identification from "@/pages/identification-frame/identification-frame.component.vue";
 
 const routes = [
     { path: '/login', component: Login },
     { path: '/register', component: SignUp },
+    { path: '/identification', component: Identification },
     { path: '/payment', component: PaymentDetails },
     { path: '/setup', component: Setup },
+    { path: '/subscription', component: Subscription },
     { path: '/', redirect: '/login' },
     {
         path: '/',

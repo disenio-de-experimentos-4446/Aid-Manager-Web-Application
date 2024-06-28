@@ -59,8 +59,12 @@ function cambiarColor(taskColumn) {
 const fetchTasks = () => {
   fetchTaskData(props.id)
       .then((data) => {
-        state.value.totalTasks = data.tasks.length;
-        state.value.tasks = data.tasks.filter((task) => task.status === props.taskColumn);
+        if(data && data.length > 0) {
+          state.value.totalTasks = data.length;
+
+          state.value.tasks = data.filter((task) => task.state === props.taskColumn);
+          console.log(state.value.tasks)
+        }
 
       })
       .catch((error) => {
@@ -82,8 +86,6 @@ const createTask = async () => {
       due: state.value.newTask.due.toISOString().split('T')[0],
       status: props.taskColumn, // Puedes inicializar con un array vacío si es necesario
     };
-    console.log(TaskData);
-
     const addedTask = await addTask(props.id, TaskData).then(fetchTasks); // Llama a la función del servicio
 
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
@@ -104,8 +106,6 @@ const createTask = async () => {
 
 // Cargar las tareas una vez que el componente se monte
 onMounted(() => {
-
-  console.log(props.reload)
   fetchTasks();
 
 // Llamar a fetchTasks al montar el componente
@@ -147,8 +147,8 @@ const taskDel = () => {
       </template>
       <template #content>
         <div class="overflow">
-          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.assigned"
-                :due="task.due" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
+          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.userId"
+                :due="task.dueDate" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
         </div>
       </template>
       <template #footer>

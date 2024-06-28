@@ -9,97 +9,201 @@ import AnalyticsChartDoughnut
 import {analytic} from "@/models/analytic.entity.js";
 import {AnalyticsService} from "@/services/analytics.service.js";
 import AnalyticsCardReport from "@/components/analytics/analytics-card/analytics-card-report.component.vue";
+import ModalCardContent from "@/components/analytics/modal-card/modal-card-content.component.vue";
+import DropdownAnalytics from "@/components/analytics/dropdown-analytics/dropdown-analytics.component.vue";
+import LinesModalContent from "@/components/analytics/lines-modal/lines-modal-content.component.vue";
+import PaymentsModalContent from "@/components/analytics/payments-modal/payments-modal-content.component.vue";
+import ProgressbarModalContent from "@/components/analytics/progressbar-modal/progressbar-modal-content.component.vue";
+import StatsModalContent from "@/components/analytics/stats-modal/stats-modal-content.component.vue";
+import TasksModalContent from "@/components/analytics/tasks-modal/tasks-modal-content.component.vue";
+import ProjectsService from "@/public/projects.service.js";
 
 export default {
   name: "analytics-card-projects",
   components: {
+    TasksModalContent,
+    StatsModalContent,
+    ProgressbarModalContent,
+    PaymentsModalContent,
+    LinesModalContent,
+    DropdownAnalytics,
+    ModalCardContent,
     AnalyticsCardReport,
-    AnalyticsChartVerticalBar, AnalyticsChartLine, AnalyticsChartHorizontalBar, AnalyticsChartDoughnut},
+    AnalyticsChartVerticalBar, AnalyticsChartLine, AnalyticsChartHorizontalBar, AnalyticsChartDoughnut
+  },
   data() {
     return {
       analytics: analytic,
-      AnalyticsApiService: new AnalyticsService()
+      AnalyticsApiService: new AnalyticsService(),
+      projectsService: new ProjectsService(),
+      selectedCard: null,
+      showDialog: false,
+      showLinesChart: true,
+      chartKey: 0
     }
   },
   async created() {
-    const response = await this.AnalyticsApiService.getAnalytic();
-    this.analytics = response.data;
+
+  },
+  methods: {
+    handleIdProjectSelected(projectId) {
+      if (!projectId) return;
+
+      this.getAnalyticsByProject(projectId);
+    },
+
+    handleNoProjects() {
+      this.analytics = null;
+    },
+
+    updateAnalytics(analytics) {
+    },
+
+    async getAnalyticsByProject(projectId) {
+      await this.AnalyticsApiService.getAnalyticsByProjectId(projectId)
+          .then(r => {
+            console.log(r.data);
+            if (!r) console.error('Error to get analytics');
+            else {
+              this.analytics = r.data;
+            }
+          })
+    },
+
+    async handleButtonClick() {
+      this.showLinesChart = false;
+
+      // Espera 3 segundos (3000 milisegundos)
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
+      this.showLinesChart = true;
+      this.$forceUpdate();
+    }
   }
 }
 </script>
 <template>
-  <section class="h-full p-4 lg:p-5 w-full">
-    <h2>Clean Carpayo Beach</h2>
-    <h3 class="my-3 font-medium">Current projects:</h3>
-    <div class="analytics-container">
-      <pv-card class="card stats w-full">
+  <section class="h-full p-4 lg:p-5 w-full relative" style="min-height: 100%">
+    <div class="flex flex-row justify-content-between flex-wrap gap-0">
+      <div class="flex flex-column gap-4" style="width: unset">
+        <h2 class="title-analytics text-4xl">Analytics</h2>
+        <dropdown-analytics @no-projects="handleNoProjects"
+                            @project-selected="handleIdProjectSelected"></dropdown-analytics>
+      </div>
+      <div class="align-self-center border-1 flex align-items-center
+        flex-row border-round-2xl text-white mb-2"
+           style="width: unset; background-color: #293A80; padding: 15px 20px; gap: 10px">
+        <p class="w-max">You can view</p>
+        <i class="text-lg pi pi-eye text-green-100"></i>
+      </div>
+    </div>
+    <div v-if="analytics && analytics.status" class="analytics-container">
+      <pv-card class="card stats w-full p-4 cursor-pointer" @click="selectedCard = 'stats'">
         <template #header>
-          <p class="text">Currents Status:</p>
+          <p class="font-medium mb-3">Currents Status:</p>
         </template>
         <template #content>
-          <div class="flex">
-            <div class="paragraph">
-              <p class="line">Time</p>
-              <p class="line">Tasks</p>
-              <p class="line">Workload</p>
-              <p class="line">Progress</p>
-              <p class="line">Cost</p>
-            </div>
-            <div v-for="(an, index) in analytics" :key="index">
-              <p class="line">{{ an.values[0].time }}</p>
-              <p class="line">{{ an.values[0].tasks }}</p>
-              <p class="line">{{ an.values[0].workload }}</p>
-              <p class="line">{{ an.values[0].progress }}</p>
-              <p class="line">{{ an.values[0].cost }}</p>
-            </div>
-          </div>
+          <ul class="flex flex-column flex-1 h-full gap-3">
+            <li class="flex flex-row justify-content-between">
+              <p>Time</p>
+              <span class="text-green-700 font-light">{{ analytics?.status[0] }} ahead of schedule</span>
+            </li>
+            <li class="flex flex-row justify-content-between">
+              <p>Tasks</p>
+              <span class="text-green-700 font-light">{{ analytics?.status[1] }} tasks to be completed</span>
+            </li>
+            <li class="flex flex-row justify-content-between">
+              <p>Workload</p>
+              <span class="text-green-700 font-light">{{ analytics?.status[2] }} tasks overdue</span>
+            </li>
+            <li class="flex flex-row justify-content-between">
+              <p>Progress</p>
+              <span class="text-green-700 font-light">{{ analytics?.status[3] }} complete</span>
+            </li>
+            <li class="flex flex-row justify-content-between">
+              <p>Cost</p>
+              <span class="text-green-700 font-light">{{ analytics?.status[4] }} under buget</span>
+            </li>
+          </ul>
         </template>
       </pv-card>
-      <pv-card class="card tasks flex w-full flex-column">
+      <pv-card class="card tasks flex w-full flex-column cursor-pointer" @click="selectedCard = 'tasks'">
         <template #header>
           <p class="text">Tasks:</p>
         </template>
         <template #content>
           <div class="flex w-full">
-            <analytics-chart-doughnut></analytics-chart-doughnut>
+            <analytics-chart-doughnut :analytics="analytics"></analytics-chart-doughnut>
           </div>
         </template>
       </pv-card>
-      <pv-card class="card payments flex w-full flex-column w-full">
+      <pv-card class="card payments flex w-full flex-column w-full cursor-pointer" @click="selectedCard = 'payments'">
         <template #header>
           <p class="text">Expected payments:</p>
         </template>
         <template #content>
           <div class="graph">
-            <analytics-chart-horizontal-bar></analytics-chart-horizontal-bar>
+            <analytics-chart-horizontal-bar :analytics="analytics"></analytics-chart-horizontal-bar>
           </div>
         </template>
       </pv-card>
-      <pv-card class="card progress flex w-full flex-column w-full">
+      <pv-card class="card progress flex w-full flex-column w-full cursor-pointer" @click="selectedCard = 'lines'">
         <template #header>
           <p class="text">Progress:</p>
         </template>
         <template #content>
           <div class="flex">
-            <analytics-chart-line></analytics-chart-line>
+            <analytics-chart-line :analytics="analytics" :key="chartKey"></analytics-chart-line>
           </div>
         </template>
       </pv-card>
-      <pv-card class="card flex w-full flex-column cost">
+      <pv-card class="card flex w-full flex-column cost cursor-pointer" @click="selectedCard = 'progressbar'">
         <template #header>
           <p class="text">Progress:</p>
         </template>
         <template #content>
           <div class="flex">
-            <analytics-chart-vertical-bar></analytics-chart-vertical-bar>
+            <analytics-chart-vertical-bar :analytics="analytics"></analytics-chart-vertical-bar>
           </div>
         </template>
       </pv-card>
     </div>
+    <section v-else>
+      <div class="flex flex-column align-items-center justify-content-center h-full">
+        <p class="text-2xl font-medium">No projects found</p>
+      </div>
+    </section>
   </section>
+  <lines-modal-content :analytics="analytics" v-if="selectedCard === 'lines'"
+                       @close="selectedCard = null">
+  </lines-modal-content>
+  <payments-modal-content :analytics="analytics" v-if="selectedCard === 'payments'"
+                          @close="selectedCard = null">
+  </payments-modal-content>
+  <progressbar-modal-content :analytics="analytics" v-if="selectedCard === 'progressbar'"
+                             @close="selectedCard = null">
+  </progressbar-modal-content>
+  <stats-modal-content :analytics="analytics" v-if="selectedCard === 'stats'"
+                       @close="selectedCard = null">
+  </stats-modal-content>
+  <tasks-modal-content :analytics="analytics" v-if="selectedCard === 'tasks'"
+                       @close="selectedCard = null">
+  </tasks-modal-content>
+  <!--  <modal-card-content v-if="selectedCard" :selectedCard="selectedCard" @close="selectedCard = null"></modal-card-content>-->
 </template>
 
 <style scoped>
+
+.card:hover {
+  background-color: #F5F5F5;
+}
+
+.title-analytics {
+  font-family: 'Lora', serif;
+  color: #02513D;
+  font-weight: 600 !important;
+  letter-spacing: 1.05px;
+}
 
 .analytics-container {
   display: grid;

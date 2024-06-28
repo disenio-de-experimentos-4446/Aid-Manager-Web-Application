@@ -1,8 +1,8 @@
 class TeamMemberEntity {
-    constructor({id, image, name, email, description }) {
+    constructor({id, profileImg, firstName, lastName, email, description }) {
         this.id = id;
-        this.image = image;
-        this.name = name;
+        this.image = profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg';
+        this.name = firstName + " " + lastName;
         this.email = email;
         this.description = description;
     }

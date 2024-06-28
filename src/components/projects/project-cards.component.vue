@@ -1,12 +1,12 @@
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0 widthsec">
-    <h1 class="title">Projects</h1>
+    <h1 class="title-projects text-4xl font-medium">Projects</h1>
     <br>
-    <h3 class="subtitle">Current Projects</h3>
+    <h3 class="subtitle font-medium mb-5">Current Projects:</h3>
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
-        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.image"
+        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl"
                          :id="project.id"/>
 
         <!-- Botón para agregar un nuevo proyecto -->
@@ -65,6 +65,7 @@ import CardsComponent from '@/components/projects/card.component.vue';
 import {ProjectsEntity} from "@/models/projects.entity.js";
 import {fetchProjects} from "@/services/projects-api.services.js";
 import {addProject} from "@/services/projects-api.services.js";
+import {AnalyticsService} from "@/services/analytics.service.js";
 // Variables reactivas
 const visible = ref(false);
 const projects = ref([]);
@@ -93,8 +94,8 @@ const checkForm = () =>{
 }
 
 // Método para obtener proyectos
-const getProjects = () => {
-  fetchProjects()
+const getProjects = (companyId) => {
+  fetchProjects(companyId)
       .then(data => {
         projects.value = data;
       })
@@ -110,14 +111,19 @@ const showAddProjectDialog = () => {
 
 // Método para agregar un nuevo proyecto
 const createProject = async () => {
+  if (!newProject.value.name || !newProject.value.image || !newProject.value.description) {
+    alert('Por favor, ingrese el título, la descripción y la URL de la imagen para el nuevo proyecto.');
+    return;
+  }
+
+  const user = ref(JSON.parse(localStorage.getItem('user')));
+
   try {
     const projectData = {
-      id: String(projects.value.length + 1), // Puedes generar un ID único aquí
       name: newProject.value.name,
-      image: newProject.value.image,
       description: newProject.value.description,
-      tasks: [], // Puedes inicializar con un array vacío si es necesario
-      members: [] // Puedes inicializar con un array vacío si es necesario
+      imageUrl: newProject.value.image,
+      companyId: user.value?.companyId
     };
     const addedProject = await addProject(projectData); // Llama a la función del servicio
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
@@ -126,10 +132,24 @@ const createProject = async () => {
       name: addedProject.name,
       image: addedProject.image,
       description: addedProject.description,
-      tasks: addedProject.tasks || [], // Puedes inicializar con un array vacío si es necesario
-      members: addedProject.members || [] // Puedes inicializar con un array vacío si es necesario
     });
-    console.log('Nuevo proyecto agregado:', addedProject);
+
+    function initializeArray(size) {
+      return Array.from({length: size}, () => 0);
+    }
+
+    console.log(addedProject.id);
+    const analyticsService = new AnalyticsService();
+    const analyticsData = {
+      projectId: addedProject.id,
+      lines: initializeArray(24),
+      payments: initializeArray(6),
+      progressbar: initializeArray(6),
+      status: initializeArray(5),
+      tasks: initializeArray(3)
+    };
+
+    await analyticsService.createNewAnalytics(analyticsData);
 
     // Limpiar los campos del nuevo proyecto después de guardarlo
     newProject.value.name = '';
@@ -146,11 +166,22 @@ const createProject = async () => {
 
 // Obtener proyectos al montar el componente
 onMounted(() => {
-  getProjects();
+  console.log('projects', projects)
+  // get the user of local storage
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  getProjects(user?.companyId);
 });
 </script>
 
 <style scoped>
+
+.title-projects {
+  font-family: 'Lora', serif;
+  color: #02513D;
+  font-weight: 600 !important;
+  letter-spacing: 1.05px;
+}
 /* Estilos específicos para el componente ProjectCards */
 .project-cards {
   display: flex;
@@ -196,9 +227,8 @@ onMounted(() => {
 
 .title {
   font-family: 'Lora', serif;
-  font-size: 6vh;
   color: #02513D;
-  font-weight: unset;
+  font-weight: 600 !important;
 }
 
 .subtitle {

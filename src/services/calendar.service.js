@@ -1,16 +1,21 @@
 import axios from "axios";
+import {environment} from "@/environment/environment.js";
+import {UserService} from "@/services/user.service.js";
 
 class CalendarService {
     baseUrl = ""
+    userService = null;
     constructor() {
-        this.baseUrl = "http://localhost:3000"
+        this.userService = new UserService();
+        this.baseUrl = environment.baseUrl;
     }
 
-    async getEventsCalendar() {
+    async getEventsCalendar(projectId) {
         let response = null;
 
         try {
-            response = await axios.get(`${this.baseUrl}/events`)
+            const headers = this.userService.getHeadersAuthorization();
+            response = await axios.get(`${this.baseUrl}/events/${projectId}`, { headers });
         }catch(e) {
             console.error('Error to obtain the events calendar', e)
         }
@@ -22,7 +27,9 @@ class CalendarService {
         let response = null;
 
         try {
-            response = await axios.post(`${this.baseUrl}/events`, event);
+            console.log('event save:', event)
+            const headers = this.userService.getHeadersAuthorization();
+            response = await axios.post(`${this.baseUrl}/events`, event, { headers });
         }catch(e){
             console.error('Error to save the event', e)
         }
@@ -33,9 +40,23 @@ class CalendarService {
         let response = null;
 
         try {
-            response = await axios.delete(`${this.baseUrl}/events/${id}`);
+            const headers = this.userService.getHeadersAuthorization();
+            response = await axios.delete(`${this.baseUrl}/events/${id}`, { headers });
         }catch(e) {
             console.error('Error to delete the event', id, e);
+        }
+
+        return response;
+    }
+
+    async editEvent(id, eventModified) {
+        let response = null;
+
+        try {
+            const headers = this.userService.getHeadersAuthorization();
+            response = await axios.put(`${this.baseUrl}/events/${id}`,  eventModified, { headers });
+        }catch(e) {
+            console.error('Error to edit the event', id, e);
         }
 
         return response;

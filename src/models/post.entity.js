@@ -1,13 +1,12 @@
 class Post {
-    constructor(id, name, email, title, description, profile_img, publication_date, images) {
+    constructor(id, user, title, subject, description, rating, createdAt) {
         this.id = id;
-        this.name = name;
-        this.email = email;
+        this.user = user;
         this.title = title;
+        this.subject = subject;
         this.description = description;
-        this.profile_img = profile_img;
-        this.publication_date = publication_date;
-        this.images = images;
+        this.rating = rating;
+        this.createdAt = createdAt;
     }
 }
 

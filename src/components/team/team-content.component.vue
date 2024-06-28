@@ -12,11 +12,15 @@ export default {
   },
   data() {
     return {
+      brandName: "",
       popUp: false,
       popUpDetail: "",
       userSelected: null,
       members: [],
       message: "",
+      messageSent: true,
+      roleUser: this.$store.state.user.role,
+      userId: this.$store.state.user.id,
       teamMemberService: new TeamMembersService()
     }
   },
@@ -33,32 +37,60 @@ export default {
           .catch(e => console.error(e))
 
       if (members) {
+        console.log('members', members);
+        const companyId = this.$store.state.user.companyId;
         members.forEach((m) => {
-          this.members.push(new TeamMemberEntity(m));
+          if(m.companyId === companyId) {
+            this.brandName = m.companyName;
+            this.brandName = this.brandName.charAt(0).toUpperCase() + this.brandName.slice(1);
+            this.members.push(new TeamMemberEntity(m));
+          }
         })
       }
     },
     togglePopUp: function (id, popUpDetail) {
       this.popUpDetail = popUpDetail;
-      console.log(id);
       this.popUp = !this.popUp;
       this.userSelected = this.members.find(m => m.id === id);
-      console.log(this.popUp)
-      console.log(this.userSelected)
+      this.messageSent = true;
     },
-    sendMessage: async function () {
-      const body = {
-        id: "2",
-        date: new Date().getUTCDate(),
-        message: this.message,
-        sender: this.userSelected.name
+    sendMessage: async function (idMember) {
+      if(!this.message) {
+        this.messageSent = false;
+        return;
       }
-      const result = await this.teamMemberService.newMessage(this.userSelected.id, body)
+
+      console.log(this.userSelected);
+
+      const body = {
+        date: new Date(),
+        message: this.message,
+        userIdReceiver: parseInt(this.userSelected.id),
+        userIdSender: this.$store.state.user.id
+      }
+
+      const result = await this.teamMemberService.newMessage(body)
       if (!result) {
         console.error("Failed to send message")
       } else {
         console.log("Message sent")
+        // alert window message sent
+        window.alert("Message sent")
       }
+
+      this.popUp = false;
+      this.messageSent = true;
+      this.message = "";
+    },
+    kickMember: async function(idMember) {
+      await this.teamMemberService.kickMember(idMember)
+          .then(r =>{
+            if (r) {
+              this.members = this.members.filter(m => m.id !== idMember);
+              this.popUp = false;
+            }
+          })
+          .catch(e => console.error(e))
     }
   }
 }
@@ -67,7 +99,7 @@ export default {
 <template>
   <div class="team__content relative p-4 lg:p-5">
     <div class="team__content-banner flex justify-content-center align-items-center" role="heading">
-      <h1 aria-label="title" class="font-italic team__content-title text-6xl md:text-7xl xl:text-8xl">Yesi's Hotman
+      <h1 aria-label="title" class="font-italic team__content-title text-6xl md:text-7xl xl:text-8xl">{{ brandName }}'s
         Team</h1>
     </div>
 
@@ -110,6 +142,8 @@ export default {
             <span class="popup__member-email" aria-label="email">{{ userSelected.email }}</span>
             <p class="popup__member-description" aria-label="description">{{ userSelected.description }}</p>
           </div>
+
+          <pv-button class="justify-content-center p-2 bg-red-500" @click="kickMember(userSelected.id)" v-if="this.roleUser === 'director' && this.userId !== userSelected.id">KICK</pv-button>
         </div>
 
         <div class="popup__content-contentinfo" v-if="popUpDetail === 'message'">
@@ -119,8 +153,10 @@ export default {
           <div class="popup__member-description" aria-label="description">
             <textarea class="border-round-2xl w-full h-40" placeholder="Can you leave your message here..."
                       v-model="message"></textarea>
+
+            <p v-if="!messageSent" class="message-empty">The message should not be empty</p>
           </div>
-          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer" @click="sendMessage()">
+          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer" @click="sendMessage(userSelected.id)">
             Send
           </div>
 
@@ -190,10 +226,16 @@ export default {
 }
 
 .popup__content i {
-  font-size: 2.5rem;
+  font-size: 2rem;
   cursor: pointer;
-  top: 5%;
-  right: 5%;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  transition: all .3s ease-in-out;
+}
+
+.popup__content i:hover {
+  opacity: .7;
 }
 
 .popup__member-description {
@@ -212,7 +254,18 @@ export default {
 }
 
 .button:hover {
-  transform: scale(1.02);
+  opacity: .9;
+}
+
+.popup__content-img img {
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.message-empty {
+  font-size: .8rem;
+  font-style: italic;
+  color: red;
 }
 
 @media screen and (max-width: 730px) {

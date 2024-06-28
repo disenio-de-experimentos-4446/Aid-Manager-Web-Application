@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import './assets/main.css'
+import Clipboard from 'v-clipboard'
 
 // Add PrimeVue
 import PrimeVue from "primevue/config";
@@ -21,6 +22,7 @@ import Chart from 'primevue/chart';
 import Dialog from "primevue/dialog";
 import InputNumber from "primevue/inputnumber";
 import Textarea from "primevue/textarea";
+import Dropdown from "primevue/dropdown";
 // App Theme
 import 'primevue/resources/themes/md-light-indigo/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -36,6 +38,7 @@ createApp(App)
     .use(PrimeVue, { ripple: true })
     .use(router)
     .use(store)
+    .use(Clipboard)
     .component('pv-card', Card)
     .component('pv-button', Button)
     .component('pv-select-button', SelectButton)
@@ -50,4 +53,5 @@ createApp(App)
     .component('pv-calendar', Calendar)
     .component('pv-input-number', InputNumber)
     .component('pv-text-area', Textarea)
+    .component('pv-dropdown', Dropdown)
     .mount('#app')

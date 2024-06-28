@@ -1,6 +1,8 @@
 <script setup>
 import {ref, onMounted, watchEffect, nextTick} from 'vue';
 import columnC from './column.component.vue';
+import {environment} from "@/environment/environment.js";
+import {UserService} from "@/services/user.service.js";
 
 const props = defineProps({
   id: {
@@ -15,15 +17,21 @@ const project = ref();
 
 // Función para cargar los datos del proyecto
 const fetchTasks = body => {
-  fetch(`http://localhost:3000/projects/${props.id}`)
-      .then(response => response.json(body))
-      .then(data => {
-        project.value = data;
-        console.log('Project loaded:', project.value.tasks)
-      })
-      .catch(error => {
-        console.error('Error al obtener datos de la API:', error);
-      });
+  const userService = new UserService();
+  const headers = userService.getHeadersAuthorization();
+  // how to fetch with the headers
+  fetch(`${environment.baseUrl}/projects/${props.id}`, {
+    method: 'GET',
+    headers: headers,
+  })
+    .then(response => response.json(body))
+    .then(data => {
+      project.value = data;
+      console.log('Project loaded:', project.value.tasks)
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
 };
 
 const emit = defineEmits(['updAll']);
@@ -40,7 +48,7 @@ const handleUpdateAll = () => {
 
 
 // Llamar a fetchTasks al montar el componente
-onMounted(fetchTasks);
+//onMounted(fetchTasks);
 
 // Evento personalizado para emitir hacia el componente hijo
 
@@ -48,9 +56,9 @@ onMounted(fetchTasks);
 
 <template>
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0">
-    <h1 class="title">{{ project ? project.name : '' }}</h1>
+    <h1 class="title-projects text-4xl">{{ project ? project.name : '' }}</h1>
     <br>
-    <h3 class="subtitle">Tasks</h3>
+    <h3 class="subtitle text-xl">Tasks assigned:</h3>
 
     <div class="column-container">
       <columnC task-column="To-Do" :id="props.id" @updAll="handleUpdateAll" :reload="reload"/>
@@ -61,6 +69,14 @@ onMounted(fetchTasks);
 </template>
 
 <style scoped>
+
+.title-projects {
+  font-family: 'Lora', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+  color: #02513D;
+}
+
 .title {
   font-family: 'Lora', serif;
   font-size: 6vh;
@@ -70,9 +86,8 @@ onMounted(fetchTasks);
 
 .subtitle {
   font-family: 'Lora', serif;
-  font-size: 2vh;
-  color: #02513D;
-  font-weight: bold;
+  color: #000000;
+  font-weight: 600;
 }
 
 .column-container {

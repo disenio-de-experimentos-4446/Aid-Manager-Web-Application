@@ -10,29 +10,40 @@ export default {
       email: '',
       formValid: false,
       password: '',
+      passwordFieldType: 'password',
       isRegistered: false,
       showDialog: false,
+      message_error: ""
     }
   },
-  async created() {
-    await this.getUsers();
-  },
   methods: {
-    handleSubmitLogin() {
+    async handleSubmitLogin() {
       this.isRegistered = false;
-      console.log('Email entered:', this.email);
-      console.log('Password entered:', this.password);
 
-      for (let i = 0; i < this.users.length; i++) {
-        // recorremos y vericamos que coincida las propidades de algun objeto con los inputs
-        if (this.users[i].email === this.email && this.users[i].password === this.password) {
-          this.isRegistered = true;
-          // guardamos el usuario en el almacen Vuex ubicado en store.js
-          this.$store.commit('setUser', this.users[i]);
-          this.$router.push('/home');
-          break;
-        }
-      }
+      await this.userService.signInUser(this.email, this.password)
+          .then(async(res) => {
+            console.log('res', res)
+
+            if(res.status === 200) {
+              this.$store.commit('setToken', res.data.token);
+
+              await this.userService.authUser(this.email, this.password)
+                  .then(r => {
+                    const result = r.data
+                    if(result.status_code !== 202) this.message_error = result.message;
+                    else {
+                      this.isRegistered = true;
+                      this.$store.commit('setUser', result.data);
+                      this.$router.push('/home');
+                    }
+                  })
+            }else {
+              this.message_error = res.response.data;
+              this.showDialog = true;
+            }
+          })
+
+
 
       if (!this.isRegistered) {
         this.showDialog = true;
@@ -43,12 +54,8 @@ export default {
       this.formValid = this.email !== '' && this.password !== '';
     },
 
-    async getUsers() {
-      // obtenemos la respuesta del endpoint
-      const response = await this.userService.getAllUsers();
-
-      this.users = response.data;
-      console.log(response.data);
+    togglePasswordFieldType() {
+      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
     }
 
   }
@@ -70,10 +77,17 @@ export default {
                class="input-field p-3" v-model="email"
                @input="validateForm"
         />
-        <input type="password" placeholder="Password"
-               class="input-field p-3" v-model="password"
-               @input="validateForm"
-        />
+        <div class="password-field">
+          <input :type="passwordFieldType" placeholder="Password"
+                 class="input-field p-3" v-model="password"
+                 @input="validateForm"
+          />
+          <i :class="passwordFieldType === 'password' ? 'pi pi-eye' : 'pi pi-eye-slash'"
+             @click="togglePasswordFieldType"
+             class="toggle-icon"
+          ></i>
+        </div>
+
         <a class="link" href="#" style="color: #02513D; font-style:italic; font-size: 0.8rem;">Forgot your password?</a>
 
         <button :disabled="!formValid" type="submit" class="button p-3" style="color: #fff; margin-top:30px">Sign in
@@ -89,7 +103,7 @@ export default {
     <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
       <i class="text-7xl pi pi-exclamation-circle text-red-500"></i>
       <h1>Login Failed!</h1>
-      <p class="text-md">Invalid email or password, please enter your credentials again</p>
+      <p class="text-md">{{ message_error }}</p>
       <pv-button class="py-3 px-5" label="OK" @click="showDialog = false"/>
     </div>
   </pv-dialog>
@@ -167,6 +181,25 @@ export default {
   font-weight: normal;
   font-size: 1rem;
 }
+.password-field {
+  align-self: center;
+   position: relative;
+   width: 90%;
+   display:flex;
+   align-items: center;
+ }
+
+.input-field {
+  flex: 1;
+  padding-right: 2.5rem;
+}
+
+.toggle-icon {
+  color: #575757;
+  position: absolute;
+  right: 15px;
+  cursor: pointer;
+}
 
 @media screen and (max-width: 500px) {
   .logo-container {
@@ -176,6 +209,10 @@ export default {
 
   .input-field {
     width: 100%;
+  }
+  .password-field {
+    width: 100%;
+
   }
 
   .link {

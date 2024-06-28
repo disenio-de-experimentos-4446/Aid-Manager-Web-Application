@@ -1,18 +1,22 @@
 <script>
 import CalendarService from "@/services/calendar.service.js";
 import TrashIcon from "../../assets/trash-icon.svg";
+import EventEntity from "@/models/event.entity.js";
+import DropdownProjects from "@/components/dropdown/dropdown.component.vue";
 import EditIcon from "../../assets/edit-event-icon.svg";
 
 export default {
   name: "calendar-content",
   components: {
+    DropdownProjects,
     TrashIcon,
-    EditIcon
+    EditIcon,
   },
   data() {
     return {
       calendarService: new CalendarService(),
       current_date: new Date(),
+      projectIdSelected: 0,
       events: [],
       showOptions: false,
       showPopUp: false,
@@ -24,7 +28,8 @@ export default {
         date: "",
         location: "",
         description: "",
-        color: "#74A38F"
+        color: "#74A38F",
+        projectId: 0
       }
     }
   },
@@ -61,51 +66,91 @@ export default {
       this.togglePopUp();
     },
     getEvents: async function() {
-      const response = await this.calendarService.getEventsCalendar();
-
-      if (response) {
-        this.events = response.data;
+      if(this.projectIdSelected !== 0) {
+        const response = await this.calendarService.getEventsCalendar(this.projectIdSelected);
+        if (response) {
+          this.events = response.data;
+        }
       }
     },
     toggleOptions: function(date) {
-      this.showOptions = this.showOptions === date ? null : date;
-      console.log(this.showOptions)
+      const role = this.$store.state.user.role;
+      if(role === 'director')
+        this.showOptions = this.showOptions === date ? null : date;
     },
     togglePopUp: function() {
-      this.showPopUp = !this.showPopUp;
-      this.newEvent = false;
+      const role = this.$store.state.user.role;
+
+      if(role === 'director') {
+        this.showPopUp = !this.showPopUp;
+        this.newEvent = false;
+      }else {
+        alert('You do not have permission to create events, only the director can do it.');
+      }
     },
     saveNewEvent: async function() {
-      console.log(this.inputNewEvent)
-      const response = await this.calendarService.saveNewEvent(this.inputNewEvent);
-      if(!response) console.error('Error saving new event');
-      else {
-        await this.getEvents();
-        this.inputNewEvent = {
-          name: "",
-          date: "",
-          location: "",
-          description: "",
-          color: (Math.round(Math.random()))? "#74A38F" : "#98CFD7"
-        };
+      if(this.projectIdSelected === 0) return alert('Select a project to save the event');
+      if(this.optionSelected !== "edit") {
+        delete this.inputNewEvent["id"];
+        this.inputNewEvent["projectId"] = this.projectIdSelected;
+        console.log(new EventEntity(this.inputNewEvent))
 
+        const response = await this.calendarService.saveNewEvent(new EventEntity(this.inputNewEvent));
+        if(!response) console.error('Error saving new event');
+        else {
+          await this.getEvents();
+
+        }
+      }else {
+        const idEvent = this.inputNewEvent["id"];
+        delete this.inputNewEvent["id"];
+        delete this.inputNewEvent["projectId"];
+
+        await this.calendarService.editEvent(idEvent, new EventEntity(this.inputNewEvent))
+            .then(r => {
+              if(!r) console.error('Error to edit the event with id: ', idEvent);
+              else {
+                this.getEvents();
+              }
+            })
       }
+
+      this.inputNewEvent = {
+        id: "",
+        name: "",
+        date: "",
+        location: "",
+        description: ""
+      };
+      this.optionSelected = "";
       this.togglePopUp();
     },
     deleteEvent: async function(id) {
-      console.log('delete event', id)
       const response = await this.calendarService.deleteEvent(id);
       if(!response) console.log('Error to delete the event with id: ', id);
       else await this.getEvents();
+    },
+    editEvent: function(idEvent) {
+      this.optionSelected = "edit";
+      this.showPopUp = !this.showPopUp;
+      this.newEvent = true;
+
+      this.inputNewEvent["id"] = idEvent;
+    },
+    receiveProjectSelected(project) {
+      console.log('project selected', project);
+      this.projectIdSelected = project;
+      this.getEvents();
     }
   }
 }
 </script>
 
 <template>
-  <div class="calendar relative p-4 lg:p-5">
-    <h1 aria-label="title">Calendar</h1>
-    <div class="calendar__days-week" role="heading">
+  <div class="calendar relative p-4 lg:p-5 mb-2">
+    <h1 class="calendar-title text-4xl mb-4 text-left" aria-label="title">Calendar</h1>
+    <dropdown-projects @projectSelected="receiveProjectSelected"></dropdown-projects>
+    <div class="calendar__days-week mt-2" role="heading">
       <span aria-label="title">SUN</span>
       <span aria-label="title">MON</span>
       <span aria-label="title">TUES</span>
@@ -130,14 +175,13 @@ export default {
                 <span>Delete</span>
               </div>
 
-              <div class="day-event__modify-column flex gap-1">
-                <EditIcon @click="()=>{optionSelected = 'edit'}"/>
+              <div class="day-event__modify-column flex gap-1" @click="editEvent(event.id)">
+                <EditIcon/>
                 <span>Edit</span>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -164,11 +208,8 @@ export default {
             <textarea placeholder="Type your description here..." v-model="inputNewEvent['description']"></textarea>
           </form>
 
-          <div class="form__new-event-button" @click="saveNewEvent()">Save</div>
-        </div>
-
-        <div class="form__edit-event" v-if="optionSelected === 'edit'">
-          <p>ola</p>
+          <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected !== 'edit'">SAVE</div>
+          <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected === 'edit'">EDIT</div>
         </div>
       </div>
     </div>
@@ -176,7 +217,6 @@ export default {
 </template>
 
 <style scoped>
-
 .calendar {
   display: flex;
   flex-direction: column;
@@ -186,11 +226,11 @@ export default {
   font-family: "Poppins", sans-serif;
 }
 
-.calendar h1 {
-  text-align: left;
-  margin-bottom: 3rem;
-  font-weight: 400;
-  font-size: 2rem;
+.calendar-title {
+  font-family: 'Lora', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+  color: #02513D;
 }
 
 .calendar__days-week {

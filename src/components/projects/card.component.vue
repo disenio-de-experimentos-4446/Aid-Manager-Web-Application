@@ -18,9 +18,11 @@ const props = defineProps({
     type: String,
         required: true,
   },
-  image: {
-    type: String,
-        required: false,
+  mounted() {
+    console.log(this.image);
+  },
+  components: {
+    Button,
   },
   id: {
     type: String,

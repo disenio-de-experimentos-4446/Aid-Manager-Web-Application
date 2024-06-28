@@ -145,7 +145,7 @@ const items = ref([{
     <div class="title">
 
       <div>
-        <h3 style=" font-weight:normal;">{{ title }}</h3>
+        <h3 class="task-title" style="font-weight:normal;">{{ title }}</h3>
         <p>Assigned to: {{ assigned }}</p>
         <p>Due: {{ due }}</p>
       </div>
@@ -165,19 +165,19 @@ const items = ref([{
       <!-- Campos para ingresar información del nuevo proyecto -->
       <div class=" align-items-center gap-3 mb-2">
         <label for="title" class="font-semibold w-6rem">Task Title</label>
-        <InputText id="title" class="flex flex-auto" placeholder="{{thisTask.title}}" autocomplete="off"
+        <InputText id="title" class="flex flex-auto" :placeholder="thisTask.title" autocomplete="off"
                    v-model="thisTask.title"/>
       </div>
 
       <div class=" align-items-center gap-3 mb-2">
         <label for="assigned" class="font-semibold w-6rem">Employee Assigned</label>
-        <InputText id="assigned" class="flex flex-auto" placeholder="{{thisTask.assigned}}" autocomplete="off"
+        <InputText id="assigned" class="flex flex-auto" autocomplete="off"
                    v-model="thisTask.assigned"/>
       </div>
 
       <div class=" align-items-center gap-3 mb-2">
         <label for="calendar" class="font-semibold w-6rem">Due date</label>
-        <Calendar class="flex flex-auto" id="due" placeholder="{{due}}" v-model="thisTask.due" :minDate="new Date()"
+        <Calendar class="flex flex-auto" id="due" :placeholder="thisTask.dueDate" v-model="thisTask.due" :minDate="new Date()"
                   :manualInput="false"/>
 
       </div>
@@ -194,6 +194,13 @@ const items = ref([{
 </template>
 
 <style scoped>
+
+.task-title {
+  font-family: 'Lora', serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px;
+}
+
 .title {
   display: flex;
   flex-direction: row;
