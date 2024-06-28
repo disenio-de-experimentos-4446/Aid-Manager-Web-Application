@@ -43,7 +43,6 @@ export default {
         if (response.data.status_code !== 200) {
           throw new Error('Error al crear la compañía');
         }
-        console.log('osi ermanita');
         try {
           await this.companyService.editCompanyId(this.form.userId, this.form.identificationCode);
           console.log(this.form);
