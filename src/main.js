@@ -7,6 +7,9 @@ import Clipboard from 'v-clipboard'
 import PrimeVue from "primevue/config";
 import { store } from "@/store/store.js";
 
+// import i18n from "@/i18n.js";
+import i18n from "@/i18n.js";
+
 // Add PrimeVue Components
 import Card         from 'primevue/card';
 import Button       from 'primevue/button';
@@ -27,6 +30,7 @@ import Dropdown from "primevue/dropdown";
 import 'primevue/resources/themes/md-light-indigo/theme.css';
 import 'primevue/resources/primevue.min.css';
 
+
 // PrimeIcons
 import 'primeicons/primeicons.css';
 
@@ -39,6 +43,7 @@ createApp(App)
     .use(router)
     .use(store)
     .use(Clipboard)
+    .use(i18n)
     .component('pv-card', Card)
     .component('pv-button', Button)
     .component('pv-select-button', SelectButton)

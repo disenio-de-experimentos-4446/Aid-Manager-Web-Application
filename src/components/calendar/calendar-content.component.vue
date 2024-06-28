@@ -151,13 +151,13 @@ export default {
     <h1 class="calendar-title text-4xl mb-4 text-left" aria-label="title">Calendar</h1>
     <dropdown-projects @projectSelected="receiveProjectSelected"></dropdown-projects>
     <div class="calendar__days-week mt-2" role="heading">
-      <span aria-label="title">SUN</span>
-      <span aria-label="title">MON</span>
-      <span aria-label="title">TUES</span>
-      <span aria-label="title">WED</span>
-      <span aria-label="title">THURS</span>
-      <span aria-label="title">FRI</span>
-      <span aria-label="title">SAT</span>
+      <span aria-label="title" v-t="'calendar.sun'">SUN</span>
+      <span aria-label="title" v-t="'calendar.mon'">MON</span>
+      <span aria-label="title" v-t="'calendar.tue'">TUES</span>
+      <span aria-label="title" v-t="'calendar.wed'">WED</span>
+      <span aria-label="title" v-t="'calendar.thu'">THURS</span>
+      <span aria-label="title" v-t="'calendar.fri'">FRI</span>
+      <span aria-label="title" v-t="'calendar.sat'">SAT</span>
     </div>
 
     <div class="days-week">
