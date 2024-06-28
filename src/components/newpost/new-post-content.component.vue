@@ -50,15 +50,15 @@ export default {
 
 <template>
   <section class="new-post-container relative flex flex-column p-4 lg:p-5">
-    <h1 class="newpost-title text-4xl font-medium mb-3">Create a post</h1>
-    <p class="text-sm text-gray-700">No recent publications</p>
+    <h1 class="newpost-title text-4xl font-medium mb-3" v-t="'newpost.createpost'"></h1>
+    <p class="text-sm text-gray-700" v-t="'newpost.norecentpublications'"></p>
     <div class="post-background h-full flex flex-1 align-items-center mt-5 sm:mt-3">
       <div class="post-container shadow-3 p-4 sm:p-5 flex flex-column gap-4">
         <h2 class="font-medium">Celebrating Team Success: Hope Heaven <br/>International Impact in Action</h2>
-        <p class="text-base font-medium -mt-1">Dear Hope Have team: </p>
+        <p class="text-base font-medium -mt-1" v-t="'newpost.dearhopeteam'"> </p>
         <form class="post-form flex flex-column mt-0" @submit.prevent="onSubmitPost()">
           <div class="flex flex-column gap-2">
-            <label>Title:</label>
+            <label>Title</label>
             <input class="input-field border-round-md p-2 line-height-3"
                    placeholder="Celebrating Team Success: Hope Haven Impact in Action"
                    type="text" v-model="this.formPost.title">
