@@ -6,6 +6,7 @@ export default {
   name: "signup-content",
   data() {
     return {
+      token: "",
       userService: new UserService(),
       companyService: new CompanyService(),
       users: [],
@@ -61,14 +62,6 @@ export default {
         return;
       }
 
-      // verify is the email has already been registered in the users array with some method
-      /*
-      const emailExists = this.users.some(user => user.email === this.form.email);
-      if (emailExists) {
-        this.isEmailExists = true;
-        return;
-      }*/
-
       if (this.form.role === 'director') {
         await this.createNewUser("director");
 
@@ -84,6 +77,22 @@ export default {
         return;
       }
       if(this.form.role !== "director") {
+        await this.userService.signUpUser(this.form.email, this.form.password)
+            .then(async(r)=> {
+              if(r.status === 200) {
+                await this.userService.signInUser(this.form.email, this.form.password)
+                    .then(res=> {
+                      console.log('res', res)
+                      if(res.status === 200) {
+                        this.token = res.data.token;
+                        this.$store.commit('setToken', this.token);
+                      }
+                    })
+                    .catch(e=>console.log('error: ', e))
+              }
+
+            })
+            .catch(e=>console.log('error: ', e))
 
         await this.companyService.getCompanyByUID(companyIdentification)
             .then(r => {
@@ -101,6 +110,24 @@ export default {
       this.form.companyId = this.form.companyId.toString();
 
       if(this.existsCompanyId) {
+        await this.userService.signUpUser(this.form.email, this.form.password)
+            .then(async(r)=> {
+              if(r.status === 200) {
+                await this.userService.signInUser(this.form.email, this.form.password)
+                    .then(res=> {
+                      if(res.status === 200) {
+                        this.token = res.data.token;
+                        console.log('token', this.token);
+                        this.$store.commit('setToken', this.token);
+                      }
+                    })
+                    .catch(e=>console.log('error: ', e))
+              }
+
+            })
+            .catch(e=>console.log('error: ', e))
+
+
         try {
           await this.userService.createNewUser(this.form)
               .then(r=> {

@@ -1,9 +1,12 @@
 import axios from 'axios';
 import {environment} from "@/environment/environment.js";
+import {UserService} from "@/services/user.service.js";
 // Función para obtener la lista de proyectos desde la API
 export async function fetchProjects(companyId) {
     try {
-        const response = await axios.get(`${environment.baseUrl}/projects/${companyId}`);
+        const userService = new UserService();
+        const headers = userService.getHeadersAuthorization();
+        const response = await axios.get(`${environment.baseUrl}/projects/${companyId}`, { headers });
 
         console.log("Datos obtenidos de la API:", response.data);
         return response.data; // Devuelve la lista de proyectos obtenidos de la API
@@ -15,11 +18,9 @@ export async function fetchProjects(companyId) {
 
 export const addProject = async (projectData) => {
     try {
-        const response = await axios.post(`${environment.baseUrl}/projects`, projectData, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        const userService = new UserService();
+        const headers = userService.getHeadersAuthorization();
+        const response = await axios.post(`${environment.baseUrl}/projects`, projectData, { headers });
         return response.data; // Retorna los datos del nuevo proyecto creado
     } catch (error) {
         console.error('Error al agregar el proyecto:', error);
@@ -35,7 +36,9 @@ export const addProject = async (projectData) => {
 // Función para obtener los datos de tareas de un proyecto específico desde la API
 export async function fetchTaskData(projectId) {
     try {
-        const response = await axios.get(`${environment.baseUrl}/projects/${projectId}/task-items`);
+        const userService = new UserService();
+        const headers = userService.getHeadersAuthorization();
+        const response = await axios.get(`${environment.baseUrl}/projects/${projectId}/task-items`, { headers });
 
         console.log("Datos obtenidos de la API para TASKS:", response.data);
         return response.data; // Devuelve la lista de proyectos obtenidos de la API
@@ -66,8 +69,11 @@ export async function addTask(projectId, newTask) {
             "userId": "0"
         }
 
+
+        const userService = new UserService();
+        const headers = userService.getHeadersAuthorization();
         // Actualizar el proyecto en la API con el nuevo arreglo de tareas
-        const response = await axios.post(`${environment.baseUrl}/projects/${projectId}/task-items`, newTaskData);
+        const response = await axios.post(`${environment.baseUrl}/projects/${projectId}/task-items`, newTaskData, { headers });
         return response.data; // Devuelve los datos actualizados del proyecto
     } catch (error) {
         console.error('Error al agregar la tarea al proyecto:', error);
@@ -79,7 +85,10 @@ export async function deleteTask(projectID, taskID){
     try{
         console.log("Task a eliminar" , taskID);
         //project.tasks = project.tasks.filter(task => task.id !== taskID);
-        const response = await axios.delete(`${environment.baseUrl}/projects/${projectID}/task-items/${taskID}`);
+
+        const userService = new UserService();
+        const headers = userService.getHeadersAuthorization();
+        const response = await axios.delete(`${environment.baseUrl}/projects/${projectID}/task-items/${taskID}`, { headers });
         return response.data;
     } catch (error) {
         console.error('Error al Eliminar la tarea al proyecto:', error);
@@ -97,7 +106,10 @@ export async function editTask(projectID, taskID, taskData){
             state: taskData.status,
             userId: "0"
         }
-        const response = await axios.put(`${environment.baseUrl}/projects/${projectID}/task-items`, taskBody);
+
+        const userService = new UserService();
+        const headers = userService.getHeadersAuthorization();
+        const response = await axios.put(`${environment.baseUrl}/projects/${projectID}/task-items`, taskBody, { headers });
         return response.data;
     } catch (error) {
         console.error('Error al Editar la tarea al proyecto:', error);

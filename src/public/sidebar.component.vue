@@ -44,6 +44,7 @@ export default {
     },
     navigateToLogin() {
       this.$store.commit('removeUser');
+      this.$store.commit('removeToken');
       this.$router.push('/login');
     },
     navigateToCreatePost() {

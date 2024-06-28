@@ -36,8 +36,9 @@ export default {
 
               const selectedProject = JSON.parse(localStorage.getItem('selectedProject'));
               if (selectedProject) {
-                // Encuentra el proyecto correspondiente en la lista de proyectos
-                this.projectSelected = this.projects.find(p => p.id === selectedProject.id);
+                if(this.projects.length > 0)
+                  // Encuentra el proyecto correspondiente en la lista de proyectos
+                  this.projectSelected = this.projects.find(p => p.id === selectedProject.id);
                 // Emite el evento con el ID del proyecto seleccionado
                 this.$emit('projectSelected', this.projectSelected.id);
               }

@@ -10,18 +10,39 @@ export class UserService {
         })
     }
 
-    async authUser(email, password) {
+    async signUpUser(username, password) {
         try {
-            return await this.http.get(`users/auth?email=${email}&password=${password}`);
+            return await this.http.post('authentication/sign-up', {
+                username: username,
+                password: password
+            })
         }catch(e) {
-            console.log('Error to authenticate user')
+            console.log('Error to sign up user', e)
             return null;
         }
     }
 
+    async signInUser(username, password) {
+        try {
+            return await this.http.post('authentication/sign-in', {
+                username: username,
+                password: password
+            })
+        }catch(e) {
+            return e;
+        }
+
+    }
+
+    async authUser(email, password) {
+        const headers = this.getHeadersAuthorization();
+        return await this.http.get(`users/auth?email=${email}&password=${password}`, { headers });
+    }
+
     async getAllUsers() {
         try {
-            const response = await this.http.get('users');
+            const headers = this.getHeadersAuthorization();
+            const response = await this.http.get('users', { headers });
             return response;
         } catch (error) {
             console.error('Error al obtener todos los usuarios:', error);
@@ -63,7 +84,8 @@ export class UserService {
 
     async createNewUser( user ) {
         try {
-            return await this.http.post('users', user);
+            const headers = this.getHeadersAuthorization();
+            return await this.http.post('users', user, { headers });
         } catch (error) {
             console.error('Error al crear un nuevo usuario:', error);
             throw error;
@@ -96,11 +118,19 @@ export class UserService {
         }
 
         try {
-            const response = await this.http.put(`users?email=${email}`, newBody);
+            const headers = this.getHeadersAuthorization();
+            const response = await this.http.put(`users?email=${email}`, newBody, { headers });
             return response;
         }catch(e) {
             console.log('Error to update user')
             return null;
+        }
+    }
+
+    getHeadersAuthorization() {
+        return {
+            "Authorization": `Bearer ${localStorage.getItem('token')}`,
+            "Content-Type": "application/json"
         }
     }
 }

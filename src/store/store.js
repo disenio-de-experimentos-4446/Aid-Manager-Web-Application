@@ -12,6 +12,10 @@ export const store = createStore({
         form: {}
     },
     mutations: {
+        setToken(state, token) {
+            state.token = token;
+            localStorage.setItem('token', token);
+        },
         setUser(state, user) {
             console.log('setUser mutation called with:', user);
             state.user = user;
@@ -22,6 +26,10 @@ export const store = createStore({
         removeUser( state ) {
             state.user = User;
             localStorage.removeItem('user');
+        },
+        removeToken( state ) {
+            state.token = null;
+            localStorage.removeItem('token');
         },
         updateUserCompanyName(state, companyName) {
             state.user.companyName = companyName;

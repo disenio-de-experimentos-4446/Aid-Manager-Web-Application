@@ -19,16 +19,31 @@ export default {
   methods: {
     async handleSubmitLogin() {
       this.isRegistered = false;
-      await this.userService.authUser(this.email, this.password)
-          .then(r => {
-            const result = r.data
-            if(result.status_code !== 202) this.message_error = result.message;
-            else {
-              this.isRegistered = true;
-              this.$store.commit('setUser', result.data);
-              this.$router.push('/home');
+
+      await this.userService.signInUser(this.email, this.password)
+          .then(async(res) => {
+            console.log('res', res)
+
+            if(res.status === 200) {
+              this.$store.commit('setToken', res.data.token);
+
+              await this.userService.authUser(this.email, this.password)
+                  .then(r => {
+                    const result = r.data
+                    if(result.status_code !== 202) this.message_error = result.message;
+                    else {
+                      this.isRegistered = true;
+                      this.$store.commit('setUser', result.data);
+                      this.$router.push('/home');
+                    }
+                  })
+            }else {
+              this.message_error = res.response.data;
+              this.showDialog = true;
             }
           })
+
+
 
       if (!this.isRegistered) {
         this.showDialog = true;

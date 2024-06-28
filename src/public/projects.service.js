@@ -1,5 +1,6 @@
 import axios from "axios";
 import {environment} from "@/environment/environment.js";
+import {UserService} from "@/services/user.service.js";
 
 class ProjectsService {
     constructor() {
@@ -9,7 +10,9 @@ class ProjectsService {
     async getProjects(companyId) {
         let response = null;
         try {
-            response = await axios.get(`${this.baseUrl}/projects/${companyId}`);
+            const userService = new UserService();
+            const headers = userService.getHeadersAuthorization();
+            response = await axios.get(`${this.baseUrl}/projects/${companyId}`, { headers });
         }catch(e) {
             console.error(e);
         }
@@ -19,7 +22,9 @@ class ProjectsService {
 
     async fetchProjects(companyId) {
         try {
-            const response = await axios.get(`http://localhost:5082/api/v1/projects/${companyId}`);
+            const userService = new UserService();
+            const headers = userService.getHeadersAuthorization();
+            const response = await axios.get(`${this.baseUrl}/projects/${companyId}`, { headers });
 
             console.log("Datos obtenidos de la API:", response.data);
             return response.data; // Devuelve la lista de proyectos obtenidos de la API

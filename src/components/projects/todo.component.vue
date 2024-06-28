@@ -2,6 +2,7 @@
 import {ref, onMounted, watchEffect, nextTick} from 'vue';
 import columnC from './column.component.vue';
 import {environment} from "@/environment/environment.js";
+import {UserService} from "@/services/user.service.js";
 
 const props = defineProps({
   id: {
@@ -16,15 +17,21 @@ const project = ref();
 
 // Función para cargar los datos del proyecto
 const fetchTasks = body => {
-  fetch(`${environment.baseUrl}/projects/${props.id}`)
-      .then(response => response.json(body))
-      .then(data => {
-        project.value = data;
-        console.log('Project loaded:', project.value.tasks)
-      })
-      .catch(error => {
-        console.error('Error al obtener datos de la API:', error);
-      });
+  const userService = new UserService();
+  const headers = userService.getHeadersAuthorization();
+  // how to fetch with the headers
+  fetch(`${environment.baseUrl}/projects/${props.id}`, {
+    method: 'GET',
+    headers: headers,
+  })
+    .then(response => response.json(body))
+    .then(data => {
+      project.value = data;
+      console.log('Project loaded:', project.value.tasks)
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
 };
 
 const emit = defineEmits(['updAll']);

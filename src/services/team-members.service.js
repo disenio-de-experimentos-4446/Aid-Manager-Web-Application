@@ -1,16 +1,20 @@
 import axios from "axios";
 import {environment} from "@/environment/environment.js";
+import {UserService} from "@/services/user.service.js";
 
 class TeamMembersService {
     baseUrl = ""
+    userService = null;
     constructor(){
+        this.userService = new UserService();
         this.baseUrl = environment.baseUrl;
     }
 
     async getMembers() {
         let response = null
         try {
-            response = await axios.get(`${this.baseUrl}/users`);
+            const headers = this.userService.getHeadersAuthorization();
+            response = await axios.get(`${this.baseUrl}/users`, { headers });
         }catch(e) {
             console.error('Error to obtain the team members', e);
         }
@@ -20,7 +24,8 @@ class TeamMembersService {
     async newMessage(body) {
         let response = null
         try {
-            response = await axios.post(`${this.baseUrl}/users/messages`, body);
+            const headers = this.userService.getHeadersAuthorization();
+            response = await axios.post(`${this.baseUrl}/users/messages`, body, { headers });
         }catch(e) {
             console.error('Error to send the message', e);
         }
@@ -30,7 +35,8 @@ class TeamMembersService {
     async kickMember(idUser) {
         let response = null;
         try {
-            response = await axios.put(`${this.baseUrl}/users/kick-member/${idUser}`);
+            const headers = this.userService.getHeadersAuthorization();
+            response = await axios.put(`${this.baseUrl}/users/kick-member/${idUser}`, {}, { headers });
         } catch(e) {
             console.error('Error to kick the member', e);
         }

@@ -1,10 +1,13 @@
 import axios from "axios";
 import {environment} from "@/environment/environment.js";
+import {UserService} from "@/services/user.service.js";
 
 export class AnalyticsService {
 
     http = null;
+    userService = null;
     constructor() {
+        this.userService = new UserService();
         this.http = axios.create({
             baseURL: environment.baseUrl
         })
@@ -13,7 +16,8 @@ export class AnalyticsService {
 
     async createNewAnalytics(item) {
         try {
-            return await this.http.post(`analytics`, item);
+            const headers = this.userService.getHeadersAuthorization();
+            return await this.http.post(`analytics`, item, {headers});
         }catch(e) {
             console.log('Error to create new analytics')
             return null;
@@ -22,7 +26,8 @@ export class AnalyticsService {
 
     async getAnalyticsByProjectId(projectId) {
         try {
-            return await this.http.get(`analytics/${projectId}`);
+            const headers = this.userService.getHeadersAuthorization();
+            return await this.http.get(`analytics/${projectId}`, {headers});
         }catch(e) {
             console.log('Error to get analytics by project id')
             return null;
@@ -31,7 +36,8 @@ export class AnalyticsService {
 
     async updatePaymentsChartByAnalyticsId(paymentsData) {
         try {
-            return await this.http.patch(`analytics/payments`, paymentsData);
+            const headers = this.userService.getHeadersAuthorization();
+            return await this.http.patch(`analytics/payments`, paymentsData, {headers});
         }catch(e) {
             console.log('Error to update payments chart by analytics id')
             return null;
@@ -40,7 +46,8 @@ export class AnalyticsService {
 
     async updateLinesChartByAnalyticsId(linesData) {
         try {
-            return await this.http.patch(`analytics/lines`, linesData);
+            const headers = this.userService.getHeadersAuthorization();
+            return await this.http.patch(`analytics/lines`, linesData, {headers});
         }catch(e) {
             console.log('Error to update sales chart by analytics id')
             return null;
@@ -50,7 +57,8 @@ export class AnalyticsService {
     // for tasks
     async updateTasksChartByAnalyticsId(tasksData) {
         try {
-            return await this.http.patch(`analytics/tasks`, tasksData);
+            const headers = this.userService.getHeadersAuthorization();
+            return await this.http.patch(`analytics/tasks`, tasksData, {headers});
         }catch(e) {
             console.log('Error to update tasks chart by analytics id')
             return null;
@@ -60,7 +68,8 @@ export class AnalyticsService {
     // for progressbar
     async updateProgressChartByAnalyticsId(progressData) {
         try {
-            return await this.http.patch(`analytics/progressbar`, progressData);
+            const headers = this.userService.getHeadersAuthorization();
+            return await this.http.patch(`analytics/progressbar`, progressData, {headers});
         }catch(e) {
             console.log('Error to update progress chart by analytics id')
             return null;
@@ -70,7 +79,8 @@ export class AnalyticsService {
     // for status
     async updateStatusChartByAnalyticsId(statusData) {
         try {
-            return await this.http.patch(`analytics/status`, statusData);
+            const headers = this.userService.getHeadersAuthorization();
+            return await this.http.patch(`analytics/status`, statusData, {headers});
         }catch(e) {
             console.log('Error to update status chart by analytics id')
             return null;
