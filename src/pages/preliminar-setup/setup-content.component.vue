@@ -60,6 +60,9 @@ export default {
             };
             await this.companyService.editUserCompanyName(userToUpdate);
 
+            // Actualiza el companyName en el estado local
+            this.user.companyName = this.form.brandName;
+
             this.$store.commit('setUser', this.user);
           }
 
