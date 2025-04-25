@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    baseUrl: "https://aidmanager.azurewebsites.net/api/v1"
+    baseUrl: "https://aid-manager-general-backend.up.railway.app/api/v1"
 }
