@@ -1,5 +1,6 @@
 import axios from "axios";
 import {environment} from "@/environment/environment.js";
+import { User } from "@/models/user.entity";
 
 export class UserService {
 
@@ -10,11 +11,10 @@ export class UserService {
         })
     }
 
-    async signUpUser(username, password) {
+    async signUpUser(user) {
         try {
-            return await this.http.post('authentication/sign-up', {
-                username: username,
-                password: password
+            return await this.http.post('user/sign-up', {
+                user
             })
         }catch(e) {
             console.log('Error to sign up user', e)
@@ -85,6 +85,7 @@ export class UserService {
     async createNewUser( user ) {
         try {
             const headers = this.getHeadersAuthorization();
+            console.log('user to create', user)
             return await this.http.post('users', user, { headers });
         } catch (error) {
             console.error('Error al crear un nuevo usuario:', error);

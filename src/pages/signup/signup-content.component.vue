@@ -1,6 +1,7 @@
 <script>
 import {UserService} from "@/services/user.service.js";
 import {CompanyService} from "@/services/company.service.js";
+import { User } from "@/models/user.entity";
 
 export default {
   name: "signup-content",
@@ -20,20 +21,23 @@ export default {
       showError: false,
       existsCompanyId: true,
       message_error: "",
+      user : new User(),
+      currentStep: 1, 
       form: {
-        firstName: '',
-        lastName: '',
-        age: 0,
-        email: '',
-        phone: "",
-        occupation: "",
-        password: '',
-        profileImg: '',
-        role: '',
-        companyName: '',
-        bio: "",
-        companyId: 0
-      }
+        firstName : "",
+        lastName : "",
+        age : 0,
+        email : "",
+        phone : "",
+        password : "",
+        profileImg : "",
+        role : "",
+        companyName : "",
+        companyEmail : "",
+        companyCountry : "",
+        companyId : 0,
+        teamRegisterCode: "",
+      },
     }
   },
   async created() {
@@ -77,7 +81,7 @@ export default {
         return;
       }
       if(this.form.role !== "director") {
-        await this.userService.signUpUser(this.form.email, this.form.password)
+        await this.userService.signUpUser(this.user)
             .then(async(r)=> {
               if(r.status === 200) {
                 await this.userService.signInUser(this.form.email, this.form.password)
@@ -155,9 +159,10 @@ export default {
       }
     },
 
-    areFieldsComplete() {
+    async areFieldsComplete() {
 
-      const fieldsRequired = ['firstName', 'lastName', 'email', 'password', 'role']
+      const fieldsRequired = ['firstName', 'lastName', 'email', 'password', 'role', 'companyName', 'companyEmail', 'companyId'];
+
 
       // verify if all inputs are fill
       for (let field of fieldsRequired) {
@@ -166,9 +171,22 @@ export default {
         }
       }
 
+
       // verify if at least one of the radio buttons is selected
       if (this.form.role == '' && this.form.role == '') {
         return false;
+      }
+
+      if (this.form.role === 'team') {
+        if (!this.teamRegisterCodeValid) return;
+      }
+
+      if (this.form.role === 'director') {
+        if (!this.form.companyName || !this.form.companyEmail || !this.form.companyCountry) {
+          this.message_error = "Please fill in all company details";
+          this.showError = true;
+          return;
+        }
       }
 
       return true;
@@ -195,7 +213,7 @@ export default {
       <img src="../../assets/logoAidManager.png" alt="logo"/>
       <span class="font-bold text-4xl">AidManager</span>
     </div>
-    <div class="card flex">
+    <div v-if="currentStep === 1" class="card flex">
       <span class="title font-normal" style="font-size:1rem">Transform your fundraising efforts with precision analytics.</span>
 
       <form class="flex flex-column gap-3" @submit.prevent="onSubmitRegister()">
@@ -218,6 +236,21 @@ export default {
              class="toggle-icon"
           ></i>
         </div>
+        <!--Paso 2 del formulario para validar TRG o agregar datos de la compania-->
+        <div v-if="currentStep === 2" class="card flex">
+      <form class="flex flex-column gap-3" @submit.prevent="completeRegistration()">
+        <h2>Additional Information</h2>
+        <div v-if="form.role === 'team'">
+          <input type="text" placeholder="Team Register Code" class="input-field p-3" v-model="form.teamRegisterCode" />
+        </div>
+        <div v-if="form.role === 'director'">
+          <input type="text" placeholder="Company Name" class="input-field p-3" v-model="form.companyName" />
+          <input type="email" placeholder="Company Email" class="input-field p-3" v-model="form.companyEmail" />
+          <input type="text" placeholder="Company Country" class="input-field p-3" v-model="form.companyCountry" />
+        </div>
+        <button class="button p-3" style="color: #fff; margin-top:30px">Complete Registration</button>
+      </form>
+    </div>
 
         <div class="radio-button-container">
           <input class="radio-input" type="radio" id="director" name="type_user" value="director" v-model="form.role"/>
