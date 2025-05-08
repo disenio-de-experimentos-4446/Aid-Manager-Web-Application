@@ -1,6 +1,5 @@
 import axios from "axios";
 import {environment} from "@/environment/environment.js";
-import { User } from "@/models/user.entity";
 
 export class UserService {
 
