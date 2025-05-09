@@ -1,26 +1,16 @@
 <script>
-import { UserService } from "@/services/user.service.js";
-import { CompanyService } from "@/services/company.service.js";
-import { User } from "@/models/user.entity";
-import { RegisterValidationService } from "@/services/register-validation.service.js";
+import { RegisterService } from "@/services/register.service.js";
 
 export default {
   name: "signup-content",
   data() {
     return {
       token: "",
-      userService: new UserService(),
-      companyService: new CompanyService(),
-      registerValidationService: new RegisterValidationService(),
+      registerService: new RegisterService(),
       users: [],
       confirmPassword: '',
       passwordFieldType: 'password',
-      identificationCode: '',
-      validation: false,
-      showError: false,
-      existsCompanyId: true,
-      user: new User(),
-      currentStep: 1,
+     currentStep: 1,
       form: {
         firstName: "",
         lastName: "",
@@ -59,8 +49,8 @@ export default {
 
     async onSubmitRegister() {
       // Create a new user using the userService or the function and call the service
-      const formValidationOne = await RegisterValidationService.validatePrimaryRegisterData(this.form, this.confirmPassword);
-      const formValidationTwo = await RegisterValidationService.validateSecondaryRegisterData(this.form);
+      const formValidationOne = await registerService.validatePrimaryRegisterData(this.form, this.confirmPassword);
+      const formValidationTwo = await registerService.validateSecondaryRegisterData(this.form);
       
       console.log(formValidationOne.valid, ': formValidation1');
       console.log(formValidationTwo.valid, ': formValidation2');
@@ -86,7 +76,7 @@ export default {
 
 
     async validatePrimaryRegisterData(){
-      const formValidationOne = await RegisterValidationService.validatePrimaryRegisterData(this.form, this.confirmPassword);
+      const formValidationOne = await registerService.validatePrimaryRegisterData(this.form, this.confirmPassword);
       if(!formValidationOne.valid){
         console.log('step 1 is not ok...', formValidationOne.errors );  
         this.errors = formValidationOne.errors;
@@ -128,6 +118,7 @@ export default {
       } else if (this.currentStep === 2) {
         // Si estás en el paso 2, puedes regresar al paso 1
         this.currentStep = 1;
+        this.errors = {};
       }
     },
   }

@@ -1,7 +1,7 @@
+import { UserService } from "./user.service";
 
 
-
-export class RegisterValidationService {
+export class RegisterService {
   static async validatePrimaryRegisterData(form, confirmPassword) {
     console.log("Validando datos de registro primarios:", form)
     const errors = {};
