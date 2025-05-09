@@ -1,8 +1,9 @@
 import { UserService } from "./user.service";
-
-
 export class RegisterService {
-  static async validatePrimaryRegisterData(form, confirmPassword) {
+
+  userService = new UserService();
+
+  async validatePrimaryRegisterData(form, confirmPassword) {
     console.log("Validando datos de registro primarios:", form)
     const errors = {};
 
@@ -38,7 +39,7 @@ export class RegisterService {
     return { valid: Object.keys(errors).length === 0, errors };
   }
 
-    static async validateSecondaryRegisterData(form) {
+    async validateSecondaryRegisterData(form) {
     console.log("Validando datos de registro secundarios:", form)
 
     const errors = {};
@@ -65,8 +66,48 @@ export class RegisterService {
     return { valid: Object.keys(errors).length === 0, errors };
   }
 
-  static isValidEmail(email) {
+  isValidEmail(email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   }
+
+  async signUpUser(form){
+    console.log("Registrando usuario:", form)
+
+     const roleMapping = {
+    director: 0,
+    team: 1
+  };
+  
+    
+    const role = roleMapping[form.role] || 0;
+
+      const user = {
+        firstName: form.firstName || '',
+        lastName: form.lastName || '',
+        age: 0,  
+        email: form.email || '',
+        phone: '',  
+        password: form.password || '',
+        profileImg: '',  
+        role: role,
+        companyName: form.companyName || '',
+        companyEmail: form.companyEmail || '',
+        companyCountry: form.companyCountry || '',
+        teamRegisterCode: form.teamRegisterCode || ''
+  };
+
+ 
+    
+    console.log('user to register', user)
+
+    try {
+      const response = await this.userService.signUpUser(user);
+      return response;
+    } catch (error) {
+      console.error('Error al registrar el usuario: ', error);
+      throw error;
+    }
+  }
 }
+

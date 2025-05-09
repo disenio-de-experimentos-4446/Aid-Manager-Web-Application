@@ -1,5 +1,5 @@
 <script>
-import { RegisterService } from "@/services/register.service.js";
+import { RegisterService } from '@/services/register.service';
 
 export default {
   name: "signup-content",
@@ -49,8 +49,8 @@ export default {
 
     async onSubmitRegister() {
       // Create a new user using the userService or the function and call the service
-      const formValidationOne = await registerService.validatePrimaryRegisterData(this.form, this.confirmPassword);
-      const formValidationTwo = await registerService.validateSecondaryRegisterData(this.form);
+      const formValidationOne = await this.registerService.validatePrimaryRegisterData(this.form, this.confirmPassword);
+      const formValidationTwo = await this.registerService.validateSecondaryRegisterData(this.form);
       
       console.log(formValidationOne.valid, ': formValidation1');
       console.log(formValidationTwo.valid, ': formValidation2');
@@ -69,6 +69,8 @@ export default {
         console.log('forms are ok...');      
         this.errors = {};
         console.log('Sending Data:', this.form);
+        // Sign Up User
+        const response = await this.registerService.signUpUser(this.form);
 
       }
 
@@ -76,7 +78,7 @@ export default {
 
 
     async validatePrimaryRegisterData(){
-      const formValidationOne = await registerService.validatePrimaryRegisterData(this.form, this.confirmPassword);
+      const formValidationOne = await this.registerService.validatePrimaryRegisterData(this.form, this.confirmPassword);
       if(!formValidationOne.valid){
         console.log('step 1 is not ok...', formValidationOne.errors );  
         this.errors = formValidationOne.errors;
