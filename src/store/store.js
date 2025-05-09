@@ -16,12 +16,14 @@ export const store = createStore({
             state.token = token;
             localStorage.setItem('token', token);
         },
-        setUser(state, user) {
-            console.log('setUser mutation called with:', user);
-            state.user = user;
+        setUser(state, userId) {
+            console.log('setUser mutation called with:', userId);
+            userService.getUserById(userId).then((response)=>{
+                localStorage.setItem('user', JSON.stringify(response.user));
+                console.log('User data retrieved:', response.user);
+            })
             // se llama al metodo cuando el usuario se logeo y manda la data al local storage
             // para que la data persista cuando se haga un reload
-            localStorage.setItem('user', JSON.stringify(user));
         },
         removeUser( state ) {
             state.user = User;

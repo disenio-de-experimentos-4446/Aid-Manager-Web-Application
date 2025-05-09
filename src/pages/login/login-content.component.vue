@@ -26,17 +26,9 @@ export default {
 
             if(res.status === 200) {
               this.$store.commit('setToken', res.data.token);
-
-              await this.userService.authUser(this.email, this.password)
-                  .then(r => {
-                    const result = r.data
-                    if(result.status_code !== 202) this.message_error = result.message;
-                    else {
-                      this.isRegistered = true;
-                      this.$store.commit('setUser', result.data);
-                      this.$router.push('/home');
-                    }
-                  })
+              this.$store.commit('setUser', res.data.id);
+              this.isRegistered = true;
+                this.$router.push('/home');
             }else {
               this.message_error = res.response.data;
               this.showDialog = true;

@@ -22,18 +22,13 @@ export class UserService {
     async signInUser(username, password) {
         try {
             return await this.http.post('authentication/sign-in', {
-                username: username,
+                email: username,
                 password: password
             })
         }catch(e) {
             return e;
         }
 
-    }
-
-    async authUser(email, password) {
-        const headers = this.getHeadersAuthorization();
-        return await this.http.get(`users/auth?email=${email}&password=${password}`, { headers });
     }
 
     async getAllUsers() {
@@ -58,9 +53,10 @@ export class UserService {
         }
     }
 
-    async getUserById( id ) {
+    async getUserById( id ){
+        const headers = this.getHeadersAuthorization();
         try {
-            const response = await this.http.get(`users/${id}`);
+            const response = await this.http.get(`users/user/${id}`, { headers });
             return response;
         } catch (error) {
             console.error(`Error al obtener el usuario con id ${id}:`, error);
