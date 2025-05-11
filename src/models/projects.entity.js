@@ -1,6 +1,6 @@
 export class ProjectsEntity
 {
-    constructor(id,name, description, image, tasks = [], members=[])
+    constructor(id,name, description, image = [], tasks = [], members=[])
     {
         this.id = id;
         this.name = name;

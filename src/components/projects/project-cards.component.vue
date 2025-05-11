@@ -6,7 +6,7 @@
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
-        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl"
+        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl[0]"
                          :id="project.id"/>
 
         <!-- Botón para agregar un nuevo proyecto -->
@@ -119,12 +119,17 @@ const createProject = async () => {
   const user = ref(JSON.parse(localStorage.getItem('user')));
 
   try {
+        const now = new Date();
     const projectData = {
       name: newProject.value.name,
       description: newProject.value.description,
-      imageUrl: newProject.value.image,
-      companyId: user.value?.companyId
+      imageUrl: [newProject.value.image],
+      companyId: user.value?.companyId,
+      projectDate: now.toISOString().split('T')[0], // Formato YYYY-MM-DD
+      projectTime: now.toTimeString().split(' ')[0], // Formato HH:MM:SS
+      projectLocation: 'Lima, Peru', // Cambia esto según sea necesario
     };
+    console.log('projectData', projectData);
     const addedProject = await addProject(projectData); // Llama a la función del servicio
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
     projects.value.push({
@@ -153,7 +158,7 @@ const createProject = async () => {
 
     // Limpiar los campos del nuevo proyecto después de guardarlo
     newProject.value.name = '';
-    newProject.value.image = '';
+    newProject.value.image = [];
     newProject.value.description = '';
 
     // Cerrar el diálogo de agregar proyecto
