@@ -55,8 +55,11 @@ export class UserService {
 
     async getUserById( id ){
         const headers = this.getHeadersAuthorization();
+        console.log('headers', headers)
+        console.log('user id to retrieve', id)
         try {
             const response = await this.http.get(`users/user/${id}`, { headers });
+            console.log('response', response)
             return response;
         } catch (error) {
             console.error(`Error al obtener el usuario con id ${id}:`, error);

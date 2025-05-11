@@ -10,11 +10,12 @@ class TeamMembersService {
         this.baseUrl = environment.baseUrl;
     }
 
-    async getMembers() {
+    async getMembers(companyId) {
         let response = null
         try {
             const headers = this.userService.getHeadersAuthorization();
-            response = await axios.get(`${this.baseUrl}/users`, { headers });
+            response = await axios.get(`${this.baseUrl}/users/${companyId}`, { headers });
+            console.log('TeamMembers Response', response)
         }catch(e) {
             console.error('Error to obtain the team members', e);
         }
