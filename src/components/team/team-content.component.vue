@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     getTeamMembers: async function () {
-      const members = await this.teamMemberService.getMembers()
+      const members = await this.teamMemberService.getMembers(this.$store.state.user.companyId)
           .then(r => {
             if (r) return r.data
             else return r;
