@@ -16,7 +16,7 @@ export class PostApiService {
 
     async getAllPosts() {
         try {
-            return await this.http.get(`posts`)
+            return await this.http.get(`posts/company${companyId}`);
         } catch (error) {
             console.error('Error fetching posts:', error);
             throw error;
@@ -45,7 +45,6 @@ export class PostApiService {
             // adding the properties passed for param
             post.userId = userId;
             post.companyId = companyId;
-            post.rating = 0;
 
             return await this.http.post(`posts`, post, { headers });
         } catch (error) {

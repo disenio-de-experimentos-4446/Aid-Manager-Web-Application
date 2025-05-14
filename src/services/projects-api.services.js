@@ -38,7 +38,7 @@ export async function fetchTaskData(projectId) {
     try {
         const userService = new UserService();
         const headers = userService.getHeadersAuthorization();
-        const response = await axios.get(`${environment.baseUrl}/projects/${projectId}/task-items`, { headers });
+        const response = await axios.get(`${environment.baseUrl}/projects/${projectId}/task-items/all`, { headers });
 
         console.log("Datos obtenidos de la API para TASKS:", response.data);
         return response.data; // Devuelve la lista de proyectos obtenidos de la API
@@ -53,20 +53,16 @@ export async function fetchTaskData(projectId) {
 
 export async function addTask(projectId, newTask) {
     try {
-        // Obtener el proyecto actual (incluyendo el arreglo de tareas)
-        const project = await fetchTaskData(projectId);
-
         // Agregar la nueva tarea al arreglo existente de tareas del proyecto
         console.log("task", newTask);
-        if(project.tasks)
-            project.tasks.push(newTask);
+        
 
         const newTaskData = {
             "title": newTask.title,
             "description": "",
             "dueDate": newTask.due,
             "state": newTask.status,
-            "userId": "0"
+            "assigneeId": newTask.assigneeId,
         }
 
 
@@ -96,15 +92,14 @@ export async function deleteTask(projectID, taskID){
     }
 }
 
-export async function editTask(projectID, taskID, taskData){
+export async function editTask(projectID, taskData){
     try{
         const taskBody = {
-            id: taskData.id,
             title: taskData.title,
-            description: "",
+            description: taskData.description,
             dueDate: taskData.due,
             state: taskData.status,
-            userId: "0"
+            assigneeId: taskData.assigneeId,
         }
 
         const userService = new UserService();

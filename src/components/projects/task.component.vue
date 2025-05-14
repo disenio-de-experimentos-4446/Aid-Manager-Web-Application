@@ -54,7 +54,8 @@ const editFunc = (projectId, taskId, taskData) => {
     alert('Por favor, ingrese el título, el asignado y la fecha.');
   } else {
     console.log(projectId, taskId, taskData);
-    editTask(projectId, taskId, taskData).then(() => {
+    thisTask.value.id = taskId;
+    editTask(projectId, taskData).then(() => {
       visible.value = false;
     }).then(() => {
       emits('taskDel')
