@@ -17,8 +17,16 @@ const props = defineProps({
     type: String,
     required: true,
   },
+   description: {
+    type: String,
+    required: true,
+  },
   assigned: {
     type: String,
+    required: true,
+  },
+  assignedID: {
+    type: Number,
     required: true,
   },
   due: {
@@ -55,7 +63,8 @@ const editFunc = (projectId, taskId, taskData) => {
   } else {
     console.log(projectId, taskId, taskData);
     thisTask.value.id = taskId;
-    editTask(projectId, taskData).then(() => {
+    console.log("Datos a editar", thisTask.value, "PROJECTO" , projectId, "TASKID" , taskId);
+    editTask(projectId, taskId ,taskData).then(() => {
       visible.value = false;
     }).then(() => {
       emits('taskDel')
@@ -66,7 +75,7 @@ const editFunc = (projectId, taskId, taskData) => {
 };
 
 const resetTask = () => {
-  thisTask.value = new TaskEntity(props.id, props.title, props.assigned, props.due, props.state);
+  thisTask.value = new TaskEntity(props.id, props.title, props.assigned, props.due, props.state, props.assignedID, props.description);
   console.log(thisTask.value, 'se reinicio');
 };
 
@@ -85,8 +94,10 @@ const handleMove = (destination, data) => {
 
 const menu = ref();
 const visible = ref(false);
-const thisTask = ref(new TaskEntity(props.id, props.title, props.assigned, props.due, props.state));
+const thisTask = ref(new TaskEntity(props.id, props.title, props.assigned, props.due, props.state, props.assignedID,props.description));
 
+console.log(thisTask.value, 'se cargo');
+console.log(props, 'se cargo props');
 
 const items = ref([{
   label: 'Delete',

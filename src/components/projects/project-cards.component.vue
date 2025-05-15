@@ -6,7 +6,7 @@
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
-        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl[0]"
+        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl.at[0]"
                          :id="project.id"/>
 
         <!-- Botón para agregar un nuevo proyecto -->
@@ -98,6 +98,10 @@ const getProjects = (companyId) => {
   fetchProjects(companyId)
       .then(data => {
         projects.value = data;
+        console.log('projects', projects.value);
+        console.log('projects', projects.value);
+
+        
       })
       .catch(error => {
         console.error('Error al obtener datos de la API:', error);
@@ -132,6 +136,9 @@ const createProject = async () => {
     console.log('projectData', projectData);
     const addedProject = await addProject(projectData); // Llama a la función del servicio
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
+
+    console.log('addedProject', addedProject);
+
     projects.value.push({
       id: addedProject.id,
       name: addedProject.name,
@@ -139,23 +146,8 @@ const createProject = async () => {
       description: addedProject.description,
     });
 
-    function initializeArray(size) {
-      return Array.from({length: size}, () => 0);
-    }
-
     console.log(addedProject.id);
-    const analyticsService = new AnalyticsService();
-    const analyticsData = {
-      projectId: addedProject.id,
-      lines: initializeArray(24),
-      payments: initializeArray(6),
-      progressbar: initializeArray(6),
-      status: initializeArray(5),
-      tasks: initializeArray(3)
-    };
-
-    await analyticsService.createNewAnalytics(analyticsData);
-
+    
     // Limpiar los campos del nuevo proyecto después de guardarlo
     newProject.value.name = '';
     newProject.value.image = [];

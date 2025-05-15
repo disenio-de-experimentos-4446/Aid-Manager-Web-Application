@@ -12,7 +12,9 @@ export class UserService {
 
     async signUpUser(user) {
         try {
-            return await this.http.post('users/sign-up',user);
+            const response = await this.http.post('users/sign-up',user);
+            console.log('response', response)
+            return response;
         }catch(e) {
             console.log('Error to sign up user', e)
             return null;
