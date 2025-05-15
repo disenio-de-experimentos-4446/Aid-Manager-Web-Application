@@ -94,7 +94,7 @@ export async function deleteTask(projectID, taskID){
     }
 }
 
-export async function editTask(projectID, taskID , taskData){
+export async function editTask(projectID , taskData){
     try{
         const taskBody = {
             title: taskData.title,
@@ -109,7 +109,7 @@ export async function editTask(projectID, taskID , taskData){
 
         const userService = new UserService();
         const headers = userService.getHeadersAuthorization();
-        const response = await axios.put(`${environment.baseUrl}/projects/${projectID}/task-items/edit/${taskID}`, taskBody, { headers });
+        const response = await axios.put(`${environment.baseUrl}/projects/${projectID}/task-items/edit/${taskData.id}`, taskBody, { headers });
         return response.data;
     } catch (error) {
         console.error('Error al Editar la tarea al proyecto:', error);

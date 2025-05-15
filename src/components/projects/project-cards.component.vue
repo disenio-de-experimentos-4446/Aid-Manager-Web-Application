@@ -6,7 +6,7 @@
     <div class="all">
       <div class="project-cards">
         <!-- Mostrar proyectos con el componente CardsComponent -->
-        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl.at[0]"
+        <cards-component v-for="(project, index) in projects" :key="index" :name="project.name" :image="project.imageUrl.at(0)"
                          :id="project.id"/>
 
         <!-- Botón para agregar un nuevo proyecto -->
@@ -147,7 +147,7 @@ const createProject = async () => {
     });
 
     console.log(addedProject.id);
-    
+
     // Limpiar los campos del nuevo proyecto después de guardarlo
     newProject.value.name = '';
     newProject.value.image = [];

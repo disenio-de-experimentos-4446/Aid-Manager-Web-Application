@@ -19,12 +19,16 @@ const props = defineProps({
         required: true,
   },
   mounted() {
-    console.log(this.image);
+    console.log("ImageLoaded: ");
   },
   components: {
     Button,
   },
   id: {
+    type: Number,
+        required: true,
+  },
+  image: {
     type: String,
         required: true,
   },
@@ -41,6 +45,8 @@ const openTodo = () => {
       id: encodedId,
     },
   });
+      console.log("ImageLoaded: ", props.image);
+
 };
 
 
