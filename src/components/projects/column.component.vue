@@ -74,7 +74,7 @@ const fetchTasks = () => {
 };
 
 const createTask = async () => {
-  if (!state.value.newTask.title || !state.value.newTask.assigned || !state.value.newTask.due) {
+  if (!state.value.newTask.title || !state.value.newTask.assignedID || !state.value.newTask.due) {
     alert('Por favor, ingrese el título, la descripción y la URL de la imagen para el nuevo proyecto.');
     return;
   }
@@ -83,7 +83,7 @@ const createTask = async () => {
     const TaskData = {
       title: state.value.newTask.title,
       description: state.value.newTask.description,
-      assigned: state.value.newTask.assigned,
+      assigned: state.value.newTask.assignedID,
       due: state.value.newTask.due.toISOString().split('T')[0],
       state: props.taskColumn, // Puedes inicializar con un array vacío si es necesario
     };

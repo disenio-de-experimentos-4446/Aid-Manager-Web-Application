@@ -57,7 +57,6 @@ export async function addTask(projectId, newTask) {
         // Agregar la nueva tarea al arreglo existente de tareas del proyecto
         console.log("task", newTask);
         
-
         const newTaskData = {
             "title": newTask.title,
             "description": newTask.description,
@@ -69,8 +68,7 @@ export async function addTask(projectId, newTask) {
 
         const userService = new UserService();
         const headers = userService.getHeadersAuthorization();
-        // Actualizar el proyecto en la API con el nuevo arreglo de tareas
-        console.log("Nuevo proyecto creado:", newTaskData);
+        console.log("Nueva tarea creada:", newTaskData);
         const response = await axios.post(`${environment.baseUrl}/projects/${projectId}/task-items`, newTaskData, { headers });
         return response.data; // Devuelve los datos actualizados del proyecto
     } catch (error) {
