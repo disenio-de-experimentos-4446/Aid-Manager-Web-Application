@@ -93,7 +93,28 @@ export class UserService {
 
     async updateUser(user) {
         try {
-            const response = await this.http.put(`users/${user.id}`, user);
+            const headers = this.getHeadersAuthorization();
+            console.log('user to update', user)
+
+            const parts = user.name.trim().split(' ');
+
+            // Primer nombre es el primer elemento
+            const firstName = parts[0] || '';
+
+            // Segundo nombre será el resto de la cadena después del primer nombre (si hay más)
+            const lastName = parts.slice(1).join(' ') || '';
+
+            const userbody = {
+                firstName: firstName,
+                lastName: lastName,
+                age: user.age,
+                phone: user.phone,
+                email: user.email,
+                password: user.password,
+                profileImg: user.profileImg,
+            }
+            console.log('userbody', userbody)
+            const response = await this.http.put(`users/${user.id}`, userbody, { headers });
             return response.data;
         } catch (error) {
             console.error('Error al actualizar el usuario:', error);

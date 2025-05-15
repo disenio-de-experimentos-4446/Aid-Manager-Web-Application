@@ -43,7 +43,7 @@ export default {
           if(m.companyId === companyId) {
             this.brandName = m.companyName;
             this.brandName = this.brandName.charAt(0).toUpperCase() + this.brandName.slice(1);
-            this.members.push(new TeamMemberEntity(m));
+            this.members.push(m);
           }
         })
       }

@@ -48,7 +48,8 @@ export const store = createStore({
     },
     actions: {
         async updateUser({ commit }, updatedUser) {
-            commit('setUser', updatedUser);
+            console.log('Updating user:', updatedUser);
+            commit('setUser', updatedUser.id);
         }
     }
 });
