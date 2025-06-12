@@ -50,6 +50,11 @@ export default {
       this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
     }
 
+  },
+  mounted() {
+    const gtagId = import.meta.env.VITE_GTAG;
+    console.log('Google Analytics in Login ID:', gtagId);
+    console.log('NODE_ENV:', import.meta.env.MODE);
   }
 }
 </script>
