@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './assets/main.css'
 import Clipboard from 'v-clipboard'
-import { createGtag } from "vue-gtag";
 
 
 
@@ -41,23 +40,27 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import router from "@/router/index.js";
 
-const gtagId = import.meta.env.VITE_GTAG;
-console.log('GTAG ID en producción:', import.meta.env.VITE_GTAG);
+//gtag
+import { configure } from "vue-gtag";
+import { createGtag } from "vue-gtag";
 
+const gtagId = import.meta.env.VITE_GTAG;
 
 const gtag = createGtag({
-  config: {
-    id: gtagId,
-    params: {
-      send_page_view: true,
-      custom_map: { custom_parameter: 'custom_value' }
-    }
-  },
-  // Integración con router para tracking automático
-  bootstrap: true
-}, router); // ← Importante: pasar el router aquí
+  tagId: gtagId
+})
 
-
+configure({
+  tagId: gtagId,
+  pageTracker: {
+    router,
+    template: (to) => ({
+      page_title: to.meta.title || 'Default Title', // Usa el título de la ruta o un valor por defecto
+      path_path: to.path,
+      useScreenview: true
+    })
+  }
+})
 
 createApp(App)
     .use(PrimeVue, { ripple: true })

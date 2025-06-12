@@ -16,25 +16,25 @@ import Subscription from "@/pages/subscription/subscription-content.component.vu
 import Identification from "@/pages/identification-frame/identification-frame.component.vue";
 
 const routes = [
-    { path: '/login', component: Login },
-    { path: '/register', component: SignUp },
-    { path: '/identification', component: Identification },
-    { path: '/payment', component: PaymentDetails },
-    { path: '/setup', component: Setup },
-    { path: '/subscription', component: Subscription },
+    { path: '/login', component: Login, meta: { title: 'Login' } },
+    { path: '/register', component: SignUp, meta: { title: 'Sign Up' } },
+    { path: '/identification', component: Identification, meta: { title: 'ID' } },
+    { path: '/payment', component: PaymentDetails, meta: { title: 'Payments' } },
+    { path: '/setup', component: Setup, meta: { title: 'Setup' } },
+    { path: '/subscription', component: Subscription, meta: { title: 'Subscription' } },
     { path: '/', redirect: '/login' },
     {
         path: '/',
         component: MainLayoutPage,
         children: [
-            { path: 'home', component: Home },
-            { path: 'calendar', component: Calendar },
-            { path: 'projects', component: ProjectsComponent },
-            { path: 'projects/:id/toDo', name: 'projectTodo', component: todoComponent, props: true },
-            { path: 'analytics', component: Analytics },
-            { path: 'team', component: Team },
-            { path: 'new-post', component: NewPost },
-            { path: 'profile/:id', name:'profile', component: Profile },
+            { path: 'home', component: Home,meta: { title: 'Home Page' }},
+            { path: 'calendar', component: Calendar,meta: { title: 'Calendar' } },
+            { path: 'projects', component: ProjectsComponent, meta: { title: 'Projects' } },
+            { path: 'projects/:id/toDo', name: 'projectTodo', component: todoComponent, props: true, meta: { title: 'Tasks' } },
+            { path: 'analytics', component: Analytics, meta: { title: 'Analytics' } },
+            { path: 'team', component: Team, meta: { title: 'Team' } },
+            { path: 'new-post', component: NewPost, meta: { title: 'Post' } },
+            { path: 'profile/:id', name:'profile', component: Profile, meta: { title: 'Profile' } },
         ]
     }
 ]
