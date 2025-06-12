@@ -42,6 +42,8 @@ import 'primeflex/primeflex.css';
 import router from "@/router/index.js";
 
 const gtagId = import.meta.env.VITE_GTAG;
+console.log('GTAG ID en producción:', import.meta.env.VITE_GTAG);
+
 
 const gtag = createGtag({
   config: {
