@@ -2,6 +2,12 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './assets/main.css'
 import Clipboard from 'v-clipboard'
+import { createGtag } from "vue-gtag";
+
+const gtag = createGtag({
+// This is the Google Analytics tag ID, replace with your own
+  tagId: process.env.VUE_APP_GTAG
+})
 
 // Add PrimeVue
 import PrimeVue from "primevue/config";
@@ -44,6 +50,7 @@ createApp(App)
     .use(store)
     .use(Clipboard)
     .use(i18n)
+    .use(gtag)
     .component('pv-card', Card)
     .component('pv-button', Button)
     .component('pv-select-button', SelectButton)
