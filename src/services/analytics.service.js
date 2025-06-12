@@ -13,21 +13,12 @@ export class AnalyticsService {
         })
     }
 
-
-    async createNewAnalytics(item) {
-        try {
-            const headers = this.userService.getHeadersAuthorization();
-            return await this.http.post(`analytics`, item, {headers});
-        }catch(e) {
-            console.log('Error to create new analytics')
-            return null;
-        }
-    }
-
     async getAnalyticsByProjectId(projectId) {
         try {
             const headers = this.userService.getHeadersAuthorization();
-            return await this.http.get(`analytics/${projectId}`, {headers});
+            const response = await this.http.get(`projects/${projectId}/analytics`, {headers});
+            console.log('Analytics response', response)
+            return response;
         }catch(e) {
             console.log('Error to get analytics by project id')
             return null;

@@ -21,6 +21,7 @@ export const addProject = async (projectData) => {
         const userService = new UserService();
         const headers = userService.getHeadersAuthorization();
         const response = await axios.post(`${environment.baseUrl}/projects`, projectData, { headers });
+        console.log("Nuevo proyecto creado:", response.data);
         return response.data; // Retorna los datos del nuevo proyecto creado
     } catch (error) {
         console.error('Error al agregar el proyecto:', error);
@@ -38,7 +39,7 @@ export async function fetchTaskData(projectId) {
     try {
         const userService = new UserService();
         const headers = userService.getHeadersAuthorization();
-        const response = await axios.get(`${environment.baseUrl}/projects/${projectId}/task-items`, { headers });
+        const response = await axios.get(`${environment.baseUrl}/projects/${projectId}/task-items/all`, { headers });
 
         console.log("Datos obtenidos de la API para TASKS:", response.data);
         return response.data; // Devuelve la lista de proyectos obtenidos de la API
@@ -53,30 +54,25 @@ export async function fetchTaskData(projectId) {
 
 export async function addTask(projectId, newTask) {
     try {
-        // Obtener el proyecto actual (incluyendo el arreglo de tareas)
-        const project = await fetchTaskData(projectId);
-
         // Agregar la nueva tarea al arreglo existente de tareas del proyecto
         console.log("task", newTask);
-        if(project.tasks)
-            project.tasks.push(newTask);
-
+        
         const newTaskData = {
             "title": newTask.title,
-            "description": "",
+            "description": newTask.description,
             "dueDate": newTask.due,
-            "state": newTask.status,
-            "userId": "0"
+            "state": newTask.state,
+            "assigneeId": newTask.assigned,
         }
 
 
         const userService = new UserService();
         const headers = userService.getHeadersAuthorization();
-        // Actualizar el proyecto en la API con el nuevo arreglo de tareas
+        console.log("Nueva tarea creada:", newTaskData);
         const response = await axios.post(`${environment.baseUrl}/projects/${projectId}/task-items`, newTaskData, { headers });
         return response.data; // Devuelve los datos actualizados del proyecto
     } catch (error) {
-        console.error('Error al agregar la tarea al proyecto:', error);
+        console.error('Error al agregar la tarea al proyecto:', error.response.data);
         throw error;
     }
 }
@@ -96,20 +92,22 @@ export async function deleteTask(projectID, taskID){
     }
 }
 
-export async function editTask(projectID, taskID, taskData){
+export async function editTask(projectID , taskData){
     try{
         const taskBody = {
-            id: taskData.id,
             title: taskData.title,
-            description: "",
+            description: taskData.description,
             dueDate: taskData.due,
             state: taskData.status,
-            userId: "0"
+            assigneeId: taskData.assignedID,
         }
+
+        console.log("Task a editar" , taskBody);
+        console.log("Task a editar" , taskData);
 
         const userService = new UserService();
         const headers = userService.getHeadersAuthorization();
-        const response = await axios.put(`${environment.baseUrl}/projects/${projectID}/task-items`, taskBody, { headers });
+        const response = await axios.put(`${environment.baseUrl}/projects/${projectID}/task-items/edit/${taskData.id}`, taskBody, { headers });
         return response.data;
     } catch (error) {
         console.error('Error al Editar la tarea al proyecto:', error);

@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     getTeamMembers: async function () {
-      const members = await this.teamMemberService.getMembers()
+      const members = await this.teamMemberService.getMembers(this.$store.state.user.companyId)
           .then(r => {
             if (r) return r.data
             else return r;
@@ -43,7 +43,7 @@ export default {
           if(m.companyId === companyId) {
             this.brandName = m.companyName;
             this.brandName = this.brandName.charAt(0).toUpperCase() + this.brandName.slice(1);
-            this.members.push(new TeamMemberEntity(m));
+            this.members.push(m);
           }
         })
       }

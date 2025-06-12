@@ -10,12 +10,11 @@ export class UserService {
         })
     }
 
-    async signUpUser(username, password) {
+    async signUpUser(user) {
         try {
-            return await this.http.post('authentication/sign-up', {
-                username: username,
-                password: password
-            })
+            const response = await this.http.post('users/sign-up',user);
+            console.log('response', response)
+            return response;
         }catch(e) {
             console.log('Error to sign up user', e)
             return null;
@@ -25,18 +24,13 @@ export class UserService {
     async signInUser(username, password) {
         try {
             return await this.http.post('authentication/sign-in', {
-                username: username,
+                email: username,
                 password: password
             })
         }catch(e) {
             return e;
         }
 
-    }
-
-    async authUser(email, password) {
-        const headers = this.getHeadersAuthorization();
-        return await this.http.get(`users/auth?email=${email}&password=${password}`, { headers });
     }
 
     async getAllUsers() {
@@ -61,9 +55,13 @@ export class UserService {
         }
     }
 
-    async getUserById( id ) {
+    async getUserById( id ){
+        const headers = this.getHeadersAuthorization();
+        console.log('headers', headers)
+        console.log('user id to retrieve', id)
         try {
-            const response = await this.http.get(`users/${id}`);
+            const response = await this.http.get(`users/user/${id}`, { headers });
+            console.log('response', response)
             return response;
         } catch (error) {
             console.error(`Error al obtener el usuario con id ${id}:`, error);
@@ -85,6 +83,7 @@ export class UserService {
     async createNewUser( user ) {
         try {
             const headers = this.getHeadersAuthorization();
+            console.log('user to create', user)
             return await this.http.post('users', user, { headers });
         } catch (error) {
             console.error('Error al crear un nuevo usuario:', error);
@@ -94,7 +93,28 @@ export class UserService {
 
     async updateUser(user) {
         try {
-            const response = await this.http.put(`users/${user.id}`, user);
+            const headers = this.getHeadersAuthorization();
+            console.log('user to update', user)
+
+            const parts = user.name.trim().split(' ');
+
+            // Primer nombre es el primer elemento
+            const firstName = parts[0] || '';
+
+            // Segundo nombre será el resto de la cadena después del primer nombre (si hay más)
+            const lastName = parts.slice(1).join(' ') || '';
+
+            const userbody = {
+                firstName: firstName,
+                lastName: lastName,
+                age: user.age,
+                phone: user.phone,
+                email: user.email,
+                password: user.password,
+                profileImg: user.profileImg,
+            }
+            console.log('userbody', userbody)
+            const response = await this.http.put(`users/${user.id}`, userbody, { headers });
             return response.data;
         } catch (error) {
             console.error('Error al actualizar el usuario:', error);

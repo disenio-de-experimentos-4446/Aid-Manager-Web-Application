@@ -8,6 +8,7 @@ import {addTask, fetchTaskData} from '@/services/projects-api.services.js';
 import {TaskEntity} from '@/models/task.entity.js';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
+import InputNumber from 'primevue/inputnumber';
 import Calendar from "primevue/calendar";
 
 
@@ -73,34 +74,34 @@ const fetchTasks = () => {
 };
 
 const createTask = async () => {
-  if (!state.value.newTask.title || !state.value.newTask.assigned || !state.value.newTask.due) {
+  if (!state.value.newTask.title || !state.value.newTask.assignedID || !state.value.newTask.due) {
     alert('Por favor, ingrese el título, la descripción y la URL de la imagen para el nuevo proyecto.');
     return;
   }
 
   try {
     const TaskData = {
-      id: state.value.totalTasks + 1, // Puedes generar un ID único aquí
       title: state.value.newTask.title,
-      assigned: state.value.newTask.assigned,
+      description: state.value.newTask.description,
+      assigned: state.value.newTask.assignedID,
       due: state.value.newTask.due.toISOString().split('T')[0],
-      status: props.taskColumn, // Puedes inicializar con un array vacío si es necesario
+      state: props.taskColumn, // Puedes inicializar con un array vacío si es necesario
     };
-    const addedTask = await addTask(props.id, TaskData).then(fetchTasks); // Llama a la función del servicio
+    await addTask(props.id, TaskData).then(fetchTasks); // Llama a la función del servicio
 
     // Agrega el nuevo proyecto a la lista local 'projects' con el ID generado por la API
 
 
     // Limpiar los campos del nuevo proyecto después de guardarlo
     state.value.newTask.title = '';
-    state.value.newTask.assigned = '';
+    state.value.newTask.assigned = 0;
     state.value.newTask.due = '';
     // Cerrar el diálogo de agregar proyecto
     reloadTasks();
     visible.value = false;
   } catch (error) {
-    console.error('Error al agregar el proyecto:', error);
-    alert('Hubo un error al agregar el proyecto. Por favor, revisa la consola para más detalles.');
+    console.error('Error al agregar el proyecto:', error.response.data);
+    alert('error al agregar el proyecto:' + error.response.data);
   }
 };
 
@@ -147,7 +148,7 @@ const taskDel = () => {
       </template>
       <template #content>
         <div class="overflow">
-          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :assigned="task.userId"
+          <Task v-for="(task, index) in state.tasks" :key="index" :title="task.title" :description="task.description" :assigned="task.assigneeName" :assignedID="task.assigneeId"
                 :due="task.dueDate" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
         </div>
       </template>
@@ -170,9 +171,14 @@ const taskDel = () => {
           <InputText id="title" class="flex flex-auto" autocomplete="off" v-model="state.newTask.title"/>
         </div>
 
+        <div class=" justify-content-around">
+          <label for="description" class="font-semibold w-6rem mb-2">Task Description</label>
+          <InputText id="description" class="flex flex-auto" autocomplete="off" v-model="state.newTask.description"/>
+        </div>
+
         <div class="  justify-content-around ">
           <label for="assigned" class="font-semibold w-6rem mb-2">Employee Assigned</label>
-          <InputText id="assigned" class="flex flex-auto" autocomplete="off" v-model="state.newTask.assigned"/>
+          <InputNumber id="assigned" class="flex flex-auto" autocomplete="off" v-model="state.newTask.assignedID"/>
         </div>
 
         <div class="  justify-content-around mb-2 ">

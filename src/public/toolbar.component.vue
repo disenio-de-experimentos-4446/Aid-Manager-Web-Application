@@ -16,13 +16,15 @@ export default {
     }
   },
   async mounted() {
-    await this.teamMemberService.getMembers()
+    await this.teamMemberService.getMembers(this.$store.state.user.companyId)
         .then(r => {
           if (r) this.members = r.data.length;
         })
   },
   computed: {
     user() {
+      console.log(this.$store.state);
+      console.log(this.$store.state.user);
       return this.$store.state.user;
     }
   },
@@ -64,7 +66,7 @@ export default {
           <p class="font-medium user-name"
              @click="navigateToProfile"
              :class="{ active: $route.path === '/profile' }">
-             {{ user?.firstName + " " + user?.lastName }}</p>
+             {{ user.name }}</p>
           <div class="flex flex-row align-items-center gap-3">
             <p class="text-sm text-green-600 font-normal">{{ user?.companyName }}</p>
             <div class="members-quantity">

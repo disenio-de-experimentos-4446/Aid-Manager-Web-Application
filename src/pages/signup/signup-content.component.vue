@@ -1,39 +1,37 @@
 <script>
-import {UserService} from "@/services/user.service.js";
-import {CompanyService} from "@/services/company.service.js";
+import { RegisterService } from '@/services/register.service';
 
 export default {
   name: "signup-content",
   data() {
     return {
       token: "",
-      userService: new UserService(),
-      companyService: new CompanyService(),
+      registerService: new RegisterService(),
       users: [],
       confirmPassword: '',
       passwordFieldType: 'password',
-      identificationCode: '',
-      isPasswordNotMatch: false,
-      isEmailExists: false,
-      isFieldsEmpty: false,
-      isUserCreated: false,
-      showError: false,
-      existsCompanyId: true,
-      message_error: "",
+     currentStep: 1,
       form: {
-        firstName: '',
-        lastName: '',
+        firstName: "",
+        lastName: "",
         age: 0,
-        email: '',
+        email: "",
         phone: "",
-        occupation: "",
+        password: "",
+        profileImg: "",
+        role: "",
+        companyName: "",
+        companyEmail: "",
+        companyCountry: "",
+        teamRegisterCode: "",
+      },
+      errors: {
+        email: '',
         password: '',
-        profileImg: '',
+        confirmPassword: '',
         role: '',
-        companyName: '',
-        bio: "",
-        companyId: 0
-      }
+        missingInput: 'Not all fields are filled',
+      },
     }
   },
   async created() {
@@ -50,127 +48,59 @@ export default {
     },
 
     async onSubmitRegister() {
-      // verify if the inputs are empty :O
-      if (!this.areFieldsComplete()) {
-        this.isFieldsEmpty = true;
-        return;
-      }
+      // Create a new user using the userService or the function and call the service
+      const formValidationOne = await this.registerService.validatePrimaryRegisterData(this.form, this.confirmPassword);
+      const formValidationTwo = await this.registerService.validateSecondaryRegisterData(this.form);
+      
+      console.log(formValidationOne.valid, ': formValidation1');
+      console.log(formValidationTwo.valid, ': formValidation2');
+      if(!formValidationOne.valid || !formValidationTwo.valid){
+        if(!formValidationOne.valid){
+          console.log('step 1 is not ok...', formValidationOne.errors );    
+          this.errors = formValidationOne.errors;
+  
+        }
+        else if(!formValidationTwo.valid){
+          console.log('step 2 is not ok...', formValidationTwo.errors);
+          this.errors = formValidationTwo.errors;
+        }
+        return false;
+      }else{
+        console.log('forms are ok...');      
+        this.errors = {};
+        console.log('Sending Data:', this.form);
+        // Sign Up User
+        const response = await this.registerService.signUpUser(this.form);
 
-      // verify is the passwords match
-      if (this.form.password !== this.confirmPassword) {
-        this.isPasswordNotMatch = true;
-        return;
-      }
-
-      if (this.form.role === 'director') {
-        await this.createNewUser("director");
-
-      } else {
-        this.isUserCreated = true;
       }
 
     },
 
-    async createNewUser( companyIdentification ) {
-      if(this.identificationCode === "" && companyIdentification !== "director") {
-        this.isFieldsEmpty = true;
-        return;
-      }
-      if(this.form.role !== "director") {
-        await this.userService.signUpUser(this.form.email, this.form.password)
-            .then(async(r)=> {
-              if(r.status === 200) {
-                await this.userService.signInUser(this.form.email, this.form.password)
-                    .then(res=> {
-                      console.log('res', res)
-                      if(res.status === 200) {
-                        this.token = res.data.token;
-                        this.$store.commit('setToken', this.token);
-                      }
-                    })
-                    .catch(e=>console.log('error: ', e))
-              }
 
-            })
-            .catch(e=>console.log('error: ', e))
-
-        await this.companyService.getCompanyByUID(companyIdentification)
-            .then(r => {
-              const response = r.data;
-              if(response.status_code == 404) {
-                this.existsCompanyId = false;
-              }else {
-                this.form.companyName = response.company.brandName;
-                this.form.companyId = response.company.identificationCode;
-                this.existsCompanyId = true;
-              }
-            })
-      }
-
-      this.form.companyId = this.form.companyId.toString();
-
-      if(this.existsCompanyId) {
-        await this.userService.signUpUser(this.form.email, this.form.password)
-            .then(async(r)=> {
-              if(r.status === 200) {
-                await this.userService.signInUser(this.form.email, this.form.password)
-                    .then(res=> {
-                      if(res.status === 200) {
-                        this.token = res.data.token;
-                        console.log('token', this.token);
-                        this.$store.commit('setToken', this.token);
-                      }
-                    })
-                    .catch(e=>console.log('error: ', e))
-              }
-
-            })
-            .catch(e=>console.log('error: ', e))
-
-
-        try {
-          await this.userService.createNewUser(this.form)
-              .then(r=> {
-                const response = r.data;
-                if(response.status_code !== 202) {
-                  this.message_error = response.message;
-                  this.showError = true;
-                  return;
-                }
-                this.$store.commit('updateForm', response.data);
-                //this.$store.state.user = response.data;
-                this.$store.commit('setUser', response.data);
-                this.isUserCreated = false;
-                if(this.form.role === "director")
-                  this.$router.push('/subscription');
-                else this.$router.push('/home');
-              })
-
-        } catch (error) {
-          console.error('Error to register a new user:', error);
-        }
-      }else {
-        this.message_error = "The company identification code does not exist";
-        this.showError = true;
+    async validatePrimaryRegisterData(){
+      const formValidationOne = await this.registerService.validatePrimaryRegisterData(this.form, this.confirmPassword);
+      if(!formValidationOne.valid){
+        console.log('step 1 is not ok...', formValidationOne.errors );  
+        this.errors = formValidationOne.errors;
+        return false;
+      }else{
+        this.errors = formValidationOne.errors;
+        console.log('step 1 is ok...');      
+        this.currentStep = 2;
       }
     },
 
-    areFieldsComplete() {
 
-      const fieldsRequired = ['firstName', 'lastName', 'email', 'password', 'role']
+    // validate fields in current step -> validate fields in next step -> submit form
 
-      // verify if all inputs are fill
-      for (let field of fieldsRequired) {
-        if (!this.form[field] || this.form[field].trim().length === 0) {
-          return false;
-        }
-      }
 
-      // verify if at least one of the radio buttons is selected
-      if (this.form.role == '' && this.form.role == '') {
+
+    isValidEmail(email) {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
         return false;
       }
-
+      this.errors.email = '';
       return true;
     },
 
@@ -184,6 +114,15 @@ export default {
       this.$router.push('/login');
     },
 
+    nextStep() {
+      if (this.currentStep === 1) {
+        this.currentStep = 2;
+      } else if (this.currentStep === 2) {
+        // Si estás en el paso 2, puedes regresar al paso 1
+        this.currentStep = 1;
+        this.errors = {};
+      }
+    },
   }
 }
 
@@ -192,97 +131,103 @@ export default {
 <template>
   <div class="signup-container min-h-screen flex">
     <div class="logo-container flex">
-      <img src="../../assets/logoAidManager.png" alt="logo"/>
+      <img src="../../assets/logoAidManager.png" alt="logo" />
       <span class="font-bold text-4xl">AidManager</span>
     </div>
     <div class="card flex">
-      <span class="title font-normal" style="font-size:1rem">Transform your fundraising efforts with precision analytics.</span>
+      <span class="title font-normal" style="font-size:1rem">Transform your fundraising efforts with precision
+        analytics.</span>
 
-      <form class="flex flex-column gap-3" @submit.prevent="onSubmitRegister()">
+      <form @submit.prevent="onSubmitRegister()">
+        <div v-if="currentStep === 1" class="flex flex-column gap-3 align-items-center">
+          <div class="user-name-container">
+            <div class="input-container">
+              <input type="text" placeholder="First Name" class="input-field p-3" v-model="form.firstName" />
+              <p v-if="errors.firstName" class="error-message">{{ errors.firstName }}</p>
+            </div>
 
-        <div class="user-name-container">
-          <input type="text" placeholder="First Name" class="input-field p-3" v-model="form.firstName"/>
-          <input type="text" placeholder="Last Name" class="input-field p-3" v-model="form.lastName"/>
+            <div class="input-container">
+              <input type="text" placeholder="Last Name" class="input-field p-3" v-model="form.lastName" />
+              <p v-if="errors.lastName" class="error-message">{{ errors.lastName }}</p>
+            </div>
+          </div>
+
+          <div class="input-container">
+            <input type="email" placeholder="Institution Email" class="input-field  p-3" v-model="form.email" />
+            <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
+          </div>
+
+          <div class="input-container"><input type="password" placeholder="Password" class="input-field p-3" v-model="form.password" />
+            <p v-if="errors.password" class="error-message">{{ errors.password }}</p>
+          </div>
+
+
+          <div class="confirm-password-field">
+            <input :type="passwordFieldType" placeholder="Confirm password" class="input-field p-3"
+              v-model="confirmPassword" />
+            <i :class="passwordFieldType === 'password' ? 'pi pi-eye' : 'pi pi-eye-slash'"
+              @click="togglePasswordFieldType" class="toggle-icon"></i>
+          </div>
         </div>
 
-        <input type="email" placeholder="Institution Email" class="input-field  p-3" v-model="form.email"/>
 
-        <input type="password" placeholder="Password" class="input-field p-3" v-model="form.password"/>
+        <!--Paso 2 del formulario para validar TRG o agregar datos de la compania-->
+        <div v-if="currentStep === 2">
+          <form class="flex flex-column gap-3" @submit.prevent="completeRegistration()">
+            <h2>Almost there!</h2>
+            <div v-if="form.role === 'team'">
+              <input type="text" placeholder="Team Register Code" class="input-field p-3"
+                v-model="form.teamRegisterCode" />
+            </div>
+            <div v-if="form.role === 'director'">
+              <div class="flex flex-column gap-3">
+                <input type="text" placeholder="Company Name" class="input-field p-3" v-model="form.companyName" />
+                <div><input type="email" placeholder="Company Email" class="input-field p-3"
+                    v-model="form.companyEmail" />
+                  <p v-if="errors.email" class="error-message">{{ errors.email }}</p>
+                </div>
 
-        <div class="confirm-password-field">
-          <input :type="passwordFieldType" placeholder="Confirm password"
-                 class="input-field p-3" v-model="confirmPassword"
-          />
-          <i :class="passwordFieldType === 'password' ? 'pi pi-eye' : 'pi pi-eye-slash'"
-             @click="togglePasswordFieldType"
-             class="toggle-icon"
-          ></i>
+                <input type="text" placeholder="Company Country" class="input-field p-3"
+                  v-model="form.companyCountry" />
+              </div>
+
+            </div>
+          </form>
         </div>
 
-        <div class="radio-button-container">
-          <input class="radio-input" type="radio" id="director" name="type_user" value="director" v-model="form.role"/>
+        <div v-if="currentStep === 1" class="radio-button-container">
+          <input class="radio-input" type="radio" id="director" name="type_user" value="director" v-model="form.role" />
           <label class="radio-label" for="director">Director</label>
 
-          <input class="radio-input" type="radio" id="team" name="type_user" value="team" v-model="form.role"/>
+          <input class="radio-input" type="radio" id="team" name="type_user" value="team" v-model="form.role" />
           <label class="radio-label" for="team">Team</label>
         </div>
-        <button class="button p-3" style="color: #fff; margin-top:30px">Sign up</button>
+        <p v-if="errors.role" class="error-message">{{ errors.role }}</p>
+        <div class="flex flex-row gap-3 justify-content-center align-items-center">
+          <button type="button" v-if="currentStep === 2" class="button p-3" style="color: #fff; margin-top:30px"
+            @click="nextStep">Return</button>
+          <button type="button" v-if="currentStep === 1" class="button p-3" style="color: #fff; margin-top:30px"
+            @click="validatePrimaryRegisterData">Continiue</button>
+          <button type="submit" v-if="currentStep === 2" class="button p-3" style="color: #fff; margin-top:30px">Sign
+            up</button>
+        </div>
+
       </form>
+
     </div>
     <h3 class="card-footer">Already have an account?
       <router-link to="/login" class="link" style="font-weight: 600">Log in</router-link>
     </h3>
   </div>
-  <!-- display modal when the password and password confirm do not match -->
-  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isPasswordNotMatch" :modal="true" :closable="false">
-    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
-      <i class="text-7xl pi pi-exclamation-triangle text-yellow-500"></i>
-      <h1>Check the password</h1>
-      <p class="text-md">The confirmation password and password are not the same</p>
-      <pv-button class="py-3 px-5" label="OK" @click="isPasswordNotMatch = false"/>
-    </div>
-  </pv-dialog>
-  <!-- Display modal when the email entered has already been registered -->
-  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isEmailExists" :modal="true" :closable="false">
-    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
-      <i class="text-7xl pi pi-times-circle text-red-500"></i>
-      <h1>This email is not valid!</h1>
-      <p class="text-md">The email entered has already been registered</p>
-      <pv-button class="py-3 px-5" label="OK" @click="isEmailExists = false"/>
-    </div>
-  </pv-dialog>
-  <!-- Display modal when the inputs are empty -->
-  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isFieldsEmpty" :modal="true" :closable="false">
-    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
-      <i class="text-7xl pi pi-times-circle text-red-500"></i>
-      <h1>Fill the formulary!</h1>
-      <p class="text-md">There is no information to register a user</p>
-      <pv-button class="py-3 px-5" label="OK" @click="isFieldsEmpty = false"/>
-    </div>
-  </pv-dialog>
-  <!--  Display modal when the user has successfully registered-->
-  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="isUserCreated" :modal="true" :closable="false">
-    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
-      <i class="text-7xl pi pi-check-circle text-green-500"></i>
-      <h2>Enter your Organization's Unique ID</h2>
-      <input v-model="identificationCode" class="w-full border-1 input-field border-round-md py-2 text-lg text-center"
-             placeholder="7w9Klb" style="letter-spacing: 1.5px">
-      <p class="text-md">You are one step away from starting a great adventure with us!</p>
-      <pv-button style="letter-spacing: .8px" class="py-3 px-5" label="Join" @click="createNewUser(this.identificationCode)"/>
-    </div>
-  </pv-dialog>
-  <!-- Display modal to errors x -->
-  <pv-dialog :style="{margin: '0 10px'}" :visible.sync="showError" :modal="true" :closable="false">
-    <div class="error-modal p-5 flex flex-column align-items-center gap-5 text-center">
-      <i class="text-7xl pi pi-times-circle text-red-500"></i>
-      <h1>Error!</h1>
-      <p class="text-md">{{message_error}}</p>
-      <pv-button class="py-3 px-5" label="OK" @click="showError = false"/>
-    </div>
-  </pv-dialog>
 </template>
 
 <style scoped>
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
+
 .signup-container {
   background-color: #E6F4E2;
   box-sizing: border-box;
@@ -290,6 +235,13 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 0 20px;
+}
+
+.input-container {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .logo-container {
@@ -319,7 +271,7 @@ export default {
 
 .input-field {
   align-self: center;
-  width: 90%;
+  width: 100%;
   border-radius: 20px;
   border: 1px solid #BDBDBD;
   color: #0009;
@@ -445,5 +397,4 @@ export default {
     width: 80%;
   }
 }
-
 </style>

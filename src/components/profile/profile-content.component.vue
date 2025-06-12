@@ -74,9 +74,12 @@ export default {
         id: this.$route.params.id
       };
 
-      const response = this.userService.updateUserByEmail(this.user.email, newUser);
+      const response = this.userService.updateUser(newUser);
       response.then((data) => {
-        const user = data.data
+
+        console.log('data updated', data)
+
+        const user = data;
 
         this.$store.dispatch('updateUser', user);
 
@@ -108,8 +111,8 @@ export default {
 
       // si no se ha dado click en el lapiz para editar el campo, se le asigna el valor actual del usuario
       if (!this.editField['fullName']) {
-        this.inputUpdateInfo.firstName = this.user.firstName;
-        this.inputUpdateInfo.lastName = this.user.lastName;
+        this.user.name = this.inputUpdateInfo.firstName + " " + this.inputUpdateInfo.lastName;
+        
       }
       if (!this.editField['email']) {
         this.inputUpdateInfo.email = this.user.email;
@@ -138,10 +141,10 @@ export default {
         id: this.$route.params.id
       };
 
-      const response = this.userService.updateUserByEmail(this.user.email, newUser);
+      const response = this.userService.updateUser(newUser);
       response.then((data) => {
-        const user = data.data
-
+        console.log('data', data)
+        const user = data;
         this.$store.dispatch('updateUser', user);
 
         this.clearInputUpdateInfo(); // limpamos el form luego de enviado
@@ -166,7 +169,7 @@ export default {
 
         <p class="editable flex flex-col  gap-2">
           <strong>Full Name:</strong>
-          <span v-if="!editField['fullName']">{{ user.firstName + ' ' + user.lastName + ' '}} </span>
+          <span v-if="!editField['fullName']">{{ user.name}} </span>
           <div v-else class="full-name-input">
             <input type="text" placeholder="First Name" v-model="inputUpdateInfo['firstName']" >
             <input type="text" placeholder="Last Name" v-model="inputUpdateInfo['lastName']" >

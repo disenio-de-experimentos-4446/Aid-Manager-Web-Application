@@ -4,6 +4,7 @@ import Dialog from "primevue/dialog";
 import Calendar from "primevue/calendar";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
+import InputNumber from "primevue/inputnumber";
 import {ref} from "vue";
 import {deleteTask, editTask} from "@/services/projects-api.services.js";
 import {TaskEntity} from "@/models/task.entity.js";
@@ -17,8 +18,16 @@ const props = defineProps({
     type: String,
     required: true,
   },
+   description: {
+    type: String,
+    required: true,
+  },
   assigned: {
     type: String,
+    required: true,
+  },
+  assignedID: {
+    type: Number,
     required: true,
   },
   due: {
@@ -49,12 +58,12 @@ const taskDel = (projectId, id) => {
   // Aquí puedes agregar la lógica para eliminar la tarea
 };
 
-const editFunc = (projectId, taskId, taskData) => {
+const editFunc = (projectId, taskData) => {
   if (!thisTask.value.title || !thisTask.value.due || !thisTask.value.assigned) {
     alert('Por favor, ingrese el título, el asignado y la fecha.');
   } else {
-    console.log(projectId, taskId, taskData);
-    editTask(projectId, taskId, taskData).then(() => {
+    console.log(projectId, taskData);
+    editTask(projectId ,taskData).then(() => {
       visible.value = false;
     }).then(() => {
       emits('taskDel')
@@ -65,7 +74,7 @@ const editFunc = (projectId, taskId, taskData) => {
 };
 
 const resetTask = () => {
-  thisTask.value = new TaskEntity(props.id, props.title, props.assigned, props.due, props.state);
+  thisTask.value = new TaskEntity(props.id, props.title, props.assigned, props.due, props.state, props.assignedID, props.description);
   console.log(thisTask.value, 'se reinicio');
 };
 
@@ -78,14 +87,16 @@ const edit = async () => {
 const handleMove = (destination, data) => {
   console.log(`Moved to: ${destination}`);
   data.value.status = destination
-  editFunc(props.projectId, props.id, data.value)
+  editFunc(props.projectId, data.value)
 };
 
 
 const menu = ref();
 const visible = ref(false);
-const thisTask = ref(new TaskEntity(props.id, props.title, props.assigned, props.due, props.state));
+const thisTask = ref(new TaskEntity(props.id, props.title, props.assigned, props.due, props.state, props.assignedID,props.description));
 
+console.log(thisTask.value, 'se cargo');
+console.log(props, 'se cargo props');
 
 const items = ref([{
   label: 'Delete',
@@ -171,8 +182,8 @@ const items = ref([{
 
       <div class=" align-items-center gap-3 mb-2">
         <label for="assigned" class="font-semibold w-6rem">Employee Assigned</label>
-        <InputText id="assigned" class="flex flex-auto" autocomplete="off"
-                   v-model="thisTask.assigned"/>
+        <InputNumber id="assigned" class="flex flex-auto" autocomplete="off"
+                   v-model="thisTask.assignedID"/>
       </div>
 
       <div class=" align-items-center gap-3 mb-2">
@@ -185,7 +196,7 @@ const items = ref([{
 
       <!-- Botón para agregar el nuevo proyecto -->
       <div class=" justify-content-end gap-2">
-        <Button label="edit" @click="editFunc(props.projectId, props.id, thisTask)" style="background-color: #02513D;"/>
+        <Button label="edit" @click="editFunc(props.projectId, thisTask)" style="background-color: #02513D;"/>
       </div>
     </div>
   </Dialog>
