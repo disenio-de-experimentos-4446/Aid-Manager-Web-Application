@@ -41,9 +41,13 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import router from "@/router/index.js";
 
+const gtagId = process.env.VUE_APP_GTAG;
+console.log('Google Analytics ID:', gtagId); // Para debug
+
+
 const gtag = createGtag({
   config: {
-    id: process.env.VUE_APP_GTAG,
+    id: gtagId,
     params: {
       send_page_view: true,
       custom_map: { custom_parameter: 'custom_value' }
