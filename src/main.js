@@ -41,7 +41,7 @@ import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
 import router from "@/router/index.js";
 
-const gtagId = process.env.VUE_APP_GTAG;
+const gtagId = import.meta.env.VITE_GTAG;
 console.log('Google Analytics ID:', gtagId); // Para debug
 
 

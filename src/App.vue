@@ -4,9 +4,9 @@ export default {
   name: 'App',
 }
 
-const gtagId = process.env.VUE_APP_GTAG
-console.log('Google Analytics ID:', gtagId);
-console.log('NODE_ENV:', process.env.NODE_ENV);
+const gtagId = import.meta.env.VITE_GTAG
+console.log('Google Analytics ID:', gtagId)
+console.log('MODE:', import.meta.env.MODE)
 
 </script>
 
