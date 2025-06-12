@@ -4,10 +4,7 @@ import './assets/main.css'
 import Clipboard from 'v-clipboard'
 import { createGtag } from "vue-gtag";
 
-const gtag = createGtag({
-// This is the Google Analytics tag ID, replace with your own
-  tagId: process.env.VUE_APP_GTAG
-})
+
 
 // Add PrimeVue
 import PrimeVue from "primevue/config";
@@ -43,6 +40,20 @@ import 'primeicons/primeicons.css';
 // PrimeFlex
 import 'primeflex/primeflex.css';
 import router from "@/router/index.js";
+
+const gtag = createGtag({
+  config: {
+    id: process.env.VUE_APP_GTAG,
+    params: {
+      send_page_view: true,
+      custom_map: { custom_parameter: 'custom_value' }
+    }
+  },
+  // Integración con router para tracking automático
+  bootstrap: true
+}, router); // ← Importante: pasar el router aquí
+
+
 
 createApp(App)
     .use(PrimeVue, { ripple: true })
