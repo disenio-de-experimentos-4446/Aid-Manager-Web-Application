@@ -1,12 +1,31 @@
 class Post {
-    constructor(id, user, title, subject, description, rating, createdAt) {
+    constructor(id,
+    title,
+    subject,
+    description,
+    email,
+    userId,
+    userName,
+    userImage,
+    companyId,
+    postTime,
+    rating,
+    images = [],
+    commentsList = []) {
         this.id = id;
-        this.user = user;
-        this.title = title;
-        this.subject = subject;
-        this.description = description;
-        this.rating = rating;
-        this.createdAt = createdAt;
+    this.title = title;
+    this.subject = subject;
+    this.description = description;
+    this.email = email;
+    this.userId = userId;
+    this.userName = userName;
+    this.userImage = userImage;
+    this.companyId = companyId;
+    this.postTime = postTime;
+    this.rating = rating;
+    this.images = images;
+    this.commentsList = commentsList;
+  
     }
 }
 

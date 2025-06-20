@@ -57,7 +57,11 @@ export default {
         selectedImages.push(image);
       }
 
+      console.log(this.post);
       return selectedImages;
+
+      
+
     }
   }
 }
@@ -69,14 +73,14 @@ export default {
     <template #header>
       <div class="flex flex-row gap-3 justify-content-between flex-wrap">
         <div class="flex flex-row gap-3">
-          <pv-avatar aria-label="yesiJoto"
+          <pv-avatar aria-label="User Avatar"
                      class="w-3rem h-3rem profile"
-                     :image="post.user.profileImg"
+                     :image="post.userImg"
                      shape="circle"/>
           <div class="flex flex-column justify-content-between">
-            <p class="font-medium">{{ post.user.firstName + " " + post.user.lastName }}</p>
+            <p class="font-medium">{{ post.userName }}</p>
             <div class="flex flex-row align-items-center gap-4">
-              <p class="text-sm text-green-600 font-normal" style="text-wrap: wrap">{{ post.user.email }}</p>
+              <p class="text-sm text-green-600 font-normal" style="text-wrap: wrap">{{ post.email }}</p>
             </div>
           </div>
         </div>
@@ -105,7 +109,7 @@ export default {
         <div class="date-container flex-1">
           <div class="flex align-items-center" style="gap: 9px">
             <i style="margin-bottom: -1.5px" class="text-2xl pi pi-clock text-green-800"></i>
-            <span class="text-base date">{{ post.createdAt }}</span>
+            <span class="text-base date">{{ post.postTime }}</span>
           </div>
         </div>
       </div>
