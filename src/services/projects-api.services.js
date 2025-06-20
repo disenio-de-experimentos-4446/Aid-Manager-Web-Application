@@ -65,6 +65,19 @@ export async function fetchTaskDataByUserId(projectId, userId) {
     }
 }
 
+export async function fetchAllTaskDataByUserId(projectId, userId) {
+    try {
+        const userService = new UserService();
+        const headers = userService.getHeadersAuthorization();
+        const response = await axios.get(`${environment.baseUrl}/Projects/${projectId}/task-items/user/${userId}`, { headers });
+        console.log("Datos obtenidos de la API para TASKS por usuario:", response.data);
+        return response.data; // Devuelve la lista de tareas del proyecto filtradas por usuario
+    } catch (error) {
+        console.error("Error al obtener datos de la API:", error);
+        throw error; // Lanza una excepción si ocurre algún problema al obtener datos de la API
+    }
+}
+
 export async function addTask(projectId, newTask) {
     try {
         // Agregar la nueva tarea al arreglo existente de tareas del proyecto

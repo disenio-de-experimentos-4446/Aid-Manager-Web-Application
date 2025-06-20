@@ -1,13 +1,19 @@
 <script>
 import {UserService} from "@/services/user.service.js";
 import {mapState} from "vuex";
+import {fetchAllTaskDataByUserId} from "@/services/projects-api.services.js";
 
 export default {
   name: "ProfileContent",
   computed: {
     user() {
       return this.$store.state.user;
-    }
+    },
+    filteredTasks() {
+    return this.tasks
+      .filter(task => !this.taskFilters.status || task.status === this.taskFilters.status)
+      .filter(task => !this.taskFilters.date || task.dueDate === this.taskFilters.date);
+  }
   },
   data() {
     return {
@@ -33,7 +39,12 @@ export default {
         occupation: false,
         bio: false,
         profileImg: false
-      }
+      },
+       tasks: [],
+    taskFilters: {
+      status: '',
+      date: ''
+    }
 
     }
   },
@@ -154,11 +165,25 @@ export default {
         console.error('Error al actualizar el usuario:', error);
       });
 
-    }
+    },
+    async fetchUserTasks() {
+    // Reemplaza esto por tu servicio real
+    const allTasks = await fetchAllTaskDataByUserId(1,this.user.id);
+    this.tasks = allTasks;
+  },
+  goToProject(projectId) {
+    this.$router.push({ name: 'ProjectView', params: { id: projectId } });
+  }
 
   },
+  
+  mounted() {
+  this.fetchUserTasks();
+}
 
 }
+
+
 </script>
 
 <template>
@@ -252,6 +277,43 @@ export default {
       </div>
     </pv-dialog>
   </div>
+
+<!-- Se agrega Experiment card feature-->
+
+<div class="user-tasks" style="margin-top: 2rem;">
+  <h2 style="margin-bottom: 1rem;">My Tasks</h2>
+  <!-- Filtros -->
+  <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+    <select v-model="taskFilters.status" style="padding: 0.3rem; border-radius: 5px;">
+      <option value="">All Status</option>
+      <option value="Pendiente">Pendiente</option>
+      <option value="En progreso">En progreso</option>
+      <option value="Completada">Completada</option>
+    </select>
+    <input type="date" v-model="taskFilters.date" style="padding: 0.3rem; border-radius: 5px;" />
+  </div>
+  <!-- Lista de tareas -->
+  <div v-if="filteredTasks.length">
+    <div
+      v-for="task in filteredTasks"
+      :key="task.id"
+      class="task-card"
+      style="margin-bottom: 1rem; border-left: 4px solid #4CAF50; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor:pointer;"
+      @click="goToProject(task.projectId)"
+    >
+      <div class="title" style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="task-title" style="font-weight: bold;">{{ task.title }}</span>
+        <span style="font-size: 0.9em; color: #888;">{{ task.status }}</span>
+      </div>
+      <div style="color: #555;">{{ task.description }}</div>
+      <div style="font-size: 0.9em; color: #888;">
+        Due: <i class="pi pi-calendar" style="color: #02513D; margin-right: 4px;"></i>{{ task.dueDate }}
+      </div>
+    </div>
+  </div>
+  <div v-else style="color: #888;">No tasks found.</div>
+</div>
+
 </template>
 
 <style scoped>
