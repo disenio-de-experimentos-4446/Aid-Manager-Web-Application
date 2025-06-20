@@ -52,6 +52,20 @@ export async function fetchTaskData(projectId) {
 
 }
 
+export async function fetchTasksByCompanyId(companyId) {
+    try {
+        const userService = new UserService();
+        const headers = userService.getHeadersAuthorization();
+        const response = await axios.get(`${environment.baseUrl}/company-tasks/${companyId}`, { headers });
+
+        console.log("Datos obtenidos de la API para COMPANY TASKS:", response.data);
+        return response.data; // Devuelve la lista de tareas obtenidas de la API
+    } catch (error) {
+        console.error("Error al obtener tareas de la compañía:", error);
+        throw error; // Lanza una excepción si ocurre algún problema al obtener datos de la API
+    }
+}
+
 export async function addTask(projectId, newTask) {
     try {
         // Agregar la nueva tarea al arreglo existente de tareas del proyecto

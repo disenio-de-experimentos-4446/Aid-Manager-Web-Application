@@ -1,389 +1,841 @@
-<script>
-import CalendarService from "@/services/calendar.service.js";
-import TrashIcon from "../../assets/trash-icon.svg";
-import EventEntity from "@/models/event.entity.js";
-import DropdownProjects from "@/components/dropdown/dropdown.component.vue";
-import EditIcon from "../../assets/edit-event-icon.svg";
-
-export default {
-  name: "calendar-content",
-  components: {
-    DropdownProjects,
-    TrashIcon,
-    EditIcon,
-  },
-  data() {
-    return {
-      calendarService: new CalendarService(),
-      current_date: new Date(),
-      projectIdSelected: 0,
-      events: [],
-      showOptions: false,
-      showPopUp: false,
-      eventsDay: [],
-      newEvent: false,
-      optionSelected: "",
-      inputNewEvent: {
-        name: "",
-        date: "",
-        location: "",
-        description: "",
-        color: "#74A38F",
-        projectId: 0
-      }
-    }
-  },
-  async mounted() {
-    await this.getEvents();
-  },
-  computed: {
-    month() {
-      const lastDayMonth = new Date(this.current_date.getFullYear(), this.current_date.getMonth() + 1, 0);
-      const days = [];
-      for (let i = 1; i <= lastDayMonth.getDate(); i++) {
-        const date = new Date(this.current_date.getFullYear(), this.current_date.getMonth(), i).toISOString().split('T')[0];
-        days.push({ number: i, date });
-      }
-      return days;
-    },
-    eventsByDay() {
-      const eventsByDay = {};
-      this.events.forEach(event => {
-        if (!eventsByDay[event.date]) {
-          eventsByDay[event.date] = [];
-        }
-        eventsByDay[event.date].push(event);
-      });
-      console.log('events by day', eventsByDay);
-      return eventsByDay;
-    }
-  },
-  methods: {
-    selectDay: function(date) {
-      console.log('selected date', date);
-      this.inputNewEvent['date'] = date;
-      this.eventsDay = this.events.filter(event => event.date === date);
-      this.togglePopUp();
-    },
-    getEvents: async function() {
-      if(this.projectIdSelected !== 0) {
-        const response = await this.calendarService.getEventsCalendar(this.projectIdSelected);
-        if (response) {
-          this.events = response.data;
-        }
-      }
-    },
-    toggleOptions: function(date) {
-      const role = this.$store.state.user.role;
-      if(role === 'director')
-        this.showOptions = this.showOptions === date ? null : date;
-    },
-    togglePopUp: function() {
-      const role = this.$store.state.user.role;
-
-      if(role === 'director') {
-        this.showPopUp = !this.showPopUp;
-        this.newEvent = false;
-      }else {
-        alert('You do not have permission to create events, only the director can do it.');
-      }
-    },
-    saveNewEvent: async function() {
-      if(this.projectIdSelected === 0) return alert('Select a project to save the event');
-      if(this.optionSelected !== "edit") {
-        delete this.inputNewEvent["id"];
-        this.inputNewEvent["projectId"] = this.projectIdSelected;
-        console.log(new EventEntity(this.inputNewEvent))
-
-        const response = await this.calendarService.saveNewEvent(new EventEntity(this.inputNewEvent));
-        if(!response) console.error('Error saving new event');
-        else {
-          await this.getEvents();
-
-        }
-      }else {
-        const idEvent = this.inputNewEvent["id"];
-        delete this.inputNewEvent["id"];
-        delete this.inputNewEvent["projectId"];
-
-        await this.calendarService.editEvent(idEvent, new EventEntity(this.inputNewEvent))
-            .then(r => {
-              if(!r) console.error('Error to edit the event with id: ', idEvent);
-              else {
-                this.getEvents();
-              }
-            })
-      }
-
-      this.inputNewEvent = {
-        id: "",
-        name: "",
-        date: "",
-        location: "",
-        description: ""
-      };
-      this.optionSelected = "";
-      this.togglePopUp();
-    },
-    deleteEvent: async function(id) {
-      const response = await this.calendarService.deleteEvent(id);
-      if(!response) console.log('Error to delete the event with id: ', id);
-      else await this.getEvents();
-    },
-    editEvent: function(idEvent) {
-      this.optionSelected = "edit";
-      this.showPopUp = !this.showPopUp;
-      this.newEvent = true;
-
-      this.inputNewEvent["id"] = idEvent;
-    },
-    receiveProjectSelected(project) {
-      console.log('project selected', project);
-      this.projectIdSelected = project;
-      this.getEvents();
-    }
-  }
-}
-</script>
-
 <template>
-  <div class="calendar relative p-4 lg:p-5 mb-2">
-    <h1 class="calendar-title text-4xl mb-4 text-left" aria-label="title">Calendar</h1>
-    <dropdown-projects @projectSelected="receiveProjectSelected"></dropdown-projects>
-    <div class="calendar__days-week mt-2" role="heading">
-      <span aria-label="title" v-t="'calendar.sun'">SUN</span>
-      <span aria-label="title" v-t="'calendar.mon'">MON</span>
-      <span aria-label="title" v-t="'calendar.tue'">TUES</span>
-      <span aria-label="title" v-t="'calendar.wed'">WED</span>
-      <span aria-label="title" v-t="'calendar.thu'">THURS</span>
-      <span aria-label="title" v-t="'calendar.fri'">FRI</span>
-      <span aria-label="title" v-t="'calendar.sat'">SAT</span>
+  <div class="calendar-page">
+    
+    <div class="page-header">
+      <h1 class="title-projects text-4xl font-medium">Projects</h1>
+      <p class="calendar-subtitle">Manage your tasks and appointments</p>
     </div>
 
-    <div class="days-week">
-      <div v-for="d in month" :key="d.date" class="day" @click="selectDay(d.date)">
-        {{ d.number }}
+    <!-- Contenedor de las dos columnas -->
+    <div class="calendar-container">
+      <div class="calendar-section">
+        <div class="calendar-widget">
+          <div class="calendar-navigation">
+            <button class="nav-button" @click="previousMonth">&lt;</button>
+            <h2 class="month-year">{{ currentMonthYear }}</h2>
+            <button class="nav-button" @click="nextMonth">&gt;</button>
+          </div>
 
-        <div class="day-event" v-if="eventsByDay[d.date]" :style="{backgroundColor: eventsByDay[d.date][0].color}"
-             @click="toggleOptions(d.date)" @click.stop>
-          <div v-for="event in eventsByDay[d.date]" :key="event.id" class="event">
-            <strong>{{ event.name }}</strong>
+          <div class="calendar-grid">
+            <div class="weekdays">
+              <div class="weekday">Wk</div>
+              <div class="weekday">Su</div>
+              <div class="weekday">Mo</div>
+              <div class="weekday">Tu</div>
+              <div class="weekday">We</div>
+              <div class="weekday">Th</div>
+              <div class="weekday">Fr</div>
+              <div class="weekday">Sa</div>
+            </div>
 
-            <div class="day-event__modify flex flex-column" v-if="showOptions === event.date" :key="event.id">
-              <div class="day-event__modify-column flex gap-1" @click="deleteEvent(event.id)">
-                <TrashIcon/>
-                <span>Delete</span>
-              </div>
-
-              <div class="day-event__modify-column flex gap-1" @click="editEvent(event.id)">
-                <EditIcon/>
-                <span>Edit</span>
+            <div class="calendar-body">
+              <div v-for="week in calendarWeeks" :key="week.weekNumber" class="calendar-week">
+                <div class="week-number">{{ week.weekNumber }}</div>
+                <div v-for="day in week.days" :key="day.date" class="calendar-day" :class="{
+                  'selected': isSelected(day),
+                  'today': isToday(day),
+                  'other-month': !day.isCurrentMonth,
+                  'has-tasks': hasTasksOnDate(day.date)
+                }" @click="selectDate(day)">
+                  {{ day.day }}
+                  <div v-if="hasTasksOnDate(day.date)" class="task-indicator">
+                    <span class="task-dot"></span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <div class="events-section mt-4">
+          <div class="events-header">
+            <h3 class="events-title">Tasks for {{ formatSelectedDate }}</h3>
+          </div>
+
+          <!-- Lista de tareas -->
+          <div v-if="selectedDateTasks.length > 0" class="tasks-list">
+            <div v-for="task in selectedDateTasks" :key="task.id" class="task-card"
+              :class="getTaskStateClass(task.state)">
+              <div class="task-header">
+                <div class="task-status" :class="getStatusColorClass(task.state)">
+                  {{ getStatusText(task.state) }}
+                </div>
+                <div class="task-date">
+                  {{ formatTaskDate(task.createdAt) }}
+                </div>
+              </div>
+
+              <div class="task-content">
+                <h4 class="task-title">{{ task.title }}</h4>
+                <p class="task-description">{{ task.description }}</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- No hay tareas -->
+          <div v-else class="no-events">
+            <span class="no-events-icon">📋</span>
+            <p>No tasks scheduled for this date</p>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="popup absolute flex justify-content-center align-items-center " v-if="showPopUp">
-      <div class="popup__content relative border-round-2xl">
-        <i class="fa-solid fa-xmark absolute top-0 right-0 p-3" @click="togglePopUp()"></i>
-        <h2>Events</h2>
-        <div class="popup__new-event flex justify-content-center align-items-center"
-             @click="()=>{newEvent = !newEvent}">
-          <i class="fa-solid fa-plus"></i>
-          <p>New Event</p>
-        </div>
-        <div v-if="!newEvent" v-for="event in eventsDay" :key="event.id" class="event__detail">
-          <h3>{{ event.name }}</h3>
-          <p>{{ event.location }}</p>
-          <p>{{ event.date }}</p>
-          <p>{{ event.description }}</p>
+      <div class="sidebar">
+        <div class="selected-date-card">
+          <h3 class="card-title">Selected Date</h3>
+          <div class="selected-date-info">
+            <div class="date-number">{{ selectedDate.day }}</div>
+            <div class="date-details">
+              <div class="month-year-text">{{ selectedDate.monthYear }}</div>
+              <div class="day-name">{{ selectedDate.dayName }}</div>
+            </div>
+          </div>
         </div>
 
-        <div class="form__new-event" v-if="newEvent">
-          <form role="form" class="flex flex-column gap-2 justify-content-center align-items-center">
-            <input type="text" placeholder="Title" v-model="inputNewEvent['name']">
-            <input type="text" placeholder="Place" v-model="inputNewEvent['location']">
-            <textarea placeholder="Type your description here..." v-model="inputNewEvent['description']"></textarea>
-          </form>
-
-          <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected !== 'edit'">SAVE</div>
-          <div class="form__new-event-button" @click="saveNewEvent()" v-if="optionSelected === 'edit'">EDIT</div>
+        <div class="quick-actions-section">
+          <div class="quick-actions-header">
+            <h3 class="quick-actions-title">Quick information</h3>
+          </div>
+          <div class="task-info-content">
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="pi pi-eye" style="color: #6b7280; font-size: 1.125rem;"></i>
+              </div>
+              <p>You can view tasks directly on the calendar</p>
+            </div>
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="pi pi-circle-fill" style="color: #dc2626; font-size: 1rem;"></i>
+              </div>
+              <p>Red dots indicate dates with tasks</p>
+            </div>
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="pi pi-calendar" style="color: #6b7280; font-size: 1.125rem;"></i>
+              </div>
+              <p>Navigate between dates to view pending tasks</p>
+            </div>
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="pi pi-info-circle" style="color: #6b7280; font-size: 1.125rem;"></i>
+              </div>
+              <p>Get more information by exploring different dates</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 
+<script>
+import { fetchTasksByCompanyId } from '@/services/projects-api.services'
+
+export default {
+  name: 'CalendarView',
+  data() {
+    return {
+      currentDate: new Date(),
+      selectedDateObj: new Date(),
+      monthNames: [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ],
+      dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      allTasks: [],
+    }
+  },
+  async mounted() {
+    this.selectedDateObj = new Date();
+    await this.loadTasks();
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+    currentMonthYear() {
+      return `${this.monthNames[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`
+    },
+    selectedDate() {
+      return {
+        day: this.selectedDateObj.getDate(),
+        monthYear: `${this.monthNames[this.selectedDateObj.getMonth()]} ${this.selectedDateObj.getFullYear()}`,
+        dayName: this.dayNames[this.selectedDateObj.getDay()]
+      }
+    },
+    calendarWeeks() {
+      const year = this.currentDate.getFullYear()
+      const month = this.currentDate.getMonth()
+      const firstDay = new Date(year, month, 1)
+      const lastDay = new Date(year, month + 1, 0)
+      const startDate = new Date(firstDay)
+      startDate.setDate(startDate.getDate() - firstDay.getDay())
+
+      const weeks = []
+      let currentWeek = []
+      let weekNumber = this.getWeekNumber(startDate)
+
+      for (let i = 0; i < 42; i++) {
+        const date = new Date(startDate)
+        date.setDate(startDate.getDate() + i)
+
+        currentWeek.push({
+          date: date.toISOString().split('T')[0],
+          day: date.getDate(),
+          isCurrentMonth: date.getMonth() === month,
+          fullDate: new Date(date)
+        })
+
+        if (currentWeek.length === 7) {
+          weeks.push({
+            weekNumber: weekNumber,
+            days: currentWeek
+          })
+          currentWeek = []
+          weekNumber++
+        }
+      }
+
+      return weeks.slice(0, 6)
+    },
+
+    formatSelectedDate() {
+      const date = this.selectedDateObj
+      const dayName = this.dayNames[date.getDay()]
+      const monthName = this.monthNames[date.getMonth()]
+      const day = date.getDate()
+      const year = date.getFullYear()
+      const ordinal = this.getDayOrdinal(day)
+
+      return `${dayName}, ${monthName} ${day}${ordinal}, ${year}`
+    },
+
+    selectedDateTasks() {
+      const selectedDate = this.selectedDateObj.toISOString().split('T')[0]
+      return this.allTasks.filter(task => {
+        return task.createdAt === selectedDate
+      })
+    }
+  },
+  methods: {
+    async loadTasks() {
+      try {
+        this.allTasks = await fetchTasksByCompanyId(this.user.companyId);
+        console.log('Tasks loaded:', this.allTasks);
+        console.log('Tasks for selected date:', this.selectedDateTasks);
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+        this.allTasks = [];
+      }
+    },
+
+    // Método para verificar si una fecha tiene tareas
+    hasTasksOnDate(date) {
+      return this.allTasks.some(task => task.createdAt === date);
+    },
+
+    previousMonth() {
+      this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1)
+    },
+    nextMonth() {
+      this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1)
+    },
+    selectDate(day) {
+      this.selectedDateObj = new Date(day.fullDate)
+      console.log('Selected date:', this.selectedDateObj.toISOString().split('T')[0]);
+      console.log('Tasks for this date:', this.selectedDateTasks);
+    },
+    isSelected(day) {
+      return day.date === this.selectedDateObj.toISOString().split('T')[0]
+    },
+    isToday(day) {
+      const today = new Date().toISOString().split('T')[0]
+      return day.date === today
+    },
+    getWeekNumber(date) {
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+      const dayNum = d.getUTCDay() || 7
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+    },
+
+    getDayOrdinal(day) {
+      if (day > 3 && day < 21) return 'th'
+      switch (day % 10) {
+        case 1: return 'st'
+        case 2: return 'nd'
+        case 3: return 'rd'
+        default: return 'th'
+      }
+    },
+
+    getTaskStateClass(state) {
+      const stateClasses = {
+        'ToDo': 'task-todo',
+        'InProgress': 'task-inprogress',
+        'Done': 'task-done',
+        'string': 'task-todo'
+      }
+      return stateClasses[state] || 'task-default'
+    },
+
+    getStatusColorClass(state) {
+      const colorClasses = {
+        'ToDo': 'status-todo',
+        'InProgress': 'status-inprogress',
+        'Done': 'status-done',
+        'string': 'status-todo'
+      }
+      return colorClasses[state] || 'status-default'
+    },
+
+    getStatusText(state) {
+      const statusTexts = {
+        'ToDo': 'To Do',
+        'InProgress': 'In Progress',
+        'Done': 'Done',
+        'string': 'To Do'
+      }
+      return statusTexts[state] || state
+    },
+
+    formatTaskDate(dateString) {
+      const date = new Date(dateString)
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      })
+    }
+  },
+  watch: {
+    /* selectedDateObj() {
+      console.log('Date changed to:', this.selectedDateObj.toISOString().split('T')[0]);
+      console.log('Filtered tasks:', this.selectedDateTasks);
+    } */
+  }
+}
+</script>
+
 <style scoped>
-.calendar {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  padding: 20px;
-  overflow: hidden;
-  font-family: "Poppins", sans-serif;
+.title-projects {
+  font-family: 'Lora', serif;
+  color: #02513D;
+  font-weight: 600 !important;
+  letter-spacing: 1.05px;
+  margin-bottom: 16px;
+}
+
+.calendar-page {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 2rem;
+}
+
+/* Header separado */
+.page-header {
+  margin-bottom: 2rem;
 }
 
 .calendar-title {
-  font-family: 'Lora', serif !important;
-  font-weight: 600 !important;
-  letter-spacing: 1px;
-  color: #02513D;
-}
-
-.calendar__days-week {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-}
-
-.calendar__days-week span {
+  font-size: 2.5rem;
   font-weight: bold;
+  color: #6b8e23;
+  margin: 0 0 0.5rem 0;
 }
 
-.days-week {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  border-bottom: none;
+.calendar-subtitle {
+  color: #6b8e23;
+  opacity: 0.7;
+  margin: 0;
+  font-size: 1.1rem;
 }
 
-.day {
-  padding: 4rem 3rem;
+/* Contenedor de las dos columnas */
+.calendar-container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.calendar-section {
+  flex: 1;
+}
+
+/* Calendario rediseñado con fondo blanco y shadow */
+.calendar-widget {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.calendar-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nav-button {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
-  position:relative;
-  border-bottom: 1px solid #787878;
-  transition: all .1s ease-in-out;
-  user-select: none;
+  font-size: 1rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.day:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+.nav-button:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
 }
 
-.day::after {
-  content: '';
-  display: block;
-  height: 100%;
-  width: 1px;
-  background-color: #787878;
-  position: absolute;
-  top: 0;
-  right: 0;
+.month-year {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1f2937;
 }
 
-/*the last cells % 7*/
-.days-week .day:nth-child(7n)::after{
-  display: none;
+.calendar-grid {
+  width: 100%;
 }
 
-.day-event {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 80%;
-  padding: 5px;
-  z-index: 1;
-  color: #fff;
-  transform: translate(-50%, -50%);
+.weekdays {
+  display: grid;
+  grid-template-columns: 2.5rem repeat(7, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  font-weight: 500;
+  padding: 0.5rem 0.25rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.calendar-body {
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
+}
+
+.calendar-week {
+  display: grid;
+  grid-template-columns: 2.5rem repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.week-number {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.calendar-day {
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.calendar-day:hover {
+  background: #f3f4f6;
+}
+
+.calendar-day.other-month {
+  color: #d1d5db;
+}
+
+.calendar-day.selected {
+  background: #6b8e23;
+  color: white;
+  font-weight: 600;
+}
+
+.calendar-day.today {
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+}
+
+/* Estilos para el indicador de tareas */
+.calendar-day.has-tasks {
+  font-weight: 600;
+}
+
+.task-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+}
+
+.task-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #dc2626 !important;
+  border-radius: 50%;
+  display: block;
+  box-shadow: 0 0 0 1px white;
+}
+
+/* Si el día está seleccionado o es hoy, cambiar el color del punto */
+.calendar-day.selected .task-dot,
+.calendar-day.today .task-dot {
+  background-color: #fbbf24;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+/* Sidebar con ancho mínimo de 400px */
+.sidebar {
+  min-width: 400px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.selected-date-card {
+  background: linear-gradient(135deg, #57ad3d, #acd852);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  opacity: 0.9;
+}
+
+.selected-date-info {
+  display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.day-event:hover {
-  z-index: 2;
-}
-
-.day-event__modify {
-  padding: .5rem;
-  border-radius: 15px;
-  box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.3);
-  background-color: #fff;
-  color: #000;
-  position: absolute;
-  top: -150%;
-  right: -50%;
-  cursor: pointer;
-  transition: all .2s ease-in-out;
-}
-
-.day-event__modify-column:hover {
-  opacity: .8;
-}
-
-.popup {
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 3;
-}
-
-.popup__content {
-  max-width: 60%;
-  background-color: #fff;
-  padding: 3rem;
-}
-
-.popup__content i {
-  font-size: 2rem;
-  cursor: pointer;
-}
-
-.event__detail {
-  padding: 1rem;
-}
-
-.popup__new-event {
-  padding: .5rem;
-  background-color: #74A38F;
-  color: #fff;
-  cursor: pointer;
-  gap: .5rem;
-  transition: all .2s ease-in;
-  border-radius: 15px;
-  margin-top: .8rem;
-}
-
-.popup__new-event:hover {
-  transform: scale(1.025);
-}
-
-.popup__new-event p, .popup__new-event i {
-  font-size: 1rem;
-}
-
-.form__new-event {
-  margin-top: 1.5rem;
-  padding: .7rem;
-  font-family: "Poppins", sans-serif;
-}
-
-.form__new-event input, .form__new-event textarea {
-  padding: .5rem;
-  border-radius: 10px;
-  outline: none;
-  resize: none;
-  border: 1px solid #DDDDDD;
-}
-
-.form__new-event-button {
-  padding: .5rem;
-  background-color: #74A38F;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 10px;
-  margin-top: 1rem;
-  text-transform: uppercase;
+.date-number {
+  font-size: 3rem;
   font-weight: bold;
-  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.2);
-  transition: all .2s ease-in-out;
+  line-height: 1;
 }
 
-.form__new-event-button:hover {
-  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.3);
+.date-details {
+  flex: 1;
 }
 
+.month-year-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.day-name {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.events-section {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.events-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.events-icon {
+  font-size: 1.2rem;
+}
+
+.events-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #374151;
+}
+
+.no-events {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: #9ca3af;
+}
+
+.no-events-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.5;
+}
+
+.no-events p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.quick-actions-section {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.quick-actions-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.quick-actions-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #374151;
+}
+
+.task-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.info-item:hover {
+  background-color: #f9fafb;
+}
+
+.info-icon {
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  align-self: flex-start;
+}
+
+.info-item p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Estilos para las cards de tareas (sin información del usuario) */
+.tasks-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.task-card {
+  flex: 1 1 calc(33.333% - 1rem);
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  border-left: 4px solid;
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+}
+
+/* Colores por estado */
+.task-todo {
+  border-left-color: #f59e0b;
+  background: linear-gradient(to right, #fef3c7, rgb(255, 235, 125));
+}
+
+.task-inprogress {
+  border-left-color: #3b82f6;
+  background: linear-gradient(to right, #dbeafe, #bfdbfe);
+}
+
+.task-done {
+  border-left-color: #10b981;
+  background: linear-gradient(to right, #d1fae5, white);
+}
+
+.task-default {
+  border-left-color: #6b7280;
+  background: linear-gradient(to right, #f3f4f6, white);
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.task-status {
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-todo {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-inprogress {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-done {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-default {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.task-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.task-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+}
+
+.task-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.task-id {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: #f3f4f6;
+  border-radius: 0.375rem;
+}
+
+/* Scrollbar personalizado */
+.tasks-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tasks-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.tasks-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.tasks-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .calendar-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .calendar-page {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-title {
+    font-size: 2rem;
+  }
+
+  .calendar-subtitle {
+    font-size: 1rem;
+  }
+
+  .page-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .calendar-container {
+    gap: 1.5rem;
+  }
+
+  .task-card {
+    padding: 1rem;
+  }
+
+  .task-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
 </style>

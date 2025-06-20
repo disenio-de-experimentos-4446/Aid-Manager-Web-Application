@@ -6,8 +6,8 @@ import AnalyticsChartHorizontalBar
   from "@/components/analytics/analytics-chart/analytics-chart-horizontal-bar.component.vue";
 import AnalyticsChartDoughnut
   from "@/components/analytics/analytics-chart/analytics-chart-doughnut.component.vue";
-import {analytic} from "@/models/analytic.entity.js";
-import {AnalyticsService} from "@/services/analytics.service.js";
+import { analytic } from "@/models/analytic.entity.js";
+import { AnalyticsService } from "@/services/analytics.service.js";
 import AnalyticsCardReport from "@/components/analytics/analytics-card/analytics-card-report.component.vue";
 import ModalCardContent from "@/components/analytics/modal-card/modal-card-content.component.vue";
 import DropdownAnalytics from "@/components/analytics/dropdown-analytics/dropdown-analytics.component.vue";
@@ -39,7 +39,8 @@ export default {
       selectedCard: null,
       showDialog: false,
       showLinesChart: true,
-      chartKey: 0
+      chartKey: 0,
+      selectedProjectId: null
     }
   },
   async created() {
@@ -50,6 +51,7 @@ export default {
       if (!projectId) return;
 
       this.getAnalyticsByProject(projectId);
+      this.selectedProjectId = projectId;
     },
 
     handleNoProjects() {
@@ -61,13 +63,13 @@ export default {
 
     async getAnalyticsByProject(projectId) {
       await this.AnalyticsApiService.getAnalyticsByProjectId(projectId)
-          .then(r => {
-            console.log(r.data);
-            if (!r) console.error('Error to get analytics');
-            else {
-              this.analytics = r.data;
-            }
-          })
+        .then(r => {
+          console.log(r.data);
+          if (!r) console.error('Error to get analytics');
+          else {
+            this.analytics = r.data;
+          }
+        })
     },
 
     async handleButtonClick() {
@@ -88,11 +90,11 @@ export default {
       <div class="flex flex-column gap-4" style="width: unset">
         <h2 class="title-analytics text-4xl" v-t="'analytics.analytics'"></h2>
         <dropdown-analytics @no-projects="handleNoProjects"
-                            @project-selected="handleIdProjectSelected"></dropdown-analytics>
+          @project-selected="handleIdProjectSelected"></dropdown-analytics>
       </div>
       <div class="align-self-center border-1 flex align-items-center
         flex-row border-round-2xl text-white mb-2"
-           style="width: unset; background-color: #293A80; padding: 15px 20px; gap: 10px">
+        style="width: unset; background-color: #293A80; padding: 15px 20px; gap: 10px">
         <p class="w-max">You can view</p>
         <i class="text-lg pi pi-eye text-green-100"></i>
       </div>
@@ -133,7 +135,7 @@ export default {
         </template>
         <template #content>
           <div class="flex w-full">
-            <analytics-chart-doughnut :analytics="analytics"></analytics-chart-doughnut>
+            <analytics-chart-doughnut :project-id="selectedProjectId" :analytics="analytics"></analytics-chart-doughnut>
           </div>
         </template>
       </pv-card>
@@ -174,26 +176,20 @@ export default {
       </div>
     </section>
   </section>
-  <lines-modal-content :analytics="analytics" v-if="selectedCard === 'lines'"
-                       @close="selectedCard = null">
+  <lines-modal-content :analytics="analytics" v-if="selectedCard === 'lines'" @close="selectedCard = null">
   </lines-modal-content>
-  <payments-modal-content :analytics="analytics" v-if="selectedCard === 'payments'"
-                          @close="selectedCard = null">
+  <payments-modal-content :analytics="analytics" v-if="selectedCard === 'payments'" @close="selectedCard = null">
   </payments-modal-content>
-  <progressbar-modal-content :analytics="analytics" v-if="selectedCard === 'progressbar'"
-                             @close="selectedCard = null">
+  <progressbar-modal-content :analytics="analytics" v-if="selectedCard === 'progressbar'" @close="selectedCard = null">
   </progressbar-modal-content>
-  <stats-modal-content :analytics="analytics" v-if="selectedCard === 'stats'"
-                       @close="selectedCard = null">
+  <stats-modal-content :analytics="analytics" v-if="selectedCard === 'stats'" @close="selectedCard = null">
   </stats-modal-content>
-  <tasks-modal-content :analytics="analytics" v-if="selectedCard === 'tasks'"
-                       @close="selectedCard = null">
+  <tasks-modal-content :analytics="analytics" v-if="selectedCard === 'tasks'" @close="selectedCard = null">
   </tasks-modal-content>
   <!--  <modal-card-content v-if="selectedCard" :selectedCard="selectedCard" @close="selectedCard = null"></modal-card-content>-->
 </template>
 
 <style scoped>
-
 .card:hover {
   background-color: #F5F5F5;
 }
@@ -243,7 +239,11 @@ export default {
     grid-template-rows: repeat(5, auto);
   }
 
-  .stats, .tasks, .payments, .progress, .cost {
+  .stats,
+  .tasks,
+  .payments,
+  .progress,
+  .cost {
     grid-column: 1 / 2;
   }
 

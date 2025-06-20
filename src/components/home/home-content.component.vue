@@ -67,7 +67,7 @@ export default {
     fetchNewPosts() {
       this.postApi.getAllPostsByCompanyId(this.user.companyId)
           .then(response => {
-            let items = response.data;
+            let items = response; // ausmiendo que es un array de objetos de tipo PostEntity
             this.posts = this.buildPostListFromResponseData(items);
             console.log(items);
           })

@@ -30,17 +30,17 @@ export default {
   methods: {
     getTeamMembers: async function () {
       const members = await this.teamMemberService.getMembers(this.$store.state.user.companyId)
-          .then(r => {
-            if (r) return r.data
-            else return r;
-          })
-          .catch(e => console.error(e))
+        .then(r => {
+          if (r) return r.data
+          else return r;
+        })
+        .catch(e => console.error(e))
 
       if (members) {
         console.log('members', members);
         const companyId = this.$store.state.user.companyId;
         members.forEach((m) => {
-          if(m.companyId === companyId) {
+          if (m.companyId === companyId) {
             this.brandName = m.companyName;
             this.brandName = this.brandName.charAt(0).toUpperCase() + this.brandName.slice(1);
             this.members.push(m);
@@ -55,7 +55,7 @@ export default {
       this.messageSent = true;
     },
     sendMessage: async function (idMember) {
-      if(!this.message) {
+      if (!this.message) {
         this.messageSent = false;
         return;
       }
@@ -82,15 +82,15 @@ export default {
       this.messageSent = true;
       this.message = "";
     },
-    kickMember: async function(idMember) {
+    kickMember: async function (idMember) {
       await this.teamMemberService.kickMember(idMember)
-          .then(r =>{
-            if (r) {
-              this.members = this.members.filter(m => m.id !== idMember);
-              this.popUp = false;
-            }
-          })
-          .catch(e => console.error(e))
+        .then(r => {
+          if (r) {
+            this.members = this.members.filter(m => m.id !== idMember);
+            this.popUp = false;
+          }
+        })
+        .catch(e => console.error(e))
     }
   }
 }
@@ -107,19 +107,18 @@ export default {
 
       <div class="card__wrapper flex flex-wrap justify-content-between" v-for="m in members">
         <div class="card__content-user flex justify-content-center align-items-center gap-3 lg:gap-5">
-          <img :src="m.image" alt="User Avatar" role="img" width="50px" class="border-circle">
+          <img :src="m.image || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'" alt="User Avatar" role="img" width="50px"
+            class="border-circle">
           <span class="text-lg lg:text-xl">{{ m.name }}</span>
         </div>
 
         <div
-            class="card__content-info flex flex-wrap justify-content-start lg:justify-content-center align-items-center gap-4 lg:gap-4">
+          class="card__content-info flex flex-wrap justify-content-start lg:justify-content-center align-items-center gap-4 lg:gap-4">
           <p class="card__info-email text-lg lg:text-xl">{{ m.email }}</p>
-          <UserIcon
-              class="card__info-icon cursor-pointer transition-ease-in-out"
-              @click="togglePopUp(m.id, 'contact')"/>
-          <MessageIcon
-              class="card__info-icon cursor-pointer transition-ease-in-out"
-              @click="togglePopUp(m.id, 'message')"/>
+          <UserIcon class="card__info-icon cursor-pointer transition-ease-in-out"
+            @click="togglePopUp(m.id, 'contact')" />
+          <MessageIcon class="card__info-icon cursor-pointer transition-ease-in-out"
+            @click="togglePopUp(m.id, 'message')" />
         </div>
       </div>
 
@@ -128,13 +127,13 @@ export default {
     <div class="popup absolute top-50 left-50" v-if="popUp">
 
       <div
-          class="popup__content bg-white shadow-1 border-round-2xl flex flex-column justify-content-center align-items-center p-6 relative"
-          role="contentinfo">
+        class="popup__content bg-white shadow-1 border-round-2xl flex flex-column justify-content-center align-items-center p-6 relative"
+        role="contentinfo">
         <i class="fa-solid fa-xmark absolute" @click="togglePopUp(userSelected.id)"></i>
 
         <div class="popup__content-contentinfo" v-if="popUpDetail === 'contact'">
           <div class="popup__content-img">
-            <img :src="userSelected.image" alt="Photo Profile User" role="img" width="210px"/>
+            <img :src="userSelected.image" alt="Photo Profile User" role="img" width="210px" />
           </div>
           <h2 class="popup__content-title" aria-label="title">{{ userSelected.name }}</h2>
 
@@ -143,7 +142,8 @@ export default {
             <p class="popup__member-description" aria-label="description">{{ userSelected.description }}</p>
           </div>
 
-          <pv-button class="justify-content-center p-2 bg-red-500" @click="kickMember(userSelected.id)" v-if="this.roleUser === 'director' && this.userId !== userSelected.id">KICK</pv-button>
+          <pv-button class="justify-content-center p-2 bg-red-500" @click="kickMember(userSelected.id)"
+            v-if="this.roleUser === 'director' && this.userId !== userSelected.id">KICK</pv-button>
         </div>
 
         <div class="popup__content-contentinfo" v-if="popUpDetail === 'message'">
@@ -152,11 +152,12 @@ export default {
 
           <div class="popup__member-description" aria-label="description">
             <textarea class="border-round-2xl w-full h-40" placeholder="Can you leave your message here..."
-                      v-model="message"></textarea>
+              v-model="message"></textarea>
 
             <p v-if="!messageSent" class="message-empty">The message should not be empty</p>
           </div>
-          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer" @click="sendMessage(userSelected.id)">
+          <div class="button bg-primary text-white border-round-2xl p-2 mt-4 cursor-pointer"
+            @click="sendMessage(userSelected.id)">
             Send
           </div>
 
@@ -168,7 +169,6 @@ export default {
 </template>
 
 <style scoped>
-
 .team__content {
   display: flex;
   flex-direction: column;
@@ -196,7 +196,8 @@ export default {
   font-weight: 300;
 }
 
-.card__content-user, .card__content-info {
+.card__content-user,
+.card__content-info {
   width: max-content;
   padding: 1rem;
 }
@@ -217,7 +218,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  align-items:center;
+  align-items: center;
   text-align: center;
 }
 
@@ -277,5 +278,4 @@ export default {
     top: 0;
   }
 }
-
 </style>
