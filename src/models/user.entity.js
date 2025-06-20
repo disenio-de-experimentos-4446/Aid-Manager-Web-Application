@@ -13,7 +13,5 @@ export class User {
         this.companyEmail = companyEmail;
         this.companyCountry = companyCountry;
         this.teamRegisterCode = teamRegisterCode;
-        
-        
     }
 }

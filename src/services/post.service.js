@@ -1,30 +1,33 @@
 import axios from "axios";
-import {environment} from "@/environment/environment";
-import {UserService} from "@/services/user.service.js";
+import { environment } from "@/environment/environment";
+import { UserService } from "@/services/user.service.js";
+import examplePosts from "@/assets/data/posts";
 
 export class PostApiService {
+  http = null;
+  userService = null;
 
-    http = null;
-    userService = null;
+  constructor() {
+    this.userService = new UserService();
+    this.http = axios.create({
+      baseURL: environment.baseUrl,
+    });
+  }
 
-    constructor() {
-        this.userService = new UserService();
-        this.http = axios.create({
-            baseURL: environment.baseUrl
-        })
+  async getAllPosts() {
+    try {
+      return await this.http.get(`posts/company${companyId}`);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      throw error;
     }
+  }
 
-    async getAllPosts() {
-        try {
-            return await this.http.get(`posts/company${companyId}`);
-        } catch (error) {
-            console.error('Error fetching posts:', error);
-            throw error;
-        }
-    }
-
-    async getAllPostsByCompanyId(companyId, limit = 5) {
-        try {
+  async getAllPostsByCompanyId(companyId, limit = 5) {
+    return new Promise((resolve) => {
+        resolve(examplePosts.slice(0, limit));
+    });
+    /* try {
             const headers = this.userService.getHeadersAuthorization();
             const response = await this.http.get(`posts/company/${companyId}`, {
                 headers,
@@ -36,34 +39,37 @@ export class PostApiService {
         } catch (error) {
             console.error(`Error fetching posts for ${companyId}:`, error);
             throw error;
-        }
+        } */
+  }
+
+  async createNewPost(userId, companyId, post) {
+    try {
+      const headers = this.userService.getHeadersAuthorization();
+      // adding the properties passed for param
+      post.userId = userId;
+      post.companyId = companyId;
+
+      return await this.http.post(`posts`, post, { headers });
+    } catch (error) {
+      console.error(`Error creating post`, error);
+      throw error;
     }
+  }
 
-    async createNewPost(userId, companyId, post) {
-        try {
-            const headers = this.userService.getHeadersAuthorization();
-            // adding the properties passed for param
-            post.userId = userId;
-            post.companyId = companyId;
-
-            return await this.http.post(`posts`, post, { headers });
-        } catch (error) {
-            console.error(`Error creating post`, error);
-            throw error;
-        }
+  async updatePostRating(postId = 3, userId, rating) {
+    try {
+      const headers = this.userService.getHeadersAuthorization();
+      return await this.http.patch(
+        `posts/${postId}/rating`,
+        {
+          rating,
+          userId,
+        },
+        { headers }
+      );
+    } catch (error) {
+      console.error(`Error rating post`, error);
+      throw error;
     }
-
-    async updatePostRating(postId = 3, userId, rating) {
-        try {
-            const headers = this.userService.getHeadersAuthorization();
-            return await this.http.patch(`posts/${postId}/rating`, {
-                rating,
-                userId
-            }, { headers });
-        } catch (error) {
-            console.error(`Error rating post`, error);
-            throw error;
-        }
-    }
-
+  }
 }
