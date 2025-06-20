@@ -152,20 +152,26 @@ const items = ref([{
 
 <template>
 
-  <div class="task-card">
+  <div class="task-card" style="margin-bottom: 1.2rem; border-bottom: 4px solid #4CAF50; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
     <div class="title">
-
-      <div>
-        <h3 class="task-title" style="font-weight:normal;">{{ title }}</h3>
-        <p>Assigned to: {{ assigned }}</p>
-        <p>Due: {{ due }}</p>
+      <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+        <h3 class="task-title" style="font-weight:normal; margin-bottom: 0;">{{ title }}</h3>
+        <div class="p-button-icon">
+          <Button style="color: #02513D;" icon="pi pi-ellipsis-h" aria-label="edit" text @click="toggle"></Button>
+          <TieredMenu class="tier" ref="menu" id="overlay_tmenu" :model="items" popup/>
+        </div>
       </div>
-      <div class="p-button-icon">
-        <Button icon="pi pi-ellipsis-h" aria-label="edit" text @click="toggle"></Button>
-        <TieredMenu class="tier" ref="menu" id="overlay_tmenu" :model="items" popup/>
+      <div style="color: #555; margin-bottom: 0.3rem;">
+        <p style="margin: 0 0 0.2rem 0;">Assigned to: <span style="color: #02513D;">{{ assigned }}</span></p>
+        <p style="margin: 0;">Due: <i class="pi pi-calendar" style="color: #02513D; margin-right: 4px;"></i>{{ due }}</p>
+      </div>
+      <div style="font-size: 0.92em; color: #888; margin-bottom: 0.2rem;">
+        Estado: <span style="color: #4CAF50;">{{ state }}</span>
+      </div>
+      <div style="color: #666; font-size: 0.97em; margin-bottom: 0.2rem;">
+        {{ description }}
       </div>
     </div>
-
   </div>
 
   <Dialog modal:true class="p-dialog" v-model:visible="visible" :closeOnOutsideClick="true">
@@ -204,7 +210,7 @@ const items = ref([{
 
 </template>
 
-<style scoped>
+<style>
 
 .task-title {
   font-family: 'Lora', serif !important;
@@ -214,19 +220,32 @@ const items = ref([{
 
 .title {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
 }
 
-.p-button-icon {
-  padding: 1rem 0;
-  margin: 1rem;
+.p-menuitem-link {
+  padding: 0.5rem;
 }
-
 .task-card {
   width: 100%;
   align-items: center;
   transition: 0.3s;
+  background-color: #F7F7F7;
+  border-radius: 1rem;
+  padding: 0.3rem 1rem;
+  user-select: none;
+}
+
+.task-card:hover {
+  scale: 0.98;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-card:active {
+  scale: 1;
+  transition: 0.1s;
+
 }
 
 .p-dialog {

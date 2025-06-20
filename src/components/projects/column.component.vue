@@ -4,12 +4,26 @@ import Card from 'primevue/card';
 import Task from './task.component.vue';
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
-import {addTask, fetchTaskData} from '@/services/projects-api.services.js';
+import {addTask, fetchTaskData, fetchTaskDataByUserId} from '@/services/projects-api.services.js';
 import {TaskEntity} from '@/models/task.entity.js';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import Calendar from "primevue/calendar";
+import { useStore } from 'vuex'
+
+const store = useStore()
+
+const userRole = ref(store.state.user?.role || '') // Obtiene el rol del usuario
+let isTeam = false;
+
+let role = userRole.value;
+
+if (role === 'TeamMember') {
+  isTeam = true; // Si el rol es Admin o Manager, se permite agregar tareas
+} else {
+  isTeam = false; // De lo contrario, no se permite agregar tareas
+}
 
 
 // Variables reactivas
@@ -58,6 +72,24 @@ function cambiarColor(taskColumn) {
 
 // Función para cargar las tareas desde la API
 const fetchTasks = () => {
+
+  if (role === 'TeamMember') {
+    console.log('User is a TeamMember, only fetching tasks for the user');
+    fetchTaskDataByUserId(props.id, store.state.user.id)
+      .then((data) => {
+        if (data && data.length > 0) {
+          state.value.totalTasks = data.length;
+
+          state.value.tasks = data.filter((task) => task.state === props.taskColumn);
+          console.log(state.value.tasks)
+        }
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos de la API:', error);
+      });
+    return; // Si el usuario es un TeamMember, no se cargan las tareas
+  }
+
   fetchTaskData(props.id)
       .then((data) => {
         if(data && data.length > 0) {
@@ -152,7 +184,7 @@ const taskDel = () => {
                 :due="task.dueDate" :id="task.id" :projectId="props.id" @taskDel="taskDel" :state="props.taskColumn"/>
         </div>
       </template>
-      <template #footer>
+      <template #footer  v-if="userRole !== 'TeamMember'">
         <Divider class="p-divider"></Divider>
         <br>
         <Button class="add-task" @click="addsTask">+ Add New Task</Button>
@@ -192,6 +224,7 @@ const taskDel = () => {
         <div class=" justify-content-end gap-2">
           <Button label="Add" @click="createTask" style="background-color: #02513D;"/>
         </div>
+
       </div>
     </Dialog>
   </div>
@@ -202,6 +235,9 @@ const taskDel = () => {
   width: 100%;
   padding: 1rem;
   height: 100%;
+  border-radius: 1rem;
+  
+
 }
 
 .add-task {
@@ -212,8 +248,12 @@ const taskDel = () => {
 }
 
 .overflow {
+  padding-top: 1rem;
   overflow-y: auto;
   height: 46vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .p-dialog {
