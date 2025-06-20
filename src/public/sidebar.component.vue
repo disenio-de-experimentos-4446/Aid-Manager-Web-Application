@@ -98,7 +98,7 @@ export default {
           <li class="flex flex-row gap-3 align-items-center py-3 pl-4 border-round-md"
               @click="navigateToCreatePost"
               :class="{ active: $route.path === '/new-post' }"
-              v-if="user && user.role && user.role.toLowerCase() === 'team'">
+              v-if="user && user.role && user.role.toLowerCase() === 'manager'">
             <PostIcon></PostIcon>
             <p class="font-medium text-base" v-t="'sidebar.createpost'">Create Post</p>
           </li>

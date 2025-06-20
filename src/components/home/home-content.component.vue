@@ -42,24 +42,23 @@ export default {
 
     buildPostListFromResponseData(items) {
       return items.map(item => {
-        let user = new User(
-            item.user.id,
-            item.user.firstName,
-            item.user.lastName,
-            item.user.email,
-            item.user.profileImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'
-        );
-
-        let formattedDate = this.formatDate(item.createdAt);
+        console.log(item);
+        let formattedDate = this.formatDate(item.postTime);
 
         return new PostEntity(
             item.id,
-            user,
             item.title,
             item.subject,
             item.description,
+            item.email,
+            item.userId,
+            item.userName,
+            item.userImage,
+            item.companyId,
+            formattedDate,
             item.rating,
-            formattedDate
+            item.images = [],
+            item.commentsList = []
         )
       })
     },
