@@ -2,11 +2,20 @@
   <section class="flex h-full flex-column p-3 lg:p-5 lg:pb-0 widthsec">
     <h1 class="title-projects text-4xl font-medium">Projects</h1>
     <br>
-    <h3 class="subtitle font-medium mb-5">Current Projects:</h3>
+    <h3 class="subtitle font-medium">Current Projects:</h3>
     <div class="all">
       <div class="project-cards">
-        <!-- Mostrar proyectos con el componente CardsComponent -->
-        <cards-component v-for="(project, index) in projects" :key="index" :project="project"/>
+        <!-- Paginador visual -->
+        <Paginator
+          :rows="pageSize"
+          :totalRecords="projects.length"
+          :first="first"
+          @page="onPageChange"
+          class=" w-full"
+          template="PrevPageLink PageLinks NextPageLink"
+        />
+        <!-- Mostrar proyectos paginados con el componente CardsComponent -->
+        <cards-component v-for="(project, index) in paginatedProjects" :key="project.id || index" :project="project"/>
 
         <!-- Botón para agregar un nuevo proyecto -->
         <div class="add-project">
@@ -59,10 +68,11 @@
 </template>
 
 <script setup>
-import {ref, onMounted, watch, nextTick} from 'vue';
+import {ref, computed, onMounted, watch, nextTick} from 'vue';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
+import Paginator from 'primevue/paginator';
 import CardsComponent from '@/components/projects/card.component.vue';
 import {ProjectsEntity} from "@/models/projects.entity.js";
 import {fetchProjects, addProject} from "@/services/projects-api.services.js";
@@ -72,6 +82,16 @@ const projects = ref([]);
 const newProject = ref({ name: '', image: '', description: '' });
 const Errors = ref([]);
 const nameInput = ref(null);
+
+// Paginación
+const pageSize = 6; // Proyectos por página
+const first = ref(0); // Índice del primer proyecto en la página actual
+const paginatedProjects = computed(() => {
+  return projects.value.slice(first.value, first.value + pageSize);
+});
+const onPageChange = (event) => {
+  first.value = event.first;
+};
 
 // Persistencia del estado del diálogo y del formulario
 const DIALOG_KEY = 'addProjectDialogOpen';
@@ -125,6 +145,10 @@ const getProjects = (companyId) => {
   fetchProjects(companyId)
       .then(data => {
         projects.value = data;
+        // Reiniciar paginación si hay menos proyectos en la nueva lista
+        if (first.value >= data.length) {
+          first.value = 0;
+        }
       })
       .catch(error => {
         console.error('Error al obtener datos de la API:', error);
@@ -194,12 +218,20 @@ const createProject = async () => {
   height: auto;
   width: 100%;
   gap: 2rem;
+  justify-content: space-between;
 }
 .add-project {
   width: 20%;
+  transition: transform 0.3s ease;
+  display: flex;
 }
+
+.add-project:hover {
+  cursor: pointer;
+  transform: scale(1.02);
+}
+
 .addBut {
-  border-radius: 14px;
   width: 100%;
   height: 12rem;
   object-fit: cover;

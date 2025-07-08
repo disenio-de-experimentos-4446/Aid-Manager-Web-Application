@@ -24,10 +24,7 @@ export class PostApiService {
   }
 
   async getAllPostsByCompanyId(companyId, limit = 5) {
-    return new Promise((resolve) => {
-        resolve(examplePosts.slice(0, limit));
-    });
-    /* try {
+    try {
             const headers = this.userService.getHeadersAuthorization();
             const response = await this.http.get(`posts/company/${companyId}`, {
                 headers,
@@ -35,11 +32,12 @@ export class PostApiService {
                     limit
                 }
             });
+            console.log(`Posts fetched for company ${companyId}:`, response.data);
             return response;
         } catch (error) {
             console.error(`Error fetching posts for ${companyId}:`, error);
             throw error;
-        } */
+        }
   }
 
   async createNewPost(userId, companyId, post) {
@@ -56,13 +54,13 @@ export class PostApiService {
     }
   }
 
-  async updatePostRating(postId = 3, userId, rating) {
+  async updatePostRating(postId, userId) {
     try {
       const headers = this.userService.getHeadersAuthorization();
       return await this.http.patch(
-        `posts/${postId}/rating`,
+        `posts/${postId}/rating/${userId}`,
         {
-          rating,
+          postId,
           userId,
         },
         { headers }

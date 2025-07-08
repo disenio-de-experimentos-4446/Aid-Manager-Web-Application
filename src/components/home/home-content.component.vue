@@ -41,7 +41,8 @@ export default {
     },
 
     buildPostListFromResponseData(items) {
-      return items.map(item => {
+      console.log("Building post list from response data", items);
+      return items.data.map(item => {
         console.log(item);
         let formattedDate = this.formatDate(item.postTime);
 
@@ -68,8 +69,9 @@ export default {
           .then(response => {
             let items = response; // ausmiendo que es un array de objetos de tipo PostEntity
             this.posts = this.buildPostListFromResponseData(items);
-            console.log(items);
-          })
+            console.log("posts adquired:" + this.posts.length);
+            
+          });
     }
 
   }

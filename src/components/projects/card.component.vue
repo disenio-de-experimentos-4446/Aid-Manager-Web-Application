@@ -1,7 +1,7 @@
 <template>
   <div class="project-card">
     <Button class="img-but" @click="openTodo">
-      <img :src="project.imageUrl[0]" alt="Project Image" class="project-image" />
+      <img :src="project.imageUrl[0] || 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png'" alt="Project Image" class="project-image" />
     </Button>
     <div class="project-name">{{ project.name }}</div>
   </div>
@@ -41,7 +41,6 @@ const openTodo = () => {
   width: 20%;
   height: 100%;
   object-fit: cover;
-
 }
 
 .project-card img {
@@ -57,8 +56,20 @@ const openTodo = () => {
 
 .img-but {
   width: 100%;
-  object-fit: cover
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1);
 }
+
+.img-but:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+
+}
+
+
 
 @media (max-width: 768px) {
   .project-card {
