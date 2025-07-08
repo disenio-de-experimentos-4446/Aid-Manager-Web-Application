@@ -78,7 +78,7 @@ export default {
                      :image="post.userImg || 'https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg'"
                      shape="circle"/>
           <div class="flex flex-column justify-content-between">
-            <p class="font-medium">{{ post.userName || Jhon Doe }}</p>
+            <p class="font-medium">{{ post.userName || 'Jhon Doe' }}</p>
             <div class="flex flex-row align-items-center gap-4">
               <p class="text-sm text-green-600 font-normal" style="text-wrap: wrap">{{ post.email }}</p>
             </div>

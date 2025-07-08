@@ -9,7 +9,6 @@ import AnalyticsChartDoughnut
 import { analytic } from "@/models/analytic.entity.js";
 import { AnalyticsService } from "@/services/analytics.service.js";
 import AnalyticsCardReport from "@/components/analytics/analytics-card/analytics-card-report.component.vue";
-import ModalCardContent from "@/components/analytics/modal-card/modal-card-content.component.vue";
 import DropdownAnalytics from "@/components/analytics/dropdown-analytics/dropdown-analytics.component.vue";
 import LinesModalContent from "@/components/analytics/lines-modal/lines-modal-content.component.vue";
 import PaymentsModalContent from "@/components/analytics/payments-modal/payments-modal-content.component.vue";
@@ -17,6 +16,7 @@ import ProgressbarModalContent from "@/components/analytics/progressbar-modal/pr
 import StatsModalContent from "@/components/analytics/stats-modal/stats-modal-content.component.vue";
 import TasksModalContent from "@/components/analytics/tasks-modal/tasks-modal-content.component.vue";
 import ProjectsService from "@/public/projects.service.js";
+import { fetchTaskData } from '@/services/projects-api.services.js';
 
 export default {
   name: "analytics-card-projects",
@@ -27,7 +27,6 @@ export default {
     PaymentsModalContent,
     LinesModalContent,
     DropdownAnalytics,
-    ModalCardContent,
     AnalyticsCardReport,
     AnalyticsChartVerticalBar, AnalyticsChartLine, AnalyticsChartHorizontalBar, AnalyticsChartDoughnut
   },
@@ -40,7 +39,8 @@ export default {
       showDialog: false,
       showLinesChart: true,
       chartKey: 0,
-      selectedProjectId: null
+      selectedProjectId: null,
+      projectTasks: [] // <-- Aquí guardamos las tareas del proyecto seleccionado
     }
   },
   async created() {
@@ -48,10 +48,22 @@ export default {
   },
   methods: {
     handleIdProjectSelected(projectId) {
+      console.log('Project ID selected:', projectId);
       if (!projectId) return;
-
-      this.getAnalyticsByProject(projectId);
       this.selectedProjectId = projectId;
+      this.loadProjectTasks(projectId);
+      this.getAnalyticsByProject(projectId);
+    },
+
+    async loadProjectTasks(projectId) {
+      try {
+        const tasks = await fetchTaskData(projectId);
+        this.projectTasks = tasks;
+        console.log('Tareas del proyecto seleccionado:', tasks);
+      } catch (e) {
+        this.projectTasks = [];
+        console.error('Error al cargar tareas del proyecto:', e);
+      }
     },
 
     handleNoProjects() {
@@ -131,11 +143,11 @@ export default {
       </pv-card>
       <pv-card class="card tasks flex w-full flex-column cursor-pointer" @click="selectedCard = 'tasks'">
         <template #header>
-          <p class="text">Tasks:</p>
+          <p class="text">Tasks aa:</p>
         </template>
         <template #content>
           <div class="flex w-full">
-            <analytics-chart-doughnut :project-id="selectedProjectId" :analytics="analytics"></analytics-chart-doughnut>
+            <analytics-chart-doughnut :project-id="selectedProjectId" :tasks="projectTasks"></analytics-chart-doughnut>
           </div>
         </template>
       </pv-card>
@@ -176,17 +188,6 @@ export default {
       </div>
     </section>
   </section>
-  <lines-modal-content :analytics="analytics" v-if="selectedCard === 'lines'" @close="selectedCard = null">
-  </lines-modal-content>
-  <payments-modal-content :analytics="analytics" v-if="selectedCard === 'payments'" @close="selectedCard = null">
-  </payments-modal-content>
-  <progressbar-modal-content :analytics="analytics" v-if="selectedCard === 'progressbar'" @close="selectedCard = null">
-  </progressbar-modal-content>
-  <stats-modal-content :analytics="analytics" v-if="selectedCard === 'stats'" @close="selectedCard = null">
-  </stats-modal-content>
-  <tasks-modal-content :analytics="analytics" v-if="selectedCard === 'tasks'" @close="selectedCard = null">
-  </tasks-modal-content>
-  <!--  <modal-card-content v-if="selectedCard" :selectedCard="selectedCard" @close="selectedCard = null"></modal-card-content>-->
 </template>
 
 <style scoped>

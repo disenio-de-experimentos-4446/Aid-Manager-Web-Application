@@ -9,7 +9,8 @@ export const store = createStore({
     state: {
         // recupramos la data de user que se seteo al inicia el loggin en este caso como 'user'
         user: JSON.parse(localStorage.getItem('user')) || User,
-        form: {}
+        form: {},
+        selectedProject: null // Nuevo: para el proyecto seleccionado
     },
     mutations: {
         setToken(state, token) {
@@ -44,7 +45,13 @@ export const store = createStore({
         },
         clearForm(state) {
             state.form = {};
-        }
+        },
+        setSelectedProject(state, project) {
+            state.selectedProject = project;
+        },
+        clearSelectedProject(state) {
+            state.selectedProject = null;
+        },
     },
     actions: {
         async updateUser({ commit }, updatedUser) {

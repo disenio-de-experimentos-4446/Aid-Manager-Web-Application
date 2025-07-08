@@ -6,7 +6,7 @@ export class TaskEntity
         this.assigned = assigned;
         this.assignedID = assignedID;
         this.due = due;
-        this.status = status;
+        this.state = status;
         this.description = description;
     }
 }

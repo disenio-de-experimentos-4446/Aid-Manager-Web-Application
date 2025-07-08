@@ -1,52 +1,36 @@
 <template>
   <div class="project-card">
     <Button class="img-but" @click="openTodo">
-      <img :src="props.image" alt="Project Image" class="project-image" />
+      <img :src="project.imageUrl[0]" alt="Project Image" class="project-image" />
     </Button>
-    <div class="project-name">{{ props.name }}</div>
+    <div class="project-name">{{ project.name }}</div>
   </div>
 </template>
-
 
 <script setup>
 import Button from "primevue/button";
 import {defineProps} from 'vue';
 import router from "@/router/index.js";
+import { useStore } from 'vuex';
 const props = defineProps({
 
-  name: {
-    type: String,
-        required: true,
-  },
-  mounted() {
-    console.log("ImageLoaded: ");
-  },
-  components: {
-    Button,
-  },
-  id: {
-    type: Number,
-        required: true,
-  },
-  image: {
-    type: String,
+  project: {
+    type: Object, // Cambiado de ProjectsEntity a Object para evitar warnings
         required: true,
   },
 
 });
-
+const store = useStore();
 
 const openTodo = () => {
-  const encodedId = props.id;
-  console.log(encodedId);
+  store.commit('setSelectedProject', props.project);
   router.push({
     name: 'projectTodo',
     params: {
-      id: encodedId,
-    },
+      id: props.project.id,
+    }
   });
-      console.log("ImageLoaded: ", props.image);
-
+  console.log('Project set in store:', props.project);
 };
 
 
@@ -82,5 +66,4 @@ const openTodo = () => {
     height: auto;
   }
 }
-
 </style>

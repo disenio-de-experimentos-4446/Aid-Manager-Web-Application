@@ -47,7 +47,7 @@ const toggle = (event) => {
   menu.value.toggle(event);
 };
 
-const emits = defineEmits(['taskDel']);
+const emits = defineEmits(['taskDel', 'taskMoved']);
 
 
 const taskDel = (projectId, id) => {
@@ -58,12 +58,12 @@ const taskDel = (projectId, id) => {
   // Aquí puedes agregar la lógica para eliminar la tarea
 };
 
-const editFunc = (projectId, taskData) => {
+const editFunc = async (projectId, taskData) => {
   if (!thisTask.value.title || !thisTask.value.due || !thisTask.value.assigned) {
     alert('Por favor, ingrese el título, el asignado y la fecha.');
   } else {
     console.log(projectId, taskData);
-    editTask(projectId ,taskData).then(() => {
+    await editTask(projectId ,taskData).then(() => {
       visible.value = false;
     }).then(() => {
       emits('taskDel')
@@ -86,8 +86,12 @@ const edit = async () => {
 
 const handleMove = (destination, data) => {
   console.log(`Moved to: ${destination}`);
-  data.value.status = destination
-  editFunc(props.projectId, data.value)
+  data.value.state = destination; // Cambia el state correctamente
+  // Refleja el cambio en thisTask también
+  thisTask.value.state = destination;
+  editFunc(props.projectId, data.value);
+  // Emitir el evento con la tarea actualizada y los campos correctos
+  emits('taskMoved', { ...data.value });
 };
 
 
@@ -247,10 +251,4 @@ const items = ref([{
   transition: 0.1s;
 
 }
-
-.p-dialog {
-  width: 80%;
-
-}
-
 </style>

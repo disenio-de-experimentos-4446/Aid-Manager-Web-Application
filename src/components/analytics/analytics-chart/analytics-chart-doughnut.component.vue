@@ -7,11 +7,15 @@ export default {
   props: {
     analytics: {
       type: Object,
-      required: true
+      required: false // Cambiado para evitar warning si no se pasa
     },
     selectedProjectId: {
       type: String,
       default: null
+    },
+    tasks: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -19,11 +23,17 @@ export default {
       chartData: null,
       chartOptions: {
         cutout: '60%'
-      },
-      allTasks: []
+      }
     };
   },
   watch: {
+    tasks: {
+      handler() {
+        this.chartData = this.setChartData();
+      },
+      immediate: true,
+      deep: true
+    },
     analytics: {
       handler() {
         this.chartData = this.setChartData();
@@ -31,29 +41,34 @@ export default {
       },
       deep: true
     },
-    allTasks: {
-      handler() {
-        this.chartData = this.setChartData();
-      },
-      deep: true
+    selectedProjectId: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.loadTasks();
+        } else {
+          this.allTasks = [];
+        }
+      }
     }
   },
   async created() {
-    await this.loadTasks();
+    if (this.selectedProjectId) {
+      await this.loadTasks();
+    }
     this.chartData = this.setChartData();
     this.chartOptions = this.setChartOptions();
   },
   methods: {
     async loadTasks() {
       try {
-        const selectedProject = localStorage.getItem('selectedProject');
-        if (selectedProject) {
-          const projectData = JSON.parse(selectedProject);
-          this.allTasks = await fetchTaskData(projectData.id);
+        if (this.selectedProjectId) {
+          this.allTasks = await fetchTaskData(this.selectedProjectId);
+          console.log('DoughnutChart - Tareas cargadas para el proyecto:', this.selectedProjectId, this.allTasks);
         } else {
           this.allTasks = [];
+          console.log('DoughnutChart - Sin proyecto seleccionado');
         }
-        
       } catch (error) {
         console.error('Error loading tasks:', error);
         this.allTasks = [];
@@ -61,11 +76,11 @@ export default {
     },
 
     calculateTaskPercentages() {
-      if (!this.allTasks || this.allTasks.length === 0) {
+      if (!this.tasks || this.tasks.length === 0) {
         return [0, 0, 0];
       }
 
-      const totalTasks = this.allTasks.length;
+      const totalTasks = this.tasks.length;
       const taskCounts = {
         'ToDo': 0,
         'InProgress': 0,
@@ -73,10 +88,10 @@ export default {
       };
 
       // Contar tareas por estado
-      this.allTasks.forEach(task => {
-        if (task.state === 'ToDo') {
+      this.tasks.forEach(task => {
+        if (task.state === 'To-Do') {
           taskCounts.ToDo++;
-        } else if (task.state === 'InProgress') {
+        } else if (task.state === 'Doing') {
           taskCounts.InProgress++;
         } else if (task.state === 'Done') {
           taskCounts.Done++;

@@ -139,11 +139,10 @@ export async function editTask(projectID , taskData){
             title: taskData.title,
             description: taskData.description,
             dueDate: taskData.due,
-            state: taskData.status,
+            state: taskData.state, // CORREGIDO: debe ser state, no status
             assigneeId: taskData.assignedID,
         }
 
-        console.log("Task a editar" , taskBody);
         console.log("Task a editar" , taskData);
 
         const userService = new UserService();

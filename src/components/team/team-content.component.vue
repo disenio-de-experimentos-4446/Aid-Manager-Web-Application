@@ -129,7 +129,7 @@ export default {
       <div
         class="popup__content bg-white shadow-1 border-round-2xl flex flex-column justify-content-center align-items-center p-6 relative"
         role="contentinfo">
-        <i class="fa-solid fa-xmark absolute" @click="togglePopUp(userSelected.id)"></i>
+        <i class="" @click="togglePopUp(userSelected.id)"></i>
 
         <div class="popup__content-contentinfo" v-if="popUpDetail === 'contact'">
           <div class="popup__content-img">
