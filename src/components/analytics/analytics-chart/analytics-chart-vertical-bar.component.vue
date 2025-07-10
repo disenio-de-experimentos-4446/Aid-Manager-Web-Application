@@ -36,7 +36,7 @@ export default {
       const documentStyle = getComputedStyle(document.documentElement);
 
       const progressbar = this.analytics?.progressbar;
-
+      // te maldigo 👩‍🦲
       if (progressbar) {
         // Dividir el arreglo en 3 segmentos iguales
         const segmentSize = progressbar.length / 3;
