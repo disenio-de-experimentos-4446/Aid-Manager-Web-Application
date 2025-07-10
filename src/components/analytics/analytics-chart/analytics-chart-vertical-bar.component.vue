@@ -34,7 +34,7 @@ export default {
   methods: {
     setChartData() {
       const documentStyle = getComputedStyle(document.documentElement);
-
+      // Obtener el arreglo de progreso desde las props
       const progressbar = this.analytics?.progressbar;
       // te maldigo 👩‍🦲
       if (progressbar) {
