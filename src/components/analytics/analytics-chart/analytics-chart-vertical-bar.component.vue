@@ -27,7 +27,7 @@ export default {
     }
   },
   async created() {
-
+    // Inicializa los datos y opciones del gráfico al crear el componente
     this.chartData = this.setChartData();
     this.chartOptions = this.setChartOptions();
   },
