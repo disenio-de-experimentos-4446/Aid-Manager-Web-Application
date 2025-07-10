@@ -19,6 +19,7 @@ export default {
   watch: {
     analytics: {
       handler() {
+        // Actualiza los datos y opciones del gráfico cuando cambian los datos analíticos
         this.chartData = this.setChartData();
         this.chartOptions = this.setChartOptions();
       },
