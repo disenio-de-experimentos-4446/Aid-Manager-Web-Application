@@ -37,11 +37,12 @@ export default {
       const progressbar = this.analytics?.progressbar;
 
       if (progressbar) {
+        // Dividir el arreglo en 3 segmentos iguales
         const segmentSize = progressbar.length / 3;
         const currentDataActual = progressbar.slice(0, segmentSize);
         const currentDataPlanned = progressbar.slice(segmentSize, 2 * segmentSize);
         const currentDataBudget = progressbar.slice(2 * segmentSize);
-
+        // Retornar la estructura de datos para el gráfico de barras
         return {
           labels: ['Actual', 'Planned', 'Budget'],
           datasets: [
